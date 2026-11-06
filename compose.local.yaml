@@ -1,0 +1,5 @@
+# Optional, for local builds instead of pulling GitHub Container Registry.
+services:
+  cocktail-cabinet:
+    build: .
+    image: cocktail-cabinet:local

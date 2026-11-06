@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+ <meta name="theme-color" content="#f8f6f2"><meta name="color-scheme" content="light dark">
+ <link rel="manifest" href="{{ url_for('manifest') }}">
+ <link rel="icon" type="image/svg+xml" href="{{ url_for('static',filename='icon.svg') }}">
+ <link rel="apple-touch-icon" href="{{ url_for('static',filename='app-icon.png') }}">
+ <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+ <meta name="csrf-token" content="{{ csrf_token }}">
+ <title>{% block title %}Cocktail Cabinet{% endblock %} · The Cocktail Cabinet</title>
+</head>
+<body data-auth="{{ 'yes' if viewer else 'no' }}">
+{% if viewer %}
+ <div class="shell">
+  <aside class="desktop-sidebar" aria-label="Primary navigation">
+   <a class="brand" href="{{ url_for('index') }}"><span class="brand-symbol">◉</span><span>The Cocktail<br><b>Cabinet.</b></span></a>
+   <div class="sidebar-eyebrow">YOUR BAR, BEAUTIFULLY KEPT</div>
+   <nav class="sidebar-nav">
+    <a class="nav-link {% if request.endpoint in ['index','recipe_view'] %}active{% endif %}" href="{{ url_for('index') }}"><span>▦</span> Discover</a>
+    <a class="nav-link {% if request.endpoint=='pantry' %}active{% endif %}" href="{{ url_for('pantry') }}"><span>◫</span> My shelf</a>
+    <a class="nav-link {% if request.endpoint in ['recipe_new','recipe_edit'] %}active{% endif %}" href="{{ url_for('recipe_new') }}"><span>＋</span> Add a recipe</a>
+    <a class="nav-link {% if request.endpoint=='ingredients' %}active{% endif %}" href="{{ url_for('ingredients') }}"><span>◇</span> Ingredients</a>
+    {% if viewer.role=='admin' %}<a class="nav-link {% if request.endpoint=='admin' %}active{% endif %}" href="{{ url_for('admin') }}"><span>⚙</span> People & invites</a>{% endif %}
+   </nav>
+   <div class="sidebar-bottom"><div class="sidebar-profile"><span class="avatar">{{ viewer.username[0]|upper }}</span><span><strong>{{ viewer.username }}</strong><small>{{ 'Administrator' if viewer.role=='admin' else 'Member' }}</small></span></div><a href="{{ url_for('account') }}" class="tiny-link">Account settings</a><form action="{{ url_for('logout') }}" method="post"><input type="hidden" name="_csrf" value="{{ csrf_token }}"><button class="text-button">Sign out</button></form></div>
+  </aside>
+  <div class="main-column">
+   <header class="mobile-header"><a class="brand brand-mobile" href="{{ url_for('index') }}"><span class="brand-symbol">◉</span><span>The Cocktail <b>Cabinet.</b></span></a><button class="mobile-theme-toggle" type="button" data-theme-toggle aria-label="Switch light or dark mode"><span data-theme-icon>☾</span></button><a href="{{ url_for('account') }}" class="avatar" aria-label="Account">{{ viewer.username[0]|upper }}</a></header>
+   <div class="top-actions"><span class="top-actions-caption">GOOD DRINKS, GOOD COMPANY.</span><button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch light or dark mode"><span data-theme-icon>☾</span> <span class="theme-label">Theme</span></button></div>
+   <main class="main-content">{% block content %}{% endblock %}</main>
+   <footer class="page-footer">The Cocktail Cabinet · Private collection · Mix thoughtfully.</footer>
+  </div>
+ </div>
+ <nav class="bottom-nav" aria-label="Mobile navigation"><a class="{% if request.endpoint in ['index','recipe_view'] %}active{% endif %}" href="{{ url_for('index') }}"><span>▦</span>Discover</a><a class="{% if request.endpoint=='pantry' %}active{% endif %}" href="{{ url_for('pantry') }}"><span>◫</span>My shelf</a><a class="mobile-add {% if request.endpoint in ['recipe_new','recipe_edit'] %}active{% endif %}" href="{{ url_for('recipe_new') }}"><span>＋</span>Add</a><a class="{% if request.endpoint in ['ingredients','admin','account'] %}active{% endif %}" href="{{ url_for('ingredients') }}"><span>◇</span>Ingredients</a></nav>
+{% else %}<main class="auth-root">{% block auth_content %}{% endblock %}</main>{% endif %}
+{% with messages=get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-stack" role="status">{% for kind,text in messages %}<div class="flash {{ kind }}">{{ text }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+<script src="{{ url_for('static',filename='app.js') }}" defer></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

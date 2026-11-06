@@ -1,0 +1,33 @@
+services:
+  cocktail-cabinet:
+    image: ghcr.io/shuach613/cocktail-cabinet:latest
+    container_name: cocktail-cabinet
+    restart: unless-stopped
+    init: true
+    ports:
+      - "${HOST_PORT:-1931}:8080"
+    environment:
+      SECRET_KEY: "${SECRET_KEY:?Set SECRET_KEY in .env}"
+      SETUP_TOKEN: "${SETUP_TOKEN:?Set SETUP_TOKEN in .env}"
+      DATA_DIR: /data
+      COOKIE_SECURE: "${COOKIE_SECURE:-true}"
+      TRUST_PROXY: "${TRUST_PROXY:-true}"
+      SMTP_HOST: "${SMTP_HOST:-}"
+      SMTP_PORT: "${SMTP_PORT:-587}"
+      SMTP_USERNAME: "${SMTP_USERNAME:-}"
+      SMTP_PASSWORD: "${SMTP_PASSWORD:-}"
+      SMTP_FROM: "${SMTP_FROM:-}"
+      SMTP_STARTTLS: "${SMTP_STARTTLS:-true}"
+    volumes:
+      - cabinet_data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health',timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  cabinet_data:

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}{% if mode=='setup' %}First-run setup{% elif mode=='invite' %}Accept invitation{% else %}Sign in{% endif %}{% endblock %}
+{% block auth_content %}
+<div class="auth-layout"><div class="auth-art"><div class="auth-brand">◉ <span>The Cocktail<br><b>Cabinet.</b></span></div><div class="auth-art-content"><span class="eyebrow light">A BETTER KIND OF RECIPE BOOK</span><h1>Something<br>good is<br><em>mixing.</em></h1><p>Your private collection of drinks, the bottles on your shelf, and the people you share them with.</p><div class="auth-drawing"><div class="draw-glass"><span></span></div><div class="draw-circle"></div></div></div><div class="auth-credits">THE GOOD STUFF, ALL IN ONE PLACE.</div></div>
+<section class="auth-panel"><div class="auth-panel-inner"><div class="auth-mobile-brand">◉ The Cocktail <b>Cabinet.</b></div>
+ {% if mode=='expired' %}<span class="eyebrow">INVITATION</span><h2>This link has expired.</h2><p class="muted">An invitation can only be used once and is valid for seven days. Ask your administrator for a new link.</p><a class="button" href="{{ url_for('login') }}">Back to sign in</a>
+ {% else %}
+ <span class="eyebrow">{% if mode=='setup' %}FIRST TIME HERE{% elif mode=='invite' %}YOU'RE INVITED{% else %}WELCOME BACK{% endif %}</span>
+ <h2>{% if mode=='setup' %}Make it yours.{% elif mode=='invite' %}Join the cabinet.{% else %}A little something<br>to sip on.{% endif %}</h2>
+ <p class="muted">{% if mode=='setup' %}Create the first administrator. This setup is only available once.{% elif mode=='invite' %}Create your private account for {{ invite.email }}.{% else %}Your collection is private. Sign in to browse and share recipes.{% endif %}</p>
+ <form method="post" class="form-stack"><input type="hidden" name="_csrf" value="{{ csrf_token }}">
+ {% if mode=='login' %}<input type="hidden" name="next" value="{{ next or '' }}"><label>Email or username<input name="identity" autocomplete="username" required autofocus></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+ {% else %}<label>Your name<input name="username" autocomplete="username" maxlength="50" required autofocus></label>{% if mode=='setup' %}<label>Email<input name="email" type="email" autocomplete="email" required></label><label>Setup key <small>(from your Docker .env)</small><input name="setup_token" type="password" required></label>{% endif %}<label>Password <small>(12 characters minimum)</small><input name="password" type="password" autocomplete="new-password" minlength="12" required></label>{% endif %}
+ <button type="submit" class="button wide">{% if mode=='setup' %}Create administrator{% elif mode=='invite' %}Create my account{% else %}Sign in{% endif %}<span aria-hidden="true">↗</span></button>
+ </form>{% endif %}
+ <p class="auth-footnote">A private space for good recipes and good company.</p>
+ </div></section></div>
+{% endblock %}
