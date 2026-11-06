@@ -91,6 +91,7 @@ def test_pantry_matching_and_specificity(client):
 
 def test_one_time_invitation_and_member_permissions(client):
     admin_setup(client)
+    client.get('/admin')  # follow setup redirect to establish a fresh CSRF token
     response=client.post('/admin/invitations',data={'_csrf':csrf(client),'email':'guest@example.com'})
     assert response.status_code==200
     import re, html
