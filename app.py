@@ -21,16 +21,20 @@ from flask import (Flask, abort, flash, g, jsonify, redirect, render_template,
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.middleware.proxy_fix import ProxyFix
 from PIL import Image, UnidentifiedImageError
-from db import (DATA_DIR, get_db, close_db, ensure_db, ingredient_category_maps,
+from db import (DATA_DIR, get_db, close_db, ensure_db, connect, ingredient_category_maps,
                 recipe_card)
+from bootstrap import persistent_secret
 
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY', '')
+# If the operator has not explicitly configured a secret, generate one once
+# inside the persistent data volume. Never put a session secret in Compose.
+app.secret_key = os.getenv('SECRET_KEY') or persistent_secret(DATA_DIR / '.session-secret')
 if os.getenv('TESTING') != '1':
     if len(app.secret_key) < 32 or 'CHANGE_ME' in app.secret_key:
-        raise RuntimeError('Configure a random SECRET_KEY (at least 32 characters). See .env.example.')
-    if len(os.getenv('SETUP_TOKEN','')) < 24 or 'CHANGE_ME' in os.getenv('SETUP_TOKEN',''):
-        raise RuntimeError('Configure a separate random SETUP_TOKEN (at least 24 characters).')
+        raise RuntimeError('SECRET_KEY, when overridden, must be random and at least 32 characters.')
+    override = os.getenv('SETUP_TOKEN', '')
+    if override and (len(override) < 24 or 'CHANGE_ME' in override):
+        raise RuntimeError('SETUP_TOKEN, when overridden, must be random and at least 24 characters.')
 app.config.update(
     MAX_CONTENT_LENGTH=4*1024*1024,
     SESSION_COOKIE_HTTPONLY=True,
@@ -44,6 +48,35 @@ if os.getenv('TRUST_PROXY','false').lower()=='true':
     app.wsgi_app=ProxyFix(app.wsgi_app,x_for=1,x_proto=1,x_host=1)
 ensure_db()
 app.teardown_appcontext(close_db)
+
+
+def first_run_setup_key():
+    """Bootstrap key for the only initial administrator; never sent to browsers."""
+    override = os.getenv('SETUP_TOKEN', '').strip()
+    return override or persistent_secret(DATA_DIR / '.admin-setup-token')
+
+
+def announce_first_run():
+    # An unclaimed instance requires a strong randomly generated setup key.
+    # Only NAS/container administrators should have access to the container logs.
+    con = connect()
+    try:
+        if con.execute('SELECT 1 FROM users LIMIT 1').fetchone():
+            return
+    finally:
+        con.close()
+    if not os.getenv('SETUP_TOKEN', '').strip():
+        key = first_run_setup_key()
+        print('\n' + '=' * 68, flush=True)
+        print('COCKTAIL CABINET — FIRST-RUN ADMINISTRATION', flush=True)
+        print('Open https://YOUR-HOSTNAME/setup after configuring HTTPS.', flush=True)
+        print('One-time administrator setup key: ' + key, flush=True)
+        print('This key is required only to create the first administrator.', flush=True)
+        print('Do not share it. It becomes invalid after administrator setup.', flush=True)
+        print('=' * 68 + '\n', flush=True)
+
+
+announce_first_run()
 
 
 def now(): return datetime.now(timezone.utc)
@@ -112,7 +145,7 @@ def setup():
     con=get_db()
     if con.execute('SELECT 1 FROM users LIMIT 1').fetchone(): return redirect(url_for('index'))
     if request.method=='POST':
-        expected=os.getenv('SETUP_TOKEN','')
+        expected=first_run_setup_key()
         if not expected or not hmac.compare_digest(request.form.get('setup_token',''),expected):
             flash('The setup key is incorrect.','error')
         else:
@@ -127,6 +160,11 @@ def setup():
                     if con.execute('SELECT 1 FROM users LIMIT 1').fetchone(): abort(409)
                     uid=con.execute('INSERT INTO users(username,email,password_hash,role) VALUES(?,?,?,?)',
                         (username,email,generate_password_hash(password),'admin')).lastrowid
+                # The bootstrap token is no longer needed once the first
+                # administrator exists. The setup route is now closed forever
+                # while the persistent user database contains an account.
+                if not os.getenv('SETUP_TOKEN', '').strip():
+                    (DATA_DIR / '.admin-setup-token').unlink(missing_ok=True)
                 session.clear(); session['user_id']=uid; session.permanent=True
                 return redirect(url_for('index'))
             except (ValueError,sqlite3.IntegrityError) as exc: flash(str(exc),'error')

@@ -91,7 +91,7 @@ def test_pantry_matching_and_specificity(client):
 
 def test_one_time_invitation_and_member_permissions(client):
     admin_setup(client)
-    client.get('/admin')  # follow setup redirect to establish a fresh CSRF token
+    client.get('/admin')  # establish a fresh CSRF token after first login
     response=client.post('/admin/invitations',data={'_csrf':csrf(client),'email':'guest@example.com'})
     assert response.status_code==200
     import re, html
@@ -121,3 +121,24 @@ def test_new_recipe_categories_required_and_csrf(client):
     assert response.status_code==201,response.data
     assert client.get('/recipes/'+str(response.json['id'])).status_code==200
     con.close()
+
+
+def test_first_run_without_any_environment_secrets(client, monkeypatch, tmp_path):
+    # Simulates a Synology deployment using just compose.yaml.
+    monkeypatch.delenv('SETUP_TOKEN', raising=False)
+    key = module.first_run_setup_key()
+    key_path = tmp_path / '.admin-setup-token'
+    assert len(key) >= 48
+    assert key_path.read_text().strip() == key
+    assert module.first_run_setup_key() == key  # restart-safe
+    assert client.get('/setup').status_code == 200
+    bad = client.post('/setup', data={'_csrf': csrf(client), 'setup_token': 'wrong',
+                                     'username': 'owner', 'email': 'owner@example.com',
+                                     'password': 'very strong password'})
+    assert bad.status_code == 200
+    good = client.post('/setup', data={'_csrf': csrf(client), 'setup_token': key,
+                                      'username': 'owner', 'email': 'owner@example.com',
+                                      'password': 'very strong password'})
+    assert good.status_code == 302
+    assert not key_path.exists()  # no usable bootstrap key after first admin
+    assert client.get('/setup').status_code == 302
