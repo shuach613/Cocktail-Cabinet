@@ -7,17 +7,17 @@
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#F8F4EF",
+  "background_color": "#F8F4EE",
   "theme_color": "#742E43",
   "icons": [
     {
-      "src": "/static/app-icon.png?v=4",
+      "src": "/static/app-icon.png?v=5",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/static/app-icon-512.png?v=4",
+      "src": "/static/app-icon-512.png?v=5",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

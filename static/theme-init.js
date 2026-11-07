@@ -10,7 +10,9 @@
     const theme = value === 'dark' ? 'dark' : 'light';
     root.dataset.theme = theme;
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.content = theme === 'dark' ? '#191719' : '#F8F4EF';
+    if (meta) meta.content = theme === 'dark' ? '#181619' : '#F8F4EE';
+    const favicon = document.getElementById('cabinet-favicon');
+    if (favicon) favicon.href = '/static/' + (theme === 'dark' ? 'icon-dark.svg' : 'icon.svg') + '?v=5';
     document.querySelectorAll('[data-theme-toggle]').forEach(button => {
       button.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
       button.setAttribute('title', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');

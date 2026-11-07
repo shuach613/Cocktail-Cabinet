@@ -37,8 +37,8 @@ def test_navigation_icon_system_is_consistent():
 
 def test_color_system_and_styles_are_valid():
     css=(ROOT/'static/premium.css').read_text(encoding='utf-8')
-    assert '#742E43' in css and '#F8F4EF' in css
-    assert '#191719' in css and '#E9ACBC' in css
+    assert '#742E43' in css and '#F8F4EE' in css
+    assert '#181619' in css and '#E9B7C6' in css
     assert 'font-family:Lato' in css
     assert 'env(safe-area-inset-bottom)' in css
     assert 'prefers-reduced-motion' in css
@@ -55,13 +55,13 @@ def test_theme_metadata_and_pwa_cache_are_consistent():
     for path in ['premium.css','theme-init.js','icons.svg','app-icon.png','app-icon-512.png']:
         assert path in sw
     assert "url.pathname.startsWith('/static/')" in sw
-    assert 'cabinet-assets-v4' in sw
+    assert 'cabinet-assets-v5' in sw
     manifest=json.loads((ROOT/'static/manifest.webmanifest').read_text(encoding='utf-8'))
     assert manifest['display']=='standalone'
-    assert manifest['background_color']=='#F8F4EF'
+    assert manifest['background_color']=='#F8F4EE'
     assert manifest['theme_color']=='#742E43'
     for icon,size in [('app-icon.png',192),('app-icon-512.png',512)]:
         with Image.open(ROOT/'static'/icon) as im:
             assert im.size==(size,size)
     assert '#742E43' in (ROOT/'static/icon.svg').read_text()
-    assert '#32212B' in (ROOT/'static/icon-dark.svg').read_text()
+    assert '#2B2028' in (ROOT/'static/icon-dark.svg').read_text()

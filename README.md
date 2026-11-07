@@ -66,6 +66,14 @@ docker compose -f compose.yaml -f compose.local.yaml up -d --build
 For Python development outside Docker, set a writable local data path and HTTP-only flags for your own machine (shell variables, not a file). GitHub Actions automatically tests the code before publishing the image.
 
 
+## Bordeaux & Champagne design system
+
+The app uses **Lato** across desktop and mobile and offers coordinated light and dark palettes. Bordeaux is the identity color; **champagne is the visible complementary accent** for primary actions, selected navigation, category hierarchy, recipe badges, step counters, filter buttons, Settings icons, and ready-to-make indicators. Each theme uses contrast-adjusted champagne text and background tokens rather than reusing one gold shade everywhere. Success states deliberately avoid unrelated green styling.
+
+The shaker-and-coupe pictogram uses Bordeaux/charcoal with champagne metalwork in both SVG variants, including its PWA icon sizes. The favicon responds to the selected app theme; the service worker cache and icon URLs are versioned so updates replace older assets. On some mobile platforms an already-installed PWA may need to be removed and reinstalled to refresh its home-screen icon.
+
+No database migration or Compose update is required for this appearance-only change.
+
 ## Updating an existing installation
 
 The new image runs a **one-time, transactional database migration** on first start, using the same persistent `cabinet_data` volume. It updates unchanged English translations and unmodified seed images without overwriting custom recipe fields or user-uploaded photos. Ingredient IDs, category mappings, user accounts, saved shelves, invitations and user-created recipes remain intact. The migration is version-marked so container restarts do not reapply it.
