@@ -122,4 +122,4 @@ def test_logo_assets_and_pwa_cache_are_updated():
         assert icon.size==(192,192)
     with Image.open(ROOT/'static/app-icon-512.png') as icon:
         assert icon.size==(512,512)
-    assert 'cabinet-assets-v3' in (ROOT/'static/sw.js').read_text(encoding='utf-8')
+    assert 'cabinet-assets-v4' in (ROOT/'static/sw.js').read_text(encoding='utf-8')
