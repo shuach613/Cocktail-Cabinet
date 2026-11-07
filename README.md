@@ -7,12 +7,12 @@ A **private, PWA-first cocktail recipe app** with a spacious desktop interface. 
 - **Private by design:** login required to see recipes, the shelf, photos or the ingredient catalogue. No public signup.
 - **First-run setup without `.env`:** the container generates and persists private keys automatically. Retrieve the one-time setup key from the container logs, then create the first administrator in the browser. The setup page closes permanently once an account exists.
 - **Admin-controlled users:** create members with temporary passwords or generate **single-use, seven-day, email-bound invitations**. Invitee chooses their username/password. The link token is stored as a hash and becomes invalid after use or revocation. Optional SMTP email delivery; otherwise copy and send the link.
-- **Share recipes:** signed-in members can add recipes and edit their own; the admin can edit any recipe. Ingredient amounts, steps, glassware, method, notes and an optional photo.
-- **Multi-level ingredient classification:** an ingredient may have several tags (e.g. Elephant Orange & Cocoa Gin → Gin + London Dry Gin + Citrus Gin). Tags inherit broader ancestors. Users can add new categories beneath existing ones and classify new branded ingredients when adding a recipe. Existing classifications can be corrected from **Ingredients**.
-- **My shelf:** tick generic categories, specific subtypes and/or named bottles. Stored per account, shared across your devices. See fully available recipes first, then ones with missing essentials. Ice and marked optional garnishes do not block matching.
-- **22 initial recipes, 105 original ingredient lines:** imported from `Drinks_Brand_Names_Restored_Exact_Layout(1).xlsx` (quantities and spelling preserved, including one garnish with an unspecified amount). Preparation steps researched from linked references, with adaptation notes for personal drinks. The original workbook is not needed at runtime.
+- **Share recipes:** signed-in members can add recipes and add ingredients directly from the editor, including creating entirely new subcategories inside the Add Recipe flow. Recipe editing, photo replacement and deletion live under **Settings → Manage recipes** (members manage their own; admins can manage all).
+- **Multi-level classification:** a bottle can live under several categories (Elephant Orange & Cocoa Gin → Gin, London Dry Gin and Citrus Gin). Brands appear within their categories, not in a separate list. The recipe editor can create a new ingredient *and* a new nested category, saving both atomically with the recipe. Admins organize shared categories, rename or merge labels under **Settings → Ingredients & categories**.
+- **My shelf:** searchable nested families and named products, touch-friendly toggles and synced bottle choices across overlapping categories. Saved per account, with ready recipes, one-missing and several-missing groups. **Ice is always assumed available and never shown as a shelf choice.**
+- **22 initial recipes, 105 original ingredient lines:** imported from the original spreadsheet, preserving the measurements and personal variations while presenting names, ingredients, and instructions in idiomatic English. Research sources are kept for internal provenance but are **not displayed** on recipe pages. Bundled photorealistic drink images accompany the seeded recipes; users can upload their own photos.
 - **Search and filters:** by drink, ingredient, ingredient category, preparation method.
-- **Mobile PWA:** installable over HTTPS with bottom navigation, appropriate icon, standalone mode; static assets cached, **private content never stored by the service worker**. Desktop sidebar and roomy card/grid layout.
+- **Mobile PWA:** installable over HTTPS with Discover, My Shelf, Add Recipe, and Settings in the thumb-friendly bottom bar; separate roomy desktop sidebar. Public static code/assets may be cached, while **private recipes and photos require login and are never cached by the service worker**.
 - **Light/dark:** user switch, device default, persistent preference. Lato via Google Fonts with local system fallback.
 
 ## Synology deployment — one YAML file, no `.env`
@@ -65,6 +65,20 @@ docker compose -f compose.yaml -f compose.local.yaml up -d --build
 
 For Python development outside Docker, set a writable local data path and HTTP-only flags for your own machine (shell variables, not a file). GitHub Actions automatically tests the code before publishing the image.
 
+
+## Updating an existing installation
+
+The new image runs a **one-time, transactional database migration** on first start, using the same persistent `cabinet_data` volume. It updates unchanged English translations and unmodified seed images without overwriting custom recipe fields or user-uploaded photos. Ingredient IDs, category mappings, user accounts, saved shelves, invitations and user-created recipes remain intact. The migration is version-marked so container restarts do not reapply it.
+
+**Back up your named `cabinet_data` volume before upgrading.** Keep your current Compose YAML and project name; no new environment variables, `.env` file or administrator setup are necessary. The PR branch is not published as `:latest` until merged; review and merge it before updating Synology.
+
+### Adding a new ingredient and subcategory
+
+1. Tap **Add Recipe** and type the new ingredient, for example `Singleton`.
+2. Select existing classifications or tap **Create a new category** (for example `Single Malt Scotch Whisky`, with `Scotch Whisky` as its parent).
+3. Select the newly created category for that ingredient and save the recipe. The new category and ingredient are committed with the recipe; if validation fails, everything rolls back together.
+4. Admins can reorganize categories, rename ingredients and merge duplicate labels via **Settings → Ingredients & categories**. The category tree is used throughout My Shelf and recipe search.
+
 ## Taxonomy and matching semantics
 
 - Categories form a tree. Example: `Spirits → Gin → London Dry Gin` and `Spirits → Gin → Citrus Gin`.
@@ -77,7 +91,7 @@ For Python development outside Docker, set a writable local data path and HTTP-o
 
 ## Research provenance
 
-The `seed/recipes.json` file includes a `source_url` and explanatory `method_note` for **every one of the 22 recipes**. Research was used for the *preparation technique*, not to overwrite the original quantities. House variations without a verified exact recipe are clearly called adaptations, e.g. Gran Campericano and Amaretti. Gin & Tonic Salbei mentions sage in the name, but sage is absent from the source ingredients and is **not invented**. Hugo does not list ice in the original spreadsheet; the steps do not add it to the ingredient list.
+Original preparation references remain in the seed/DB for maintenance and auditability, but are never rendered to members in the recipe interface. The English display translation respects the intended drink, exact amounts, branded products, and personal variations. For instance, Sage Gin & Tonic retains its name without silently adding sage to ingredients because none was listed in the original workbook.
 
 ## Security and operations
 

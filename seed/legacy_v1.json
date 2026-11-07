@@ -1,0 +1,222 @@
+[
+  {
+    "name": "Negroni Schoggi",
+    "method_note": "A citrus-and-cocoa gin variation of the Negroni; method adapted from the classic.",
+    "steps": [
+      "Fill a mixing glass with ice.",
+      "Add the Elephant Orange & Cocoa gin, Campari and Carpano Antica Formula in the quantities listed.",
+      "Stir until thoroughly chilled, then strain into a rocks glass over fresh ice.",
+      "Express the orange twist over the glass and add it as garnish."
+    ]
+  },
+  {
+    "name": "Negroni normal",
+    "method_note": "Classic Negroni method; the spreadsheet specifies Tanqueray and Carpano.",
+    "steps": [
+      "Fill a mixing glass with ice.",
+      "Add Tanqueray London Dry Gin, Campari and Carpano Antica Formula.",
+      "Stir until cold, then strain over fresh ice in a rocks glass.",
+      "Express the orange twist over the drink and garnish."
+    ]
+  },
+  {
+    "name": "Americano",
+    "method_note": "The spreadsheet lists alternative sweet vermouth brands; use one, not all.",
+    "steps": [
+      "Fill a highball or rocks glass with plenty of ice.",
+      "Add Campari and one of the listed sweet red vermouth options.",
+      "Top with soda water to fill the glass.",
+      "Stir gently and finish with the orange twist."
+    ]
+  },
+  {
+    "name": "Bitter Giuseppe (Giusti)",
+    "method_note": "Adapted from the Bitter Giuseppe using the Giusti vermouth specified in the spreadsheet.",
+    "steps": [
+      "Express the lemon twist over a mixing glass.",
+      "Add Cynar, Giusti vermouth, lemon juice (no more than the listed amount) and orange bitters.",
+      "Add ice and stir until chilled.",
+      "Strain over fresh ice in a rocks glass, then garnish with the lemon twist."
+    ]
+  },
+  {
+    "name": "Gran Campericano",
+    "method_note": "House variation; build technique adapted from an Americano. No exact published recipe was located.",
+    "steps": [
+      "Fill a highball glass with ice.",
+      "Pour in the Gran Classico and Campari in the listed amounts.",
+      "Add the Indian tonic gently and briefly stir to combine without losing its fizz.",
+      "Express the orange twist over the drink and add it."
+    ]
+  },
+  {
+    "name": "Select Soda",
+    "method_note": "House variation; technique adapted from the Select Americano, omitting vermouth as in your spreadsheet.",
+    "steps": [
+      "Fill a highball glass with plenty of ice.",
+      "Add Select in the range listed (6–9 cl).",
+      "Fill the glass with chilled soda water and gently stir.",
+      "Finish with an orange twist."
+    ]
+  },
+  {
+    "name": "Amaretti",
+    "method_note": "House variation. A stirred amaretto-and-vermouth template was used; no exact published match verified.",
+    "steps": [
+      "Fill a mixing glass with ice.",
+      "Measure in Giusti vermouth, Disaronno and the specified drops of orange bitters.",
+      "Stir until well chilled.",
+      "Strain into a rocks glass over fresh ice."
+    ]
+  },
+  {
+    "name": "Limoncello Spritz normal",
+    "method_note": "Uses classic limoncello spritz technique, preserving your recipe’s ratios.",
+    "steps": [
+      "Fill a large wine glass with plenty of ice.",
+      "Add the limoncello, then gently pour in the chilled prosecco.",
+      "Top with soda water and give one gentle stir.",
+      "Express and add the lemon twist; serve immediately."
+    ]
+  },
+  {
+    "name": "Limoncello Spritz Jonas",
+    "method_note": "Jonas variant retains its different prosecco/limoncello/soda ratio.",
+    "steps": [
+      "Fill a large wine glass with plenty of ice.",
+      "Measure the limoncello according to the Jonas version.",
+      "Add the prosecco and soda water in the amounts shown and stir very gently.",
+      "Finish with a lemon twist and serve."
+    ]
+  },
+  {
+    "name": "Select Spritz",
+    "method_note": "The official Select Spritz preparation uses prosecco, Select and soda with an olive garnish.",
+    "steps": [
+      "Fill a large wine glass with plenty of ice.",
+      "Add chilled prosecco, Select and soda water in the listed amounts.",
+      "Stir briefly and gently to retain carbonation.",
+      "Garnish with the pickled olive."
+    ]
+  },
+  {
+    "name": "Apérol Spritz",
+    "method_note": "Classic spritz technique; the exact quantities are those in the spreadsheet.",
+    "steps": [
+      "Fill a large wine glass with ice.",
+      "Add chilled prosecco, Apérol and soda water.",
+      "Gently stir to combine without flattening the bubbles.",
+      "Express the orange twist over the drink and garnish."
+    ]
+  },
+  {
+    "name": "Gran Classico Spritz",
+    "method_note": "House variation using the standard spritz method; the bitter aperitif is Gran Classico.",
+    "steps": [
+      "Fill a large wine glass with plenty of ice.",
+      "Add prosecco, Tempus Fugit Gran Classico and soda water using the listed quantities.",
+      "Stir once or twice very gently.",
+      "Garnish with the orange twist and serve while sparkling."
+    ]
+  },
+  {
+    "name": "Gin & Tonic Pfeffer",
+    "method_note": "Gin and tonic technique; the pink-pepper tonic is the designated mixer.",
+    "steps": [
+      "Fill a highball or balloon glass with the listed amount of ice.",
+      "Pour in Hendrick’s gin.",
+      "Top gently with Schweppes Pink Pepper Tonic.",
+      "Give a short stir and add the cucumber slice(s)."
+    ]
+  },
+  {
+    "name": "Gin & Tonic Seventh Sense",
+    "method_note": "Gin and tonic technique with the exact branded pairing from the spreadsheet.",
+    "steps": [
+      "Fill a highball glass with the listed amount of ice.",
+      "Measure in Seventh Sense gin.",
+      "Slowly pour in Swiss Mountain Spring Provençale Tonic.",
+      "Stir gently once; no additional garnish is specified in the original recipe."
+    ]
+  },
+  {
+    "name": "Gin & Tonic Salbei",
+    "method_note": "The name mentions sage (Salbei), but sage is NOT listed among the original ingredients. None has been added.",
+    "steps": [
+      "Fill a highball glass with the listed amount of ice.",
+      "Add Engine gin and top with Tribute tonic.",
+      "Gently stir once to combine.",
+      "Serve as written; the source spreadsheet specifies no sage or other garnish."
+    ]
+  },
+  {
+    "name": "Basil Smash",
+    "method_note": "The muddle-and-shake technique follows published Gin Basil Smash recipes.",
+    "steps": [
+      "Place the basil leaves in a cocktail shaker and muddle gently to release their aroma.",
+      "Add Tanqueray gin, sugar syrup and lemon juice in the listed amounts.",
+      "Add ice and shake until thoroughly cold.",
+      "Double-strain into a rocks glass with fresh ice."
+    ]
+  },
+  {
+    "name": "Mojito",
+    "method_note": "Uses the classic muddled mint, lime and sugar approach with the original quantities.",
+    "steps": [
+      "Place the lime pieces, brown sugar and mint in a highball glass.",
+      "Muddle gently to extract lime juice and release the mint aroma.",
+      "Add white rum and plenty of ice.",
+      "Top with soda water to fill the glass and lift gently with a bar spoon."
+    ]
+  },
+  {
+    "name": "Pimm's",
+    "method_note": "Your Pimm’s uses ginger beer instead of the more usual ginger ale; retained as written.",
+    "steps": [
+      "Fill a large highball glass with ice.",
+      "Add Pimm’s, then the ginger beer in the listed amounts.",
+      "Add whatever prepared fruit pieces you have, as noted in the spreadsheet.",
+      "Stir gently and finish with the mint leaves."
+    ]
+  },
+  {
+    "name": "Kyiv Mule",
+    "method_note": "House mule variant with chili ginger beer and mint; technique follows a Moscow Mule.",
+    "steps": [
+      "Fill a mule mug or highball glass with the listed amount of ice.",
+      "Add vodka and freshly squeezed lime juice.",
+      "Slowly top with Schweppes Ginger Beer & Chili, stirring lightly.",
+      "Finish with the mint leaves."
+    ]
+  },
+  {
+    "name": "Dry Martini",
+    "method_note": "The spreadsheet includes a splash of lemon juice, unlike most classic dry martinis; retained as written.",
+    "steps": [
+      "Chill a martini or coupe glass.",
+      "Add gin, dry vermouth and the spreadsheet’s splash of lemon juice to a mixing glass with ice.",
+      "Stir until thoroughly chilled and strain into the cold glass.",
+      "Garnish with the green olive."
+    ]
+  },
+  {
+    "name": "Hugo",
+    "method_note": "Hugo method adapted from an elderflower spritz, with syrup instead of elderflower liqueur.",
+    "steps": [
+      "Gently press the mint leaves in a large wine glass with the elderflower syrup.",
+      "Add chilled prosecco and soda water in the listed quantities.",
+      "Stir briefly and gently; add the lime wedge.",
+      "Serve immediately. No ice was specified in the spreadsheet, so it is not added to the ingredient list."
+    ]
+  },
+  {
+    "name": "Whiskey Sour",
+    "method_note": "With optional egg white, use a dry shake before shaking with ice.",
+    "steps": [
+      "Measure whiskey, lemon juice, sugar syrup and (if using) egg white into a shaker.",
+      "If using egg white, shake vigorously without ice first to create foam.",
+      "Add ice and shake until chilled. If omitting egg white, shake once with ice.",
+      "Strain into a rocks glass with fresh ice."
+    ]
+  }
+]

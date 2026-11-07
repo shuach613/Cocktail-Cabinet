@@ -63,8 +63,8 @@ def test_pantry_matching_and_specificity(client):
     ids={r['name']:r['id'] for r in con.execute('SELECT * FROM categories')}
     ing={r['name']:r['id'] for r in con.execute('SELECT * FROM ingredients')}
     uid=con.execute("SELECT id FROM users WHERE username='owner'").fetchone()['id']
-    recipe=con.execute("SELECT * FROM recipes WHERE title='Negroni Schoggi'").fetchone()
-    normal=con.execute("SELECT * FROM recipes WHERE title='Negroni normal'").fetchone()
+    recipe=con.execute("SELECT * FROM recipes WHERE title='Chocolate Negroni'").fetchone()
+    normal=con.execute("SELECT * FROM recipes WHERE title='Classic Negroni'").fetchone()
     maps=db.ingredient_category_maps(con)
     with con:
         for cat in ('Gin','Italian red bitter','Sweet red vermouth'):
@@ -91,7 +91,7 @@ def test_pantry_matching_and_specificity(client):
 
 def test_one_time_invitation_and_member_permissions(client):
     admin_setup(client)
-    client.get('/admin')  # establish a fresh CSRF token after first login
+    client.get('/admin')
     response=client.post('/admin/invitations',data={'_csrf':csrf(client),'email':'guest@example.com'})
     assert response.status_code==200
     import re, html
@@ -110,7 +110,7 @@ def test_new_recipe_categories_required_and_csrf(client):
     payload={'title':'Weekend Gimlet','technique':'Shaken','glass':'Coupe','notes':'',
              'steps':['Shake with ice','Strain into a chilled coupe'],
              'items':[{'name':'Brand New Citrus Gin','quantity':'6 cl','categories':[],'is_brand':True,'kind':'ingredient'},
-                      {'name':'Zitronensaft','quantity':'2 cl','categories':[],'kind':'ingredient'}]}
+                      {'name':'Lemon juice','quantity':'2 cl','categories':[],'kind':'ingredient'}]}
     assert client.post('/recipes/new',json=payload).status_code==400
     assert client.post('/recipes/new',json=payload,headers={'X-CSRF-Token':csrf(client)}).status_code==400
     con=db.connect()
@@ -124,21 +124,19 @@ def test_new_recipe_categories_required_and_csrf(client):
 
 
 def test_first_run_without_any_environment_secrets(client, monkeypatch, tmp_path):
-    # Simulates a Synology deployment using just compose.yaml.
+    # Deployment from just Compose must generate a secure, persistent setup key.
     monkeypatch.delenv('SETUP_TOKEN', raising=False)
-    key = module.first_run_setup_key()
-    key_path = tmp_path / '.admin-setup-token'
-    assert len(key) >= 48
-    assert key_path.read_text().strip() == key
-    assert module.first_run_setup_key() == key  # restart-safe
-    assert client.get('/setup').status_code == 200
-    bad = client.post('/setup', data={'_csrf': csrf(client), 'setup_token': 'wrong',
-                                     'username': 'owner', 'email': 'owner@example.com',
-                                     'password': 'very strong password'})
-    assert bad.status_code == 200
-    good = client.post('/setup', data={'_csrf': csrf(client), 'setup_token': key,
-                                      'username': 'owner', 'email': 'owner@example.com',
-                                      'password': 'very strong password'})
-    assert good.status_code == 302
-    assert not key_path.exists()  # no usable bootstrap key after first admin
-    assert client.get('/setup').status_code == 302
+    key=module.first_run_setup_key()
+    path=tmp_path/'.admin-setup-token'
+    assert len(key)>=48
+    assert path.read_text().strip()==key
+    assert module.first_run_setup_key()==key
+    assert client.get('/setup').status_code==200
+    bad=client.post('/setup',data={'_csrf':csrf(client),'setup_token':'wrong',
+              'username':'owner','email':'owner@example.com','password':'very strong password'})
+    assert bad.status_code==200
+    good=client.post('/setup',data={'_csrf':csrf(client),'setup_token':key,
+              'username':'owner','email':'owner@example.com','password':'very strong password'})
+    assert good.status_code==302
+    assert not path.exists()
+    assert client.get('/setup').status_code==302

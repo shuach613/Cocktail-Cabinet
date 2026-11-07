@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from flask import g
 from catalog import TREE, CLASSIFICATIONS, GENERIC_LABELS
+from migrations import apply_english_photos_v2
 
 DATA_DIR = Path(os.getenv('DATA_DIR', '/data'))
 DB_PATH = DATA_DIR / 'cabinet.sqlite3'
@@ -80,6 +81,7 @@ def ensure_db():
         if not con.execute("SELECT 1 FROM settings WHERE key='seeded_v1'").fetchone():
             seed(con)
             con.execute("INSERT INTO settings(key,value) VALUES('seeded_v1','true')")
+        apply_english_photos_v2(con)
 
 def seed(con):
     def add_tree(tree,parent=None):
@@ -92,8 +94,8 @@ def seed(con):
     import_path=Path(__file__).parent/'seed'/'recipes.json'
     drinks=json.loads(import_path.read_text(encoding='utf-8'))
     for recipe in drinks:
-        cur=con.execute('INSERT INTO recipes(title,technique,glass,notes,steps_json,source_url,source_label) VALUES (?,?,?,?,?,?,?)',
-              (recipe['name'],recipe['technique'],recipe['glass'],recipe['method_note'],json.dumps(recipe['steps'],ensure_ascii=False),recipe['source_url'],recipe['source_label']))
+        cur=con.execute('INSERT INTO recipes(title,technique,glass,notes,steps_json,source_url,source_label,image_file) VALUES (?,?,?,?,?,?,?,?)',
+              (recipe['name'],recipe['technique'],recipe['glass'],recipe['method_note'],json.dumps(recipe['steps'],ensure_ascii=False),recipe['source_url'],recipe['source_label'],recipe.get('image_file','')))
         recipe_id=cur.lastrowid
         for ix,item in enumerate(recipe['ingredients']):
             name=item['name']

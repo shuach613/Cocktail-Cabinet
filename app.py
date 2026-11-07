@@ -26,15 +26,14 @@ from db import (DATA_DIR, get_db, close_db, ensure_db, connect, ingredient_categ
 from bootstrap import persistent_secret
 
 app = Flask(__name__)
-# If the operator has not explicitly configured a secret, generate one once
-# inside the persistent data volume. Never put a session secret in Compose.
+# Reuse the automatically generated signing key in the persistent Docker volume.
 app.secret_key = os.getenv('SECRET_KEY') or persistent_secret(DATA_DIR / '.session-secret')
 if os.getenv('TESTING') != '1':
     if len(app.secret_key) < 32 or 'CHANGE_ME' in app.secret_key:
-        raise RuntimeError('SECRET_KEY, when overridden, must be random and at least 32 characters.')
+        raise RuntimeError('SECRET_KEY, if overridden, must be random and at least 32 characters.')
     override = os.getenv('SETUP_TOKEN', '')
     if override and (len(override) < 24 or 'CHANGE_ME' in override):
-        raise RuntimeError('SETUP_TOKEN, when overridden, must be random and at least 24 characters.')
+        raise RuntimeError('SETUP_TOKEN, if overridden, must be random and at least 24 characters.')
 app.config.update(
     MAX_CONTENT_LENGTH=4*1024*1024,
     SESSION_COOKIE_HTTPONLY=True,
@@ -51,14 +50,11 @@ app.teardown_appcontext(close_db)
 
 
 def first_run_setup_key():
-    """Bootstrap key for the only initial administrator; never sent to browsers."""
     override = os.getenv('SETUP_TOKEN', '').strip()
     return override or persistent_secret(DATA_DIR / '.admin-setup-token')
 
 
 def announce_first_run():
-    # An unclaimed instance requires a strong randomly generated setup key.
-    # Only NAS/container administrators should have access to the container logs.
     con = connect()
     try:
         if con.execute('SELECT 1 FROM users LIMIT 1').fetchone():
@@ -78,7 +74,6 @@ def announce_first_run():
 
 announce_first_run()
 
-
 def now(): return datetime.now(timezone.utc)
 def iso(dt): return dt.isoformat(timespec='seconds')
 def token_hash(value): return hashlib.sha256(value.encode()).hexdigest()
@@ -86,6 +81,22 @@ def required_string(value, limit=180):
     s=str(value or '').strip()
     if not s or len(s)>limit: raise ValueError(f'A value is required (maximum {limit} characters).')
     return s
+
+
+def is_uploaded_media_filename(filename: str) -> bool:
+    return bool(filename and re.fullmatch(r'[a-f0-9]{32}\.webp', filename))
+
+def recipe_image_url(image_file: str | None):
+    if not image_file:
+        return None
+    if image_file.startswith('seed_photos/'):
+        filename = image_file.removeprefix('seed_photos/')
+        if re.fullmatch(r'[a-z0-9-]+\.webp', filename):
+            return url_for('recipe_art', filename=filename)
+        return None
+    if is_uploaded_media_filename(image_file):
+        return url_for('media', filename=image_file)
+    return None
 
 def logged_in(): return getattr(g,'user',None) is not None
 
@@ -135,7 +146,7 @@ def headers(resp):
     return resp
 
 @app.context_processor
-def ctx(): return {'csrf_token':session.get('_csrf'),'viewer':getattr(g,'user',None)}
+def ctx(): return {'csrf_token':session.get('_csrf'),'viewer':getattr(g,'user',None), 'recipe_image_url': recipe_image_url}
 
 @app.get('/health')
 def health(): return {'status':'ok'}
@@ -160,9 +171,6 @@ def setup():
                     if con.execute('SELECT 1 FROM users LIMIT 1').fetchone(): abort(409)
                     uid=con.execute('INSERT INTO users(username,email,password_hash,role) VALUES(?,?,?,?)',
                         (username,email,generate_password_hash(password),'admin')).lastrowid
-                # The bootstrap token is no longer needed once the first
-                # administrator exists. The setup route is now closed forever
-                # while the persistent user database contains an account.
                 if not os.getenv('SETUP_TOKEN', '').strip():
                     (DATA_DIR / '.admin-setup-token').unlink(missing_ok=True)
                 session.clear(); session['user_id']=uid; session.permanent=True
@@ -212,14 +220,52 @@ def pantry_ids(con,uid):
 
 def all_recipes(con): return con.execute('SELECT r.*,u.username AS author FROM recipes r LEFT JOIN users u ON u.id=r.created_by ORDER BY r.title COLLATE NOCASE').fetchall()
 
-def families(con):
+def families(con, include_products=False, hide_ice=False):
     cats=con.execute('SELECT * FROM categories ORDER BY name COLLATE NOCASE').fetchall()
-    by_id={r['id']:dict(r,children=[]) for r in cats}
+    by_id={r['id']:dict(r,children=[],products=[]) for r in cats}
     roots=[]
     for row in by_id.values():
         if row['parent_id'] is None: roots.append(row)
         else: by_id[row['parent_id']]['children'].append(row)
+    if include_products:
+        # The product is placed at each *explicit* classification, not at the
+        # end of the tree. A bottle with two leaf tags appears under both.
+        for product in con.execute('''SELECT i.id,i.name,ic.category_id FROM ingredients i
+                    JOIN ingredient_categories ic ON i.id=ic.ingredient_id
+                    WHERE i.is_brand=1 ORDER BY i.name COLLATE NOCASE'''):
+            branch=by_id.get(product['category_id'])
+            if branch:
+                branch['products'].append({'id':product['id'],'name':product['name']})
+    if hide_ice:
+        ice_ids={x['id'] for x in cats if x['name'].casefold()=='ice'}
+        def prune(nodes):
+            result=[]
+            for node in nodes:
+                if node['id'] in ice_ids: continue
+                node['children']=prune(node['children'])
+                if node['children'] or node['products'] or node['name']!='Other':result.append(node)
+            return result
+        roots=prune(roots)
     return roots
+
+
+@app.get('/settings')
+@login_required
+def settings():
+    return render_template('settings.html')
+
+@app.get('/settings/recipes')
+@login_required
+def manage_recipes():
+    con=get_db()
+    if g.user['role']=='admin':
+        recipes=con.execute('''SELECT r.*, u.username AS author FROM recipes r
+                LEFT JOIN users u ON u.id=r.created_by ORDER BY r.title COLLATE NOCASE''').fetchall()
+    else:
+        recipes=con.execute('''SELECT r.*, u.username AS author FROM recipes r
+                LEFT JOIN users u ON u.id=r.created_by
+                WHERE r.created_by=? ORDER BY r.title COLLATE NOCASE''',(g.user['id'],)).fetchall()
+    return render_template('manage_recipes.html',recipes=recipes)
 
 @app.get('/')
 @login_required
@@ -252,40 +298,89 @@ def editor_context(con,recipe=None):
         ingredients.append(dict(ing,category_ids=sorted(explicit.get(ing['id'],set()))))
     return {'categories':[dict(x) for x in cats], 'ingredient_catalog':ingredients,'editing':recipe}
 
-def validate_recipe(payload, con):
+def create_pending_categories(con, payload):
+    """Insert only recipe-scoped new categories in the caller's transaction.
+
+    UI category references are temporary "new:N" keys. Parenting is limited
+    to existing categories or previously declared new categories; no cycles or
+    arbitrary root categories can be created by recipe contributors.
+    """
+    definitions=payload.get('new_categories',[])
+    if not isinstance(definitions,list) or len(definitions)>12:
+        raise ValueError('You can add up to 12 new categories per recipe.')
+    id_map={}
+    seen=set()
+    for item in definitions:
+        if not isinstance(item,dict):raise ValueError('Invalid new category definition.')
+        key=item.get('temp_id')
+        if not isinstance(key,str) or not re.fullmatch(r'new:[1-9][0-9]*',key) or key in id_map:
+            raise ValueError('Invalid or repeated new category key.')
+        name=required_string(item.get('name'),65)
+        if name.casefold() in seen or con.execute('SELECT 1 FROM categories WHERE name=? COLLATE NOCASE',(name,)).fetchone():
+            raise ValueError(f'The category "{name}" already exists. Select it instead.')
+        seen.add(name.casefold())
+        parent=item.get('parent_id')
+        if isinstance(parent,str) and parent.startswith('new:'):
+            parent=id_map.get(parent)
+            if parent is None:raise ValueError('Create parent categories before their children.')
+        else:
+            try:parent=int(parent)
+            except (ValueError,TypeError):raise ValueError('Choose an existing parent for each new category.')
+        node=con.execute('SELECT id,name FROM categories WHERE id=?',(parent,)).fetchone()
+        if node is None:raise ValueError('Invalid parent category.')
+        if node['name'].casefold()=='ice':raise ValueError('Ice categories are not needed on the shelf.')
+        id_map[key]=con.execute('INSERT INTO categories(name,parent_id) VALUES(?,?)',(name,parent)).lastrowid
+    return id_map
+
+
+def validate_recipe(payload, con, category_refs=None):
+    category_refs=category_refs or {}
     title=required_string(payload.get('title'),120)
     technique=required_string(payload.get('technique','Built'),50)
     if technique not in ('Built','Stirred','Shaken','Blended','Layered','Other'): raise ValueError('Select a valid preparation method.')
     glass=str(payload.get('glass','')).strip()[:90]
     notes=str(payload.get('notes','')).strip()[:1200]
-    steps=[str(s).strip() for s in payload.get('steps',[]) if str(s).strip()]
+    raw_steps=payload.get('steps',[])
+    if not isinstance(raw_steps,list):raise ValueError('Preparation steps must be a list.')
+    steps=[str(s).strip() for s in raw_steps if str(s).strip()]
     if not (1<=len(steps)<=15) or any(len(s)>500 for s in steps):raise ValueError('Provide 1–15 preparation steps (up to 500 characters each).')
     items=payload.get('items',[])
-    if not isinstance(items,list) or not 1<=len(items)<=32: raise ValueError('Provide 1–32 ingredients.')
+    if not isinstance(items,list) or not 1<=len(items)<=32:raise ValueError('Provide 1–32 ingredients.')
     category_rows=con.execute('SELECT id,parent_id FROM categories').fetchall()
     valid_categories={r['id'] for r in category_rows}
     specific_categories={r['id'] for r in category_rows if r['parent_id'] is not None}
     normalized=[]
     for item in items:
+        if not isinstance(item,dict):raise ValueError('Invalid ingredient entry.')
         name=required_string(item.get('name'),130)
         qty=str(item.get('quantity') or '').strip()[:60]
         kind=item.get('kind','ingredient')
         if kind not in ('ingredient','garnish','ice'):raise ValueError('Invalid ingredient kind.')
         if kind=='ingredient' and not qty:raise ValueError(f'Enter an amount for essential ingredient "{name}".')
-        cat_ids=item.get('categories',[])
-        if not isinstance(cat_ids,list):raise ValueError('Ingredient categories must be a list.')
-        cat_ids=set(int(v) for v in cat_ids)
+        requested=item.get('categories',[])
+        if not isinstance(requested,list):raise ValueError('Ingredient categories must be a list.')
+        cat_ids=set()
+        for category in requested:
+            if isinstance(category,str) and category.startswith('new:'):
+                if category not in category_refs:raise ValueError(f'Unknown new category: {category}')
+                cat_ids.add(category_refs[category])
+            else:
+                try:cat_ids.add(int(category))
+                except (ValueError,TypeError):raise ValueError('Invalid ingredient category.')
         existing=con.execute('SELECT id FROM ingredients WHERE name=? COLLATE NOCASE',(name,)).fetchone()
         if not existing and (not cat_ids or not cat_ids<=valid_categories):
             raise ValueError(f'Classify new ingredient "{name}" with at least one valid category/subcategory.')
-        if not existing and bool(item.get('is_brand', True)) and not (cat_ids & specific_categories):
+        if not existing and bool(item.get('is_brand',True)) and not (cat_ids & specific_categories):
             raise ValueError(f'Give branded ingredient "{name}" a specific generic category, not only a top-level family.')
         normalized.append((name,qty,kind,bool(item.get('optional')),cat_ids,existing['id'] if existing else None,bool(item.get('is_brand',True))))
     return title,technique,glass,notes,steps,normalized
 
+
 def save_recipe(con,payload,recipe_id=None):
-    title,technique,glass,notes,steps,items=validate_recipe(payload,con)
+    if not isinstance(payload,dict):raise ValueError('Invalid recipe data.')
     with con:
+        categories=create_pending_categories(con,payload)
+        title,technique,glass,notes,steps,items=validate_recipe(payload,con,categories)
         if recipe_id:
             con.execute('UPDATE recipes SET title=?,technique=?,glass=?,notes=?,steps_json=?,updated_at=CURRENT_TIMESTAMP WHERE id=?',
                         (title,technique,glass,notes,json.dumps(steps,ensure_ascii=False),recipe_id))
@@ -329,7 +424,7 @@ def recipe_delete(recipe_id):
     if not r:abort(404)
     if r['created_by']!=g.user['id'] and g.user['role']!='admin':abort(403)
     with con:con.execute('DELETE FROM recipes WHERE id=?',(recipe_id,))
-    flash('Recipe deleted.','success');return redirect(url_for('index'))
+    flash('Recipe deleted.','success');return redirect(url_for('manage_recipes'))
 
 @app.post('/recipes/<int:recipe_id>/image')
 @login_required
@@ -347,18 +442,27 @@ def recipe_image(recipe_id):
         fname=uuid4().hex+'.webp'
         im.save(DATA_DIR/'uploads'/fname,format='WEBP',quality=85)
     except (UnidentifiedImageError,Image.DecompressionBombError,ValueError,OSError):
-        flash('Use a valid JPG, PNG or WebP image under 4 MB.','error')
-        return redirect(url_for('recipe_view',recipe_id=recipe_id))
+        message='Use a valid JPG, PNG or WebP image under 4 MB.'
+        if request.accept_mimetypes.best=='application/json': return jsonify({'error':message}),400
+        flash(message,'error')
+        return redirect(url_for('manage_recipes'))
     with con: con.execute('UPDATE recipes SET image_file=? WHERE id=?',(fname,recipe_id))
-    if r['image_file']:
+    if is_uploaded_media_filename(r['image_file']):
         try:(DATA_DIR/'uploads'/r['image_file']).unlink(missing_ok=True)
         except OSError: pass
-    return redirect(url_for('recipe_view',recipe_id=recipe_id))
+    if request.accept_mimetypes.best=='application/json': return jsonify({'ok':True})
+    return redirect(url_for('manage_recipes'))
+
+@app.get('/recipe-art/<filename>')
+@login_required
+def recipe_art(filename):
+    if not re.fullmatch(r'[a-z0-9-]+\.webp', filename): abort(404)
+    return send_from_directory(Path(__file__).parent / 'seed' / 'photos', filename)
 
 @app.get('/media/<filename>')
 @login_required
 def media(filename):
-    if not re.fullmatch(r'[a-f0-9]{32}\.webp',filename):abort(404)
+    if not is_uploaded_media_filename(filename):abort(404)
     return send_from_directory(DATA_DIR/'uploads',filename)
 
 @app.route('/pantry',methods=['GET','POST'])
@@ -372,7 +476,8 @@ def pantry():
         except ValueError:abort(400)
         existing_c={r['id'] for r in con.execute('SELECT id FROM categories')}
         existing_i={r['id'] for r in con.execute('SELECT id FROM ingredients')}
-        if not categories<=existing_c or not products<=existing_i:abort(400)
+        ice_category=con.execute("SELECT id FROM categories WHERE name='Ice'").fetchone()
+        if not categories<=existing_c or not products<=existing_i or (ice_category and ice_category['id'] in categories):abort(400)
         with con:
             con.execute('DELETE FROM pantry WHERE user_id=?',(g.user['id'],))
             con.executemany('INSERT INTO pantry(user_id,category_id) VALUES (?,?)',[(g.user['id'],cid) for cid in categories])
@@ -382,11 +487,20 @@ def pantry():
     pc,pi=pantry_ids(con,g.user['id']);maps=ingredient_category_maps(con)
     recipes=[recipe_card(con,r,pc,pi,maps) for r in all_recipes(con)]
     recipes.sort(key=lambda r:(len(r['missing']),r['title'].casefold()))
-    return render_template('pantry.html',families=families(con),products=[dict(r) for r in con.execute('SELECT * FROM ingredients WHERE is_brand=1 ORDER BY name COLLATE NOCASE')],
-                           selected_categories=pc,selected_products=pi,recipes=recipes,ready=sum(r['can_make'] for r in recipes))
+    return render_template('pantry.html',families=families(con,include_products=True,hide_ice=True),
+                           selected_categories=pc,selected_products=pi,recipes=recipes,
+                           ready_recipes=[r for r in recipes if r['can_make']],
+                           one_missing=[r for r in recipes if len(r['missing'])==1],
+                           more_missing=[r for r in recipes if len(r['missing'])>1],
+                           ready=sum(r['can_make'] for r in recipes))
 
-@app.route('/ingredients',methods=['GET','POST'])
+@app.get('/ingredients')
 @login_required
+def old_ingredients():
+    return redirect(url_for('ingredients'))
+
+@app.route('/settings/ingredients',methods=['GET','POST'])
+@admin_required
 def ingredients():
     con=get_db()
     if request.method=='POST':
@@ -404,10 +518,10 @@ def ingredients():
         flash('Ingredient classifications updated.','success')
         return redirect(url_for('ingredients',edit=ing_id))
     cats,mapping,explicit,anc=ingredient_category_maps(con)
-    return render_template('ingredients.html',categories=cats,ingredients=[dict(x,category_ids=explicit.get(x['id'],set())) for x in con.execute('SELECT * FROM ingredients ORDER BY name COLLATE NOCASE')],edit=request.args.get('edit',type=int))
+    return render_template('ingredients.html',categories=cats,tree=families(con,include_products=True),ingredients=[dict(x,category_ids=explicit.get(x['id'],set())) for x in con.execute('SELECT * FROM ingredients ORDER BY name COLLATE NOCASE')],edit=request.args.get('edit',type=int))
 
 @app.post('/categories/new')
-@login_required
+@admin_required
 def category_new():
     con=get_db()
     try:
@@ -418,6 +532,62 @@ def category_new():
         flash('Category added.','success')
     except (ValueError,sqlite3.IntegrityError) as e:flash(str(e),'error')
     return redirect(url_for('ingredients'))
+
+@app.post('/settings/categories/<int:category_id>/update')
+@admin_required
+def category_update(category_id):
+    con=get_db()
+    row=con.execute('SELECT * FROM categories WHERE id=?',(category_id,)).fetchone()
+    if row is None: abort(404)
+    try:
+        name=required_string(request.form.get('name'),65)
+        parent=int(request.form.get('parent_id') or 0) or None
+        if parent == category_id: raise ValueError('A category cannot be its own parent.')
+        if parent:
+            ancestor=parent
+            while ancestor is not None:
+                if ancestor==category_id:raise ValueError('Cannot move a category into one of its descendants.')
+                info=con.execute('SELECT parent_id FROM categories WHERE id=?',(ancestor,)).fetchone()
+                if info is None:raise ValueError('Invalid parent category.')
+                ancestor=info['parent_id']
+        with con:
+            con.execute('UPDATE categories SET name=?,parent_id=? WHERE id=?',(name,parent,category_id))
+        flash('Category updated.','success')
+    except (ValueError,sqlite3.IntegrityError) as exc:
+        flash(str(exc),'error')
+    return redirect(url_for('ingredients'))
+
+@app.post('/settings/ingredients/<int:ingredient_id>/rename')
+@admin_required
+def ingredient_rename(ingredient_id):
+    con=get_db()
+    if not con.execute('SELECT 1 FROM ingredients WHERE id=?',(ingredient_id,)).fetchone():abort(404)
+    try:
+        name=required_string(request.form.get('name'),130)
+        with con: con.execute('UPDATE ingredients SET name=? WHERE id=?',(name,ingredient_id))
+        flash('Ingredient renamed.','success')
+    except (ValueError,sqlite3.IntegrityError) as exc:flash(str(exc),'error')
+    return redirect(url_for('ingredients',edit=ingredient_id))
+
+@app.post('/settings/ingredients/<int:ingredient_id>/merge')
+@admin_required
+def ingredient_merge(ingredient_id):
+    con=get_db()
+    try: target=int(request.form.get('target_id') or 0)
+    except ValueError:target=0
+    if ingredient_id==target:abort(400,'Choose a different target ingredient.')
+    with con:
+        source=con.execute('SELECT * FROM ingredients WHERE id=?',(ingredient_id,)).fetchone()
+        dest=con.execute('SELECT * FROM ingredients WHERE id=?',(target,)).fetchone()
+        if not source or not dest:abort(404)
+        con.execute('UPDATE recipe_items SET ingredient_id=? WHERE ingredient_id=?',(target,ingredient_id))
+        con.execute('''INSERT OR IGNORE INTO pantry(user_id,ingredient_id)
+                       SELECT user_id,? FROM pantry WHERE ingredient_id=?''',(target,ingredient_id))
+        con.execute('''INSERT OR IGNORE INTO ingredient_categories(ingredient_id,category_id)
+                       SELECT ?, category_id FROM ingredient_categories WHERE ingredient_id=?''',(target,ingredient_id))
+        con.execute('DELETE FROM ingredients WHERE id=?',(ingredient_id,))
+    flash('Ingredient merged. Recipes and shelf selections now use the retained ingredient.','success')
+    return redirect(url_for('ingredients',edit=target))
 
 @app.get('/admin')
 @admin_required

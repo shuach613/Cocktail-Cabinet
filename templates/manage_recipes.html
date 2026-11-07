@@ -1,0 +1,19 @@
+{% extends 'base.html' %}{% block title %}Manage recipes{% endblock %}{% block content %}
+<a class="back-link" href="{{ url_for('settings') }}">← Settings</a>
+<div class="page-heading"><span class="eyebrow">KEEP THE COLLECTION LOOKING GOOD</span><h1>Manage <em>recipes.</em></h1><p class="intro">Edit details, replace a photo, or remove a recipe. The cocktail pages themselves stay distraction-free.</p></div>
+<div class="management-toolbar"><span>{{ recipes|length }} recipes {{ 'in the collection' if viewer.role=='admin' else 'added by you' }}</span><a class="button small" href="{{ url_for('recipe_new') }}">＋ Add recipe</a></div>
+<div class="management-list">
+{% for recipe in recipes %}
+<article class="management-item">
+ <div class="management-photo">{% set photo=recipe_image_url(recipe.image_file) %}{% if photo %}<img src="{{ photo }}" alt="" loading="lazy">{% endif %}</div>
+ <div class="management-details"><strong>{{ recipe.title }}</strong><small>{{ recipe.technique }} · {{ recipe.glass or 'Cocktail' }}</small></div>
+ <div class="management-actions"><a class="button secondary small" href="{{ url_for('recipe_edit',recipe_id=recipe.id) }}">Edit</a>
+  <details class="management-photo-upload"><summary>Photo</summary>
+   <form method="post" enctype="multipart/form-data" action="{{ url_for('recipe_image',recipe_id=recipe.id) }}"><input name="_csrf" type="hidden" value="{{ csrf_token }}"><input name="image" type="file" accept="image/png,image/jpeg,image/webp" required aria-label="Select recipe photograph"><button class="button small" type="submit">Upload</button></form>
+  </details>
+  <form method="post" action="{{ url_for('recipe_delete',recipe_id=recipe.id) }}" data-confirm="Delete this recipe permanently?" ><input type="hidden" name="_csrf" value="{{ csrf_token }}"><button type="submit" class="text-button danger">Delete</button></form>
+ </div>
+</article>
+{% else %}<div class="empty-state"><h3>No recipes yet.</h3><p>Recipes you add will appear here.</p><a class="button" href="{{ url_for('recipe_new') }}">Add your first recipe</a></div>{% endfor %}
+</div>
+{% endblock %}

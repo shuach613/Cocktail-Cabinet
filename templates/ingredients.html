@@ -1,6 +1,40 @@
-{% extends 'base.html' %}{% block title %}Ingredients{% endblock %}{% block content %}
-<div class="page-heading"><span class="eyebrow">THE SECRET TO A SMART SHELF</span><h1>A place for <em>every bottle.</em></h1><p class="intro">Every named product belongs to a generic family, and can also have more specific classifications. Update the labels here when you want to refine the matching.</p></div>
-<div class="ingredients-layout"><section class="editor-panel"><div class="panel-heading"><span class="section-kicker">INGREDIENT CATALOGUE</span><h2>Classify your ingredients</h2></div><div class="catalog-search"><input id="catalog-search" placeholder="Search products or ingredients…" aria-label="Search ingredient catalog"></div>
-<div class="catalog-items">{% for item in ingredients %}<details class="catalog-item" data-search="{{ item.name|lower }}" {% if edit==item.id %}open{% endif %}><summary><span><strong>{{ item.name }}</strong><small>{{ 'Brand / specific ingredient' if item.is_brand else 'Generic ingredient' }}</small></span><span class="chevron">⌄</span></summary><form method="post" class="catalog-edit"><input type="hidden" name="_csrf" value="{{ csrf_token }}"><input type="hidden" name="ingredient_id" value="{{ item.id }}"><p class="subtle">Choose one or more categories, including any helpful subcategories.</p><div class="catalog-options">{% for cat in categories %}<label><input type="checkbox" name="category" value="{{ cat.id }}" {% if cat.id in item.category_ids %}checked{% endif %} {% if viewer.role!='admin' and item.added_by!=viewer.id %}disabled{% endif %}>{{ cat.name }}</label>{% endfor %}</div>{% if viewer.role=='admin' or item.added_by==viewer.id %}<button class="button small">Save classification</button>{% endif %}</form></details>{% endfor %}</div></section>
-<section class="editor-panel category-panel"><span class="section-kicker">EXPAND YOUR TAXONOMY</span><h2>Add a category</h2><p class="subtle">For a new style such as “Citrus Gin”, pick “Gin” as its parent. That way it always matches broader gin searches too.</p><form method="post" class="form-stack"><input type="hidden" name="_csrf" value="{{ csrf_token }}"><label>New category name<input name="name" maxlength="65" placeholder="e.g. Citrus Gin" required></label><label>Under which family?<select name="parent_id"><option value="">Create a top-level family</option>{% for cat in categories %}<option value="{{ cat.id }}">{{ cat.name }}</option>{% endfor %}</select></label><button class="button wide">Add category</button></form></section></div>
+{% extends 'base.html' %}{% block title %}Ingredients & categories{% endblock %}{% block content %}
+{% macro tree_item(node) %}
+<details class="taxonomy-node">
+ <summary>{{ node.name }} <small>{{ node.products|length }} products here · {{ node.children|length }} subcategories</small></summary>
+ <div class="taxonomy-content">
+  <form method="post" action="{{ url_for('category_update',category_id=node.id) }}" class="category-edit-form">
+    <input name="_csrf" type="hidden" value="{{ csrf_token }}"><label>Category name<input name="name" required maxlength="65" value="{{ node.name }}"></label>
+    <label>Parent category<select name="parent_id"><option value="">Top-level category</option>{% for c in categories %}<option value="{{ c.id }}" {% if node.parent_id==c.id %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></label><button type="submit" class="button secondary small">Save category</button>
+  </form>
+  {% if node.products %}<div class="category-brand-list">{% for product in node.products %}<a href="{{ url_for('ingredients',edit=product.id,tab='products') }}">{{ product.name }} <span aria-hidden="true">↗</span></a>{% endfor %}</div>{% endif %}
+  {% for child in node.children %}{{ tree_item(child) }}{% endfor %}
+ </div>
+</details>
+{% endmacro %}
+<a class="back-link" href="{{ url_for('settings') }}">← Settings</a>
+<div class="page-heading"><span class="eyebrow">ONE CLEAR HOME FOR EVERY INGREDIENT</span><h1>Ingredients <em>& categories.</em></h1><p class="intro">Organize your category tree, classify a branded product, or merge duplicate ingredients. Changes automatically update matching across the app.</p></div>
+<div class="settings-tabs" role="tablist" aria-label="Ingredient management">
+ <button type="button" class="settings-tab" data-settings-tab="categories" aria-selected="true">Categories</button>
+ <button type="button" class="settings-tab" data-settings-tab="products" aria-selected="false">Ingredients & bottles</button>
+</div>
+<section data-settings-panel="categories">
+ <div class="ingredients-layout">
+ <div class="editor-panel"><div class="panel-heading"><span class="section-kicker">THE INGREDIENT TREE</span><h2>Your categories</h2><p class="subtle">Expand a family to see subcategories and bottles. Products can appear under more than one category.</p></div>
+ <div class="taxonomy-tree">{% for family in tree %}{{ tree_item(family) }}{% endfor %}</div></div>
+ <aside class="editor-panel category-panel"><span class="section-kicker">EXPAND THE CATALOGUE</span><h2>Add a category</h2><p class="subtle">For example, add “Citrus Gin” under Gin. Categories can also be added while creating a recipe.</p>
+ <form method="post" action="{{ url_for('category_new') }}" class="form-stack"><input name="_csrf" type="hidden" value="{{ csrf_token }}"><label>Category name<input name="name" required maxlength="65" placeholder="e.g. Citrus Gin"></label><label>Parent category<select name="parent_id"><option value="">Top-level family</option>{% for c in categories %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}</select></label><button type="submit" class="button wide">Add category</button></form></aside>
+ </div>
+</section>
+<section data-settings-panel="products" hidden>
+ <div class="editor-panel"><div class="panel-heading"><span class="section-kicker">THE SHARED INGREDIENT DIRECTORY</span><h2>Brands & ingredients</h2><p class="subtle">Search for a product to rename it, change its classifications, or safely merge duplicate labels. Existing recipes will follow the change.</p></div>
+ <label class="search-wrap catalog-search"><span aria-hidden="true">⌕</span><input type="search" id="catalog-search" placeholder="Search ingredients or bottles…" aria-label="Search catalogue"></label>
+ <div class="catalog-items">{% for item in ingredients %}<details class="catalog-item" data-search="{{ item.name|lower }}" {% if edit==item.id %}open{% endif %}><summary><span><strong>{{ item.name }}</strong><small>{{ 'Named product' if item.is_brand else 'Generic ingredient' }}</small></span><span class="chevron">⌄</span></summary>
+ <div class="catalog-edit">
+   <form method="post" action="{{ url_for('ingredient_rename',ingredient_id=item.id) }}" class="ingredient-small-form"><input type="hidden" name="_csrf" value="{{ csrf_token }}"><label>Display name<input name="name" value="{{ item.name }}" maxlength="130" required></label><button class="button secondary small" type="submit">Rename</button></form>
+   <form method="post" action="{{ url_for('ingredients') }}"><input type="hidden" name="_csrf" value="{{ csrf_token }}"><input type="hidden" name="ingredient_id" value="{{ item.id }}"><p class="subtle">Generic family and applicable subcategories</p><div class="catalog-options">{% for cat in categories %}<label><input type="checkbox" name="category" value="{{ cat.id }}" {% if cat.id in item.category_ids %}checked{% endif %}>{{ cat.name }}</label>{% endfor %}</div><button class="button secondary small" type="submit">Save classifications</button></form>
+   <form method="post" action="{{ url_for('ingredient_merge',ingredient_id=item.id) }}" class="ingredient-small-form" data-confirm="Merge this ingredient into the selected one? This cannot be undone, and all recipes will use the destination ingredient."><input type="hidden" name="_csrf" value="{{ csrf_token }}"><label>Merge into another ingredient<select name="target_id" required><option value="">Choose destination…</option>{% for target in ingredients %}{% if target.id != item.id %}<option value="{{ target.id }}">{{ target.name }}</option>{% endif %}{% endfor %}</select></label><button class="text-button danger" type="submit">Merge duplicate</button></form>
+ </div></details>{% endfor %}</div>
+ </div>
+</section>
 {% endblock %}

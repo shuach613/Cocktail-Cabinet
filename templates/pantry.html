@@ -1,9 +1,50 @@
 {% extends 'base.html' %}{% block title %}My shelf{% endblock %}{% block content %}
-<div class="page-heading"><span class="eyebrow">A LITTLE INVENTORY, A LOT OF POSSIBILITIES</span><h1>Your shelf. <em>Your options.</em></h1><p class="intro">Choose the ingredient families or exact bottles you own. Broad categories match compatible branded ingredients, while subcategories stay precise.</p></div>
-<div class="pantry-layout"><section class="pantry-controls"><form method="post" id="pantry-form"><input type="hidden" name="_csrf" value="{{ csrf_token }}"><div class="shelf-header"><div><h2>What's in your cabinet?</h2><p class="subtle">Saved privately to your account.</p></div><button class="button small">Save shelf</button></div>
-<div class="shelf-search"><input id="pantry-search" placeholder="Find a category or bottle…" aria-label="Search ingredients"></div>
-<div class="family-list">{% for family in families %}<details class="family" {% if loop.index<=3 %}open{% endif %}><summary><span>{{ family.name }}</span><span class="chevron">⌄</span></summary><div class="family-contents">{% set ns=namespace(n=0) %}{% for c in family.children %}<label class="shelf-option" data-search="{{ (c.name ~ ' ' ~ family.name)|lower }}"><input type="checkbox" name="category" value="{{ c.id }}" {% if c.id in selected_categories %}checked{% endif %}><span>{{ c.name }}</span></label>{% for sub in c.children %}<label class="shelf-option sub" data-search="{{ (sub.name ~ ' ' ~ c.name)|lower }}"><input type="checkbox" name="category" value="{{ sub.id }}" {% if sub.id in selected_categories %}checked{% endif %}><span>{{ sub.name }}</span></label>{% for sub2 in sub.children %}<label class="shelf-option sub deep" data-search="{{ (sub2.name ~ ' ' ~ c.name)|lower }}"><input type="checkbox" name="category" value="{{ sub2.id }}" {% if sub2.id in selected_categories %}checked{% endif %}><span>{{ sub2.name }}</span></label>{% endfor %}{% endfor %}{% endfor %}</div></details>{% endfor %}</div>
-<details class="family products-family"><summary><span>Specific bottles & brands</span><span class="chevron">⌄</span></summary><div class="family-contents">{% for item in products %}<label class="shelf-option" data-search="{{ item.name|lower }}"><input type="checkbox" name="ingredient" value="{{ item.id }}" {% if item.id in selected_products %}checked{% endif %}><span>{{ item.name }}</span></label>{% endfor %}</div></details><button class="button wide save-bottom">Save and find cocktails ↗</button></form></section>
-<section class="pantry-results"><div class="pantry-results-heading"><span class="eyebrow">YOUR MATCHES</span><h2>{{ ready }} ready to make <span class="count-badge">{{ recipes|length }} total</span></h2><p class="subtle">Recipes with no essential ingredients missing are listed first. Ice and optional garnishes don't count.</p></div>
-{% for r in recipes %}<a class="pantry-match" href="{{ url_for('recipe_view',recipe_id=r.id) }}"><span class="match-icon {% if r.can_make %}ready{% endif %}">{{ '✓' if r.can_make else '＋' }}</span><span class="match-body"><strong>{{ r.title }}</strong><small>{% if r.can_make %}Everything you need{% else %}Missing: {{ r.missing[:3]|map(attribute='name')|join(', ') }}{% if r.missing|length>3 %} +{{ r.missing|length-3 }} more{% endif %}{% endif %}</small></span><span class="match-count">{{ r.match_count }}/{{ r.required_count }}</span></a>{% endfor %}</section></div>
+{% macro shelf_branch(node,depth=0,is_open=false) %}
+<details class="shelf-branch" data-branch-name="{{ node.name|lower }}" {% if is_open %}open{% endif %}>
+  <summary class="shelf-branch-title">
+    <span>{{ node.name }}</span>
+    <span class="shelf-branch-meta">{{ node.products|length if node.products else '' }} <span aria-hidden="true">⌄</span></span>
+  </summary>
+  <div class="shelf-branch-content">
+    {% if depth>0 %}<label class="shelf-option shelf-generic" data-search="{{ node.name|lower }}">
+      <input type="checkbox" name="category" value="{{ node.id }}" {% if node.id in selected_categories %}checked{% endif %}>
+      <span><strong>Any {{ node.name }}</strong><small>Use this if you have something in this category</small></span>
+    </label>{% endif %}
+    {% for product in node.products %}
+    <label class="shelf-option shelf-product" data-search="{{ (product.name ~ ' ' ~ node.name)|lower }}">
+      <input type="checkbox" name="ingredient" value="{{ product.id }}" {% if product.id in selected_products %}checked{% endif %}>
+      <span>{{ product.name }}</span>
+    </label>
+    {% endfor %}
+    {% for child in node.children %}{{ shelf_branch(child,depth+1) }}{% endfor %}
+  </div>
+</details>
+{% endmacro %}
+<div class="page-heading"><span class="eyebrow">MAKE WHAT YOU ALREADY HAVE</span><h1>What's on <em>your shelf?</em></h1><p class="intro">Pick a spirit, a style, or a specific bottle. We'll find the recipes that fit your collection.</p></div>
+<div class="pantry-layout">
+ <section class="pantry-controls">
+  <form method="post" id="pantry-form">
+   <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+   <div class="shelf-header"><div><h2>My ingredients</h2><p class="subtle">Your selection is saved to your account.</p></div><span class="shelf-count" id="shelf-selected-count">0 selected</span></div>
+   <label class="search-wrap shelf-search"><span aria-hidden="true">⌕</span><input type="search" id="pantry-search" placeholder="Search ingredients or brands…" aria-label="Search ingredients and brands"></label>
+   <div class="family-list">{% for family in families %}{{ shelf_branch(family,0,loop.first) }}{% endfor %}</div>
+   <p class="shelf-ice-note"><span aria-hidden="true">✧</span> Ice is always assumed available — you don't have to add it.</p>
+   <button class="button wide save-bottom" type="submit">Save shelf & see matches <span aria-hidden="true">↗</span></button>
+  </form>
+ </section>
+ <section class="pantry-results" id="shelf-results">
+  <div class="pantry-results-heading"><span class="eyebrow">BASED ON YOUR SHELF</span><h2>{{ ready }} ready to make</h2><p class="subtle">Missing garnishes and ice won't stop a match. Update the shelf to refresh your results.</p></div>
+  {% for heading,subheading,group in [('Ready to make','Everything you need', ready_recipes),('Missing one ingredient','Just one thing away',one_missing),('Missing more ingredients','A little further away',more_missing)] %}
+   {% if group %}
+   <div class="match-group"><div class="match-group-heading"><h3>{{ heading }}</h3><small>{{ group|length }}</small></div>
+    {% for r in group %}<a class="pantry-match" href="{{ url_for('recipe_view',recipe_id=r.id) }}">
+      <span class="match-icon {% if r.can_make %}ready{% endif %}" aria-hidden="true">{{ '✓' if r.can_make else '+' }}</span>
+      <span class="match-body"><strong>{{ r.title }}</strong><small>{% if r.can_make %}{{ subheading }}{% else %}Need: {{ r.missing[:3]|map(attribute='name')|join(', ') }}{% if r.missing|length>3 %} +{{ r.missing|length-3 }} more{% endif %}{% endif %}</small></span>
+      <span class="match-count">{{ r.match_count }}/{{ r.required_count }}</span>
+    </a>{% endfor %}
+   </div>
+   {% endif %}
+  {% endfor %}
+ </section>
+</div>
 {% endblock %}
