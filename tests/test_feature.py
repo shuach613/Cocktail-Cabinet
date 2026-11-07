@@ -45,6 +45,7 @@ def test_pantry_groups_products_and_excludes_ice(client):
 
 def test_inline_new_category_and_recipe_are_atomic(client):
     admin_setup(client)
+    client.get('/recipes/new')  # establish fresh CSRF token after admin setup
     con=db.connect()
     parent=con.execute("SELECT id FROM categories WHERE name='Scotch Whisky'").fetchone()['id']
     con.close()
