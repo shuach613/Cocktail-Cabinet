@@ -1,9 +1,11 @@
 (()=>{
 'use strict';
 const root=document.documentElement;
-function setTheme(theme){root.dataset.theme=theme;localStorage.setItem('cabinet-theme',theme);document.querySelectorAll('[data-theme-icon]').forEach(el=>el.textContent=theme==='dark'?'☀':'☾');}
-const saved=localStorage.getItem('cabinet-theme');setTheme(saved||((window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'));
-document.querySelectorAll('[data-theme-toggle]').forEach(b=>b.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark')));
+document.querySelectorAll('[data-theme-toggle]').forEach(button=>button.addEventListener('click',()=>{
+ const next=root.dataset.theme==='dark'?'light':'dark';
+ window.CabinetTheme?.select(next);
+}));
+window.CabinetTheme?.refresh();
 document.querySelectorAll('[data-confirm]').forEach(f=>f.addEventListener('submit',e=>{if(!confirm(f.dataset.confirm))e.preventDefault();}));
 document.querySelectorAll('[data-copy-input]').forEach(b=>b.addEventListener('click',async()=>{const e=document.getElementById(b.dataset.copyInput);if(!e)return;try{await navigator.clipboard.writeText(e.value);b.textContent='Copied ✓';}catch(_){e.select();document.execCommand('copy');b.textContent='Copied ✓';}}));
 

@@ -1,12 +1,13 @@
+{% from '_icons.html' import icon %}
 {% extends 'base.html' %}{% block title %}Settings{% endblock %}{% block content %}
 <div class="page-heading"><span class="eyebrow">THE DETAILS, SIMPLIFIED</span><h1>Settings <em>& management.</em></h1><p class="intro">Manage the collection, your account and how the app looks.</p></div>
 <div class="settings-grid">
- <a class="settings-link" href="{{ url_for('account') }}"><span class="settings-icon">◉</span><span><strong>My account</strong><small>Password and profile</small></span><span class="settings-arrow">↗</span></a>
- <a class="settings-link" href="{{ url_for('manage_recipes') }}"><span class="settings-icon">▤</span><span><strong>Manage recipes</strong><small>{{ 'Edit any recipe, update photos or remove entries' if viewer.role=='admin' else 'Edit or remove your own recipes' }}</small></span><span class="settings-arrow">↗</span></a>
+ <a class="settings-link" href="{{ url_for('account') }}"><span class="settings-icon">{{ icon('user') }}</span><span><strong>My account</strong><small>Password and profile</small></span><span class="settings-arrow">{{ icon('chevron-right') }}</span></a>
+ <a class="settings-link" href="{{ url_for('manage_recipes') }}"><span class="settings-icon">{{ icon('book-open') }}</span><span><strong>Manage recipes</strong><small>{{ 'Edit any recipe, update photos or remove entries' if viewer.role=='admin' else 'Edit or remove your own recipes' }}</small></span><span class="settings-arrow">{{ icon('chevron-right') }}</span></a>
  {% if viewer.role=='admin' %}
- <a class="settings-link" href="{{ url_for('ingredients') }}"><span class="settings-icon">◇</span><span><strong>Ingredients & categories</strong><small>Organize bottles, classification and the category tree</small></span><span class="settings-arrow">↗</span></a>
- <a class="settings-link" href="{{ url_for('admin') }}"><span class="settings-icon">♧</span><span><strong>Users & invitations</strong><small>Manage members and single-use invitations</small></span><span class="settings-arrow">↗</span></a>
+ <a class="settings-link" href="{{ url_for('ingredients') }}"><span class="settings-icon">{{ icon('list-tree') }}</span><span><strong>Ingredients & categories</strong><small>Organize bottles, classification and the category tree</small></span><span class="settings-arrow">{{ icon('chevron-right') }}</span></a>
+ <a class="settings-link" href="{{ url_for('admin') }}"><span class="settings-icon">{{ icon('users') }}</span><span><strong>Users & invitations</strong><small>Manage members and single-use invitations</small></span><span class="settings-arrow">{{ icon('chevron-right') }}</span></a>
  {% endif %}
- <div class="settings-link settings-appearance"><span class="settings-icon">☼</span><span><strong>Appearance</strong><small>Switch between light and dark</small></span><button class="button secondary small" data-theme-toggle type="button"><span data-theme-icon>☾</span> Toggle</button></div>
+ <div class="settings-link settings-appearance"><span class="settings-icon">{{ icon('palette') }}</span><span><strong>Appearance</strong><small>Switch between light and dark</small></span><button class="button secondary small" data-theme-toggle type="button"><span class="theme-icon-stack">{{ icon('moon','theme-moon') }}{{ icon('sun','theme-sun') }}</span> Switch theme</button></div>
 </div>
 {% endblock %}

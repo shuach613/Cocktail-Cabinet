@@ -1,3 +1,4 @@
+{% from '_icons.html' import icon %}
 {% extends 'base.html' %}
 {% block title %}{% if mode=='setup' %}First-run setup{% elif mode=='invite' %}Accept invitation{% else %}Sign in{% endif %}{% endblock %}
 {% block auth_content %}
@@ -11,7 +12,7 @@
  <form method="post" class="form-stack"><input type="hidden" name="_csrf" value="{{ csrf_token }}">
  {% if mode=='login' %}<input type="hidden" name="next" value="{{ next or '' }}"><label>Email or username<input name="identity" autocomplete="username" required autofocus></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label>
  {% else %}<label>Your name<input name="username" autocomplete="username" maxlength="50" required autofocus></label>{% if mode=='setup' %}<label>Email<input name="email" type="email" autocomplete="email" required></label><label>Setup key <small>(from the container logs)</small><input name="setup_token" type="password" required></label>{% endif %}<label>Password <small>(12 characters minimum)</small><input name="password" type="password" autocomplete="new-password" minlength="12" required></label>{% endif %}
- <button type="submit" class="button wide">{% if mode=='setup' %}Create administrator{% elif mode=='invite' %}Create my account{% else %}Sign in{% endif %}<span aria-hidden="true">↗</span></button>
+ <button type="submit" class="button wide">{% if mode=='setup' %}Create administrator{% elif mode=='invite' %}Create my account{% else %}Sign in{% endif %}{{ icon('arrow-right') }}</button>
  </form>{% endif %}
  <p class="auth-footnote">A private space for good recipes and good company.</p>
  </div></section></div>
