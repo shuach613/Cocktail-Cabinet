@@ -113,3 +113,11 @@ DATA_DIR="$(mktemp -d)" COOKIE_SECURE=false TRUST_PROXY=false python app.py
 ```
 
 Or use the local-build Compose override shown above. No `.env` file is involved. The automated tests cover the 22-recipe import, taxonomy, login-only access, first-run administrator setup (including the automatically generated key), single-use invitations, recipe authoring, and ingredient matching. GitHub Actions runs `python -m pytest -q` before building the Docker image.
+
+### Recipe copy, brand labels and identity
+
+The recipe interface uses English cocktail terminology, with sources retained only as internal editorial references. System-supplied recipe descriptions, quantities and preparation steps are refined through the versioned `recipe_english_copy_v3` migration. It changes only unchanged seed-owned fields, leaving customized recipes and quantities alone. Back up the persistent `/data` volume before deploying updates; no new admin setup is required.
+
+Recipe ingredients display a branded product followed by its **most specific saved generic categories**, e.g. `Tanqueray London Dry Gin (London Dry Gin)` or `Elephant Gin Orange & Cocoa (London Dry Gin, Citrus Gin)`. These labels are computed at render time, so edits in Settings → Ingredients & Categories take effect across all recipes automatically. Unbranded ingredients are displayed plainly.
+
+The web, favicon and PWA identity share a compact cocktail-shaker-and-coupe pictogram. Light and dark themes use harmonizing SVG variants, while the installed PWA has matching 192px and 512px PNG icons. The service worker's static-asset version is updated to refresh them; on some phones the home-screen icon may need the PWA to be reinstalled to update.

@@ -1,4 +1,4 @@
-"""Curated ingredient taxonomy for the imported workbook.
+"""Curated ingredient taxonomy for the initial cocktail collection.
 
 Each product has a broad family plus zero or more narrow classifications.
 A narrow classification inherits its ancestors. No matching uses string guessing.
@@ -21,7 +21,7 @@ TREE = {
     'Other': {'Ice': {}},
 }
 
-# Workbook ingredient label -> most specific applicable tags. Ancestors are inferred.
+# Ingredient label -> most specific applicable categories. Ancestors are inferred.
 CLASSIFICATIONS = {
  'Elephant Gin Orange & Cocoa':['London Dry Gin','Citrus Gin'],
  'Tanqueray London Dry Gin':['London Dry Gin'],

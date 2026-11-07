@@ -75,3 +75,57 @@ def apply_english_photos_v2(con):
         con.execute('''DELETE FROM pantry WHERE ingredient_id IN
                        (SELECT id FROM ingredients WHERE name='Ice' COLLATE NOCASE)''')
         con.execute('INSERT INTO settings(key,value) VALUES(?,?)',(MIGRATION_KEY,'done'))
+
+
+RECIPE_POLISH_V3_KEY = 'recipe_english_copy_v3'
+
+
+def apply_recipe_polish_v3(con):
+    """Improve the English copy and serving guidance without touching user edits.
+
+    The first database migration already moved legacy labels into English. This
+    second editorial pass updates only unchanged, system-owned source fields.
+    Importantly, ingredient names / IDs and user-created recipes are untouched.
+    """
+    if con.execute('SELECT 1 FROM settings WHERE key=?', (RECIPE_POLISH_V3_KEY,)).fetchone():
+        return
+    previous = json.loads((ROOT/'seed'/'english_v2_snapshot.json').read_text(encoding='utf-8'))
+    current = json.loads((ROOT/'seed'/'recipes.json').read_text(encoding='utf-8'))
+    if len(previous) != len(current):
+        raise RuntimeError('Previous and revised recipe seed counts do not match.')
+    with con:
+        for old, new in zip(previous, current):
+            if old['name'] != new['name'] or len(old['ingredients']) != len(new['ingredients']):
+                raise RuntimeError(f'Seed alignment changed unexpectedly: {old["name"]}')
+            # A renamed/deleted recipe is user-customized; leave it unchanged.
+            row = con.execute('''SELECT id,notes,steps_json FROM recipes
+                                 WHERE created_by IS NULL AND title=?''',
+                              (old['name'],)).fetchone()
+            if row is None:
+                continue
+            changes={}
+            if row['notes'] == old['method_note']:
+                changes['notes'] = new['method_note']
+            if json.loads(row['steps_json']) == old['steps']:
+                changes['steps_json'] = json.dumps(new['steps'],ensure_ascii=False)
+            if changes:
+                con.execute('UPDATE recipes SET ' + ','.join(f'{col}=?' for col in changes) +
+                            ' WHERE id=?', (*changes.values(),row['id']))
+
+            # Only update untouched line items at the same position and with
+            # the same ingredient; do not rewrite quantities in edited recipes.
+            lines=con.execute('''SELECT ri.id,ri.sort_order,ri.quantity,i.name
+                                 FROM recipe_items ri JOIN ingredients i ON i.id=ri.ingredient_id
+                                 WHERE ri.recipe_id=? ORDER BY ri.sort_order''',
+                              (row['id'],)).fetchall()
+            by_position={line['sort_order']: line for line in lines}
+            for position,(before,after) in enumerate(zip(old['ingredients'],new['ingredients'])):
+                if before['quantity'] == after['quantity']:
+                    continue
+                line=by_position.get(position)
+                if (line and line['name'] == before['name'] and
+                        line['quantity'] == before['quantity']):
+                    con.execute('UPDATE recipe_items SET quantity=? WHERE id=?',
+                                (after['quantity'],line['id']))
+        con.execute('INSERT INTO settings(key,value) VALUES(?,?)',
+                    (RECIPE_POLISH_V3_KEY,'done'))
