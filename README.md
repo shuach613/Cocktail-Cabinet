@@ -121,3 +121,10 @@ The recipe interface uses English cocktail terminology, with sources retained on
 Recipe ingredients display a branded product followed by its **most specific saved generic categories**, e.g. `Tanqueray London Dry Gin (London Dry Gin)` or `Elephant Gin Orange & Cocoa (London Dry Gin, Citrus Gin)`. These labels are computed at render time, so edits in Settings → Ingredients & Categories take effect across all recipes automatically. Unbranded ingredients are displayed plainly.
 
 The web, favicon and PWA identity share a compact cocktail-shaker-and-coupe pictogram. Light and dark themes use harmonizing SVG variants, while the installed PWA has matching 192px and 512px PNG icons. The service worker's static-asset version is updated to refresh them; on some phones the home-screen icon may need the PWA to be reinstalled to update.
+
+### Bordeaux & Champagne interface
+
+The application uses the **Bordeaux & Champagne** design system in both light and dark modes, with Lato throughout. Mobile and desktop share the same SVG icon set, tactile navigation, and responsive recipe/shelf layouts. The shelf does not require selecting ice or display any ice explanation; matching behavior remains unchanged.
+
+The installed PWA uses its own matching cocktail-shaker-and-glass icons, plus a same-origin, versioned static-asset cache. The browser theme follows the device initially, then remembers a user's explicit light/dark choice. No extra secrets, database migrations, Compose changes or third-party UI dependencies are introduced by this redesign.
+
