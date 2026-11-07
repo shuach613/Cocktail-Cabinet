@@ -3,10 +3,10 @@
 <html lang="en">
 <head>
  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
- <meta name="theme-color" content="#F8F4EF"><meta name="color-scheme" content="light dark">
+ <meta name="theme-color" content="#F8F4EE"><meta name="color-scheme" content="light dark">
  <link rel="manifest" href="{{ url_for('manifest') }}">
- <link rel="icon" type="image/svg+xml" href="{{ url_for('static',filename='icon.svg') }}">
- <link rel="apple-touch-icon" href="{{ url_for('static',filename='app-icon.png') }}">
+ <link rel="icon" id="cabinet-favicon" type="image/svg+xml" href="{{ url_for('static',filename='icon.svg',v=5) }}">
+ <link rel="apple-touch-icon" href="{{ url_for('static',filename='app-icon.png',v=5) }}">
  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
  <script src="{{ url_for('static',filename='theme-init.js') }}"></script>
@@ -20,7 +20,7 @@
 {% if viewer %}
  <div class="shell">
   <aside class="desktop-sidebar" aria-label="Primary navigation">
-   <a class="brand" href="{{ url_for('index') }}"><span class="brand-symbol brand-pictogram"><img class="brand-pictogram-light" src="{{ url_for('static',filename='icon.svg') }}" alt=""><img class="brand-pictogram-dark" src="{{ url_for('static',filename='icon-dark.svg') }}" alt=""></span><span>The Cocktail<br><b>Cabinet.</b></span></a>
+   <a class="brand" href="{{ url_for('index') }}"><span class="brand-symbol brand-pictogram"><img class="brand-pictogram-light" src="{{ url_for('static',filename='icon.svg',v=5) }}" alt=""><img class="brand-pictogram-dark" src="{{ url_for('static',filename='icon-dark.svg',v=5) }}" alt=""></span><span>The Cocktail<br><b>Cabinet.</b></span></a>
    <div class="sidebar-eyebrow">YOUR BAR, BEAUTIFULLY KEPT</div>
    <nav class="sidebar-nav">
     <a class="nav-link {% if request.endpoint in ['index','recipe_view'] %}active{% endif %}" href="{{ url_for('index') }}">{{ icon('house','nav-icon') }} Discover</a>
@@ -31,7 +31,7 @@
    <div class="sidebar-bottom"><div class="sidebar-profile"><span class="avatar">{{ viewer.username[0]|upper }}</span><span><strong>{{ viewer.username }}</strong><small>{{ 'Administrator' if viewer.role=='admin' else 'Member' }}</small></span></div><a href="{{ url_for('account') }}" class="tiny-link">My account</a><form action="{{ url_for('logout') }}" method="post"><input type="hidden" name="_csrf" value="{{ csrf_token }}"><button class="text-button">Sign out</button></form></div>
   </aside>
   <div class="main-column">
-   <header class="mobile-header"><a class="brand brand-mobile" href="{{ url_for('index') }}"><span class="brand-symbol brand-pictogram"><img class="brand-pictogram-light" src="{{ url_for('static',filename='icon.svg') }}" alt=""><img class="brand-pictogram-dark" src="{{ url_for('static',filename='icon-dark.svg') }}" alt=""></span><span>The Cocktail <b>Cabinet.</b></span></a><button class="mobile-theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode"><span class="theme-icon-stack">{{ icon('moon','theme-moon') }}{{ icon('sun','theme-sun') }}</span></button><a href="{{ url_for('account') }}" class="avatar" aria-label="My account">{{ viewer.username[0]|upper }}</a></header>
+   <header class="mobile-header"><a class="brand brand-mobile" href="{{ url_for('index') }}"><span class="brand-symbol brand-pictogram"><img class="brand-pictogram-light" src="{{ url_for('static',filename='icon.svg',v=5) }}" alt=""><img class="brand-pictogram-dark" src="{{ url_for('static',filename='icon-dark.svg',v=5) }}" alt=""></span><span>The Cocktail <b>Cabinet.</b></span></a><button class="mobile-theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode"><span class="theme-icon-stack">{{ icon('moon','theme-moon') }}{{ icon('sun','theme-sun') }}</span></button><a href="{{ url_for('account') }}" class="avatar" aria-label="My account">{{ viewer.username[0]|upper }}</a></header>
    <div class="top-actions"><span class="top-actions-caption">GOOD DRINKS, GOOD COMPANY.</span><button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode"><span class="theme-icon-stack">{{ icon('moon','theme-moon') }}{{ icon('sun','theme-sun') }}</span> <span class="theme-label">Appearance</span></button></div>
    <main class="main-content">{% block content %}{% endblock %}</main>
    <footer class="page-footer">The Cocktail Cabinet · Private collection · Mix thoughtfully.</footer>

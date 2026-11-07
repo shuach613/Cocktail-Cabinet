@@ -3,19 +3,19 @@
   <rect width="96" height="96" rx="23" fill="#742E43"/>
   <!-- The shaker: tapered tin, rim, and double cap -->
   <g stroke-linecap="round" stroke-linejoin="round">
-    <path d="M19.5 34.5 48.5 34.5 43.6 73 Q34.1 78.6 25.2 72.1Z" fill="#FFF7ED" fill-opacity=".13" stroke="#FFF7ED" stroke-width="3.3"/>
-    <path d="M20.6 32.9H48" stroke="#E8B6BE" stroke-width="4.4"/>
-    <path d="M25 24H43.8L47 31H21.7Z" fill="#E8B6BE"/>
-    <path d="M28 18.8H40.6Q43.5 18.8 43.5 21.7V24.4H25.1V21.7Q25.1 18.8 28 18.8Z" fill="#DEBD97"/>
-    <path d="M29 42.3 27.2 64.5" stroke="#FFF7ED" stroke-width="2.6" opacity=".65"/>
+    <path d="M19.5 34.5 48.5 34.5 43.6 73 Q34.1 78.6 25.2 72.1Z" fill="#FFF8EE" fill-opacity=".13" stroke="#FFF8EE" stroke-width="3.3"/>
+    <path d="M20.6 32.9H48" stroke="#E3BE88" stroke-width="4.4"/>
+    <path d="M25 24H43.8L47 31H21.7Z" fill="#E3BE88"/>
+    <path d="M28 18.8H40.6Q43.5 18.8 43.5 21.7V24.4H25.1V21.7Q25.1 18.8 28 18.8Z" fill="#F1D5AC"/>
+    <path d="M29 42.3 27.2 64.5" stroke="#FFF8EE" stroke-width="2.6" opacity=".65"/>
   </g>
   <!-- A stemmed coupe with a clean, geometric bowl -->
-  <g fill="none" stroke="#FFF7ED" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+  <g fill="none" stroke="#FFF8EE" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
     <path d="M51.5 32.6H81"/>
     <path d="M52 33C53.2 44 59.6 50.5 66.3 50.5 73.2 50.5 79.3 43.8 80.7 33"/>
     <path d="M66.3 50.8V71"/>
     <path d="M56.2 74.1H76.4"/>
   </g>
-  <path d="M56.1 40.7Q66.3 46.3 76.9 40.7Q73.6 49.5 66.4 49.5Q59.1 49.5 56.1 40.7Z" fill="#E8B6BE" opacity=".9"/>
-  <circle cx="75.6" cy="27.5" r="3.2" fill="#DEBD97"/>
+  <path d="M56.1 40.7Q66.3 46.3 76.9 40.7Q73.6 49.5 66.4 49.5Q59.1 49.5 56.1 40.7Z" fill="#E3BE88" opacity=".9"/>
+  <circle cx="75.6" cy="27.5" r="3.2" fill="#F1D5AC"/>
 </svg>

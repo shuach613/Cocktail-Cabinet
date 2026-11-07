@@ -6,7 +6,7 @@
 .feature-photo{position:absolute;inset:0 0 0 auto;width:55%;height:100%;object-fit:cover;opacity:.72;mask-image:linear-gradient(to right,transparent,#000 42%);pointer-events:none}
 .card-decoration,.detail-illustration{display:none}
 .card-visual img{object-fit:cover}
-.card-typographic,.detail-typographic{display:flex;align-items:center;justify-content:center;text-align:center;max-width:80%;font-size:25px;font-weight:900;letter-spacing:-.04em;color:rgba(23,49,41,.8);line-height:1.15}
+.card-typographic,.detail-typographic{display:flex;align-items:center;justify-content:center;text-align:center;max-width:80%;font-size:25px;font-weight:900;letter-spacing:-.04em;color:rgba(62,33,43,.8);line-height:1.15}
 .detail-typographic{font-size:clamp(28px,4vw,52px);padding:30px}
 .management-toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:0 0 20px;color:var(--muted);font-size:13px}
 .management-list{display:grid;gap:12px}
