@@ -1,10 +1,9 @@
 [
   {
-    "name": "Negroni Schoggi",
+    "name": "Chocolate Negroni",
     "ingredients": [
       {
         "name": "Elephant Gin Orange & Cocoa",
-        "original_name": "Elephant Gin Orange & Cocoa",
         "quantity": "3 cl",
         "garnish": false,
         "optional": false,
@@ -12,7 +11,6 @@
       },
       {
         "name": "Campari",
-        "original_name": "Campari",
         "quantity": "3 cl",
         "garnish": false,
         "optional": false,
@@ -20,7 +18,6 @@
       },
       {
         "name": "Carpano Antica Formula",
-        "original_name": "Carpano Antica Formula",
         "quantity": "3 cl",
         "garnish": false,
         "optional": false,
@@ -28,16 +25,14 @@
       },
       {
         "name": "Orange Twist",
-        "original_name": "Orange Twist",
         "quantity": "1",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
-        "quantity": "Viel",
+        "name": "Ice",
+        "quantity": "Plenty",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -45,7 +40,7 @@
     ],
     "technique": "Stirred",
     "glass": "Rocks glass",
-    "method_note": "A citrus-and-cocoa gin variation of the Negroni; method adapted from the classic.",
+    "method_note": "Chocolate-accented Negroni using the bottle selection from your spreadsheet.",
     "steps": [
       "Fill a mixing glass with ice.",
       "Add the Elephant Orange & Cocoa gin, Campari and Carpano Antica Formula in the quantities listed.",
@@ -53,14 +48,14 @@
       "Express the orange twist over the glass and add it as garnish."
     ],
     "source_url": "https://www.liquor.com/recipes/negroni/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/negroni.webp"
   },
   {
-    "name": "Negroni normal",
+    "name": "Classic Negroni",
     "ingredients": [
       {
         "name": "Tanqueray London Dry Gin",
-        "original_name": "Tanqueray London Dry Gin",
         "quantity": "3 cl",
         "garnish": false,
         "optional": false,
@@ -68,7 +63,6 @@
       },
       {
         "name": "Campari",
-        "original_name": "Campari",
         "quantity": "3 cl",
         "garnish": false,
         "optional": false,
@@ -76,7 +70,6 @@
       },
       {
         "name": "Carpano Antica Formula",
-        "original_name": "Carpano Antica Formula ",
         "quantity": "3 cl",
         "garnish": false,
         "optional": false,
@@ -84,16 +77,14 @@
       },
       {
         "name": "Orange Twist",
-        "original_name": "Orange Twist",
         "quantity": "1",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
-        "quantity": "Viel",
+        "name": "Ice",
+        "quantity": "Plenty",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -101,7 +92,7 @@
     ],
     "technique": "Stirred",
     "glass": "Rocks glass",
-    "method_note": "Classic Negroni method; the spreadsheet specifies Tanqueray and Carpano.",
+    "method_note": "Classic Negroni build and proportions using your listed bottles and quantities.",
     "steps": [
       "Fill a mixing glass with ice.",
       "Add Tanqueray London Dry Gin, Campari and Carpano Antica Formula.",
@@ -109,14 +100,14 @@
       "Express the orange twist over the drink and garnish."
     ],
     "source_url": "https://www.liquor.com/recipes/negroni/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/negroni.webp"
   },
   {
     "name": "Americano",
     "ingredients": [
       {
         "name": "Campari",
-        "original_name": "Campari",
         "quantity": "3 cl",
         "garnish": false,
         "optional": false,
@@ -124,7 +115,6 @@
       },
       {
         "name": "Carpano Antica Formula / Cocchi/Dos Deus",
-        "original_name": "Carpano Antica Formula / Cocchi/Dos Deus",
         "quantity": "3 cl",
         "garnish": false,
         "optional": false,
@@ -132,7 +122,6 @@
       },
       {
         "name": "Soda Water",
-        "original_name": "Soda Water",
         "quantity": "Glas auffüllen",
         "garnish": false,
         "optional": false,
@@ -140,16 +129,14 @@
       },
       {
         "name": "Orange Twist",
-        "original_name": "Orange Twist",
         "quantity": "1",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
-        "quantity": "Viel",
+        "name": "Ice",
+        "quantity": "Plenty",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -165,14 +152,14 @@
       "Stir gently and finish with the orange twist."
     ],
     "source_url": "https://www.liquor.com/recipes/americano/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/americano.webp"
   },
   {
     "name": "Bitter Giuseppe (Giusti)",
     "ingredients": [
       {
         "name": "Cynar",
-        "original_name": "Cynar",
         "quantity": "6 cl",
         "garnish": false,
         "optional": false,
@@ -180,15 +167,13 @@
       },
       {
         "name": "Giuseppe Giusti Vermouth",
-        "original_name": "Giuseppe Giusti Vermouth",
         "quantity": "3 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Zitronensaft",
-        "original_name": "Zitronensaft",
+        "name": "Lemon juice",
         "quantity": "max. 1 cl",
         "garnish": false,
         "optional": false,
@@ -196,24 +181,21 @@
       },
       {
         "name": "Angostura Bitter Orange",
-        "original_name": "Angostura Bitter Orange",
         "quantity": "5 Tropfen",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Zitronen Twist",
-        "original_name": "Zitronen Twist",
+        "name": "Lemon twist",
         "quantity": "",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
-        "quantity": "Viel",
+        "name": "Ice",
+        "quantity": "Plenty",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -229,14 +211,14 @@
       "Strain over fresh ice in a rocks glass, then garnish with the lemon twist."
     ],
     "source_url": "https://www.diffordsguide.com/cocktails/recipe/4856/bitter-giuseppe",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/amber-rocks.webp"
   },
   {
     "name": "Gran Campericano",
     "ingredients": [
       {
         "name": "Tempus Fugit Gran Classico",
-        "original_name": "Tempus Fugit Gran Classico",
         "quantity": "3 cl",
         "garnish": false,
         "optional": false,
@@ -244,7 +226,6 @@
       },
       {
         "name": "Campari",
-        "original_name": "Campari",
         "quantity": "3 cl",
         "garnish": false,
         "optional": false,
@@ -252,7 +233,6 @@
       },
       {
         "name": "Indian Tonic",
-        "original_name": "Indian Tonic",
         "quantity": "10 cl",
         "garnish": false,
         "optional": false,
@@ -260,15 +240,13 @@
       },
       {
         "name": "Orange Twist",
-        "original_name": "Orange Twist",
         "quantity": "1",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
+        "name": "Ice",
         "quantity": "Mittel",
         "garnish": true,
         "optional": true,
@@ -285,14 +263,14 @@
       "Express the orange twist over the drink and add it."
     ],
     "source_url": "https://www.liquor.com/recipes/americano/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/americano.webp"
   },
   {
     "name": "Select Soda",
     "ingredients": [
       {
         "name": "Select",
-        "original_name": "Select",
         "quantity": "6-9 cl",
         "garnish": false,
         "optional": false,
@@ -300,7 +278,6 @@
       },
       {
         "name": "Soda Water",
-        "original_name": "Soda Water",
         "quantity": "Glas auffüllen",
         "garnish": false,
         "optional": false,
@@ -308,16 +285,14 @@
       },
       {
         "name": "Orange Twist",
-        "original_name": "Orange Twist",
         "quantity": "1",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
-        "quantity": "Viel",
+        "name": "Ice",
+        "quantity": "Plenty",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -333,14 +308,14 @@
       "Finish with an orange twist."
     ],
     "source_url": "https://selectaperitivo.com/our-cocktails/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/americano.webp"
   },
   {
     "name": "Amaretti",
     "ingredients": [
       {
         "name": "Giuseppe Giusti Vermouth",
-        "original_name": "Giuseppe Giusti Vermouth",
         "quantity": "3 cl",
         "garnish": false,
         "optional": false,
@@ -348,7 +323,6 @@
       },
       {
         "name": "Disaronno",
-        "original_name": "Disaronno",
         "quantity": "1,5 cl",
         "garnish": false,
         "optional": false,
@@ -356,15 +330,13 @@
       },
       {
         "name": "Angostura Bitter Orange",
-        "original_name": "Angostura Bitter Orange",
         "quantity": "2 Tropfen",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
+        "name": "Ice",
         "quantity": "Mittel",
         "garnish": true,
         "optional": true,
@@ -381,14 +353,14 @@
       "Strain into a rocks glass over fresh ice."
     ],
     "source_url": "https://www.totalwine.com/cocktail-recipes/the-godfather",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/amber-rocks.webp"
   },
   {
-    "name": "Limoncello Spritz normal",
+    "name": "Classic Limoncello Spritz",
     "ingredients": [
       {
-        "name": "Sekt / Prosecco",
-        "original_name": "Sekt / Prosecco",
+        "name": "Sparkling wine / prosecco",
         "quantity": "9 cl",
         "garnish": false,
         "optional": false,
@@ -396,7 +368,6 @@
       },
       {
         "name": "Limoncello Amamalfi",
-        "original_name": "Limoncello Amamalfi",
         "quantity": "6 cl",
         "garnish": false,
         "optional": false,
@@ -404,24 +375,21 @@
       },
       {
         "name": "Soda Water",
-        "original_name": "Soda Water",
         "quantity": "3 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Zitronen Twist",
-        "original_name": "Zitronen Twist",
+        "name": "Lemon twist",
         "quantity": "1",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
-        "quantity": "Viel",
+        "name": "Ice",
+        "quantity": "Plenty",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -437,14 +405,14 @@
       "Express and add the lemon twist; serve immediately."
     ],
     "source_url": "https://www.bbcgoodfood.com/recipes/limoncello-spritz",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/limoncello-spritz.webp"
   },
   {
     "name": "Limoncello Spritz Jonas",
     "ingredients": [
       {
-        "name": "Sekt / Prosecco",
-        "original_name": "Sekt / Prosecco",
+        "name": "Sparkling wine / prosecco",
         "quantity": "10 cl",
         "garnish": false,
         "optional": false,
@@ -452,7 +420,6 @@
       },
       {
         "name": "Limoncello Amamalfi",
-        "original_name": "Limoncello Amamalfi",
         "quantity": "5 cl",
         "garnish": false,
         "optional": false,
@@ -460,24 +427,21 @@
       },
       {
         "name": "Soda Water",
-        "original_name": "Soda Water",
         "quantity": "4 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Zitronen Twist",
-        "original_name": "Zitronen Twist",
+        "name": "Lemon twist",
         "quantity": "1",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
-        "quantity": "Viel",
+        "name": "Ice",
+        "quantity": "Plenty",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -493,14 +457,14 @@
       "Finish with a lemon twist and serve."
     ],
     "source_url": "https://www.bbcgoodfood.com/recipes/limoncello-spritz",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/limoncello-spritz.webp"
   },
   {
     "name": "Select Spritz",
     "ingredients": [
       {
-        "name": "Sekt / Prosecco",
-        "original_name": "Sekt / Prosecco",
+        "name": "Sparkling wine / prosecco",
         "quantity": "9 cl",
         "garnish": false,
         "optional": false,
@@ -508,7 +472,6 @@
       },
       {
         "name": "Select",
-        "original_name": "Select",
         "quantity": "6 cl",
         "garnish": false,
         "optional": false,
@@ -516,24 +479,21 @@
       },
       {
         "name": "Soda Water",
-        "original_name": "Soda Water",
         "quantity": "3 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Olive eingelegt",
-        "original_name": "Olive eingelegt",
+        "name": "Pickled olive",
         "quantity": "1",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
-        "quantity": "Viel",
+        "name": "Ice",
+        "quantity": "Plenty",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -549,22 +509,21 @@
       "Garnish with the pickled olive."
     ],
     "source_url": "https://selectaperitivo.com/select-spritz/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/orange-spritz.webp"
   },
   {
-    "name": "Apérol Spritz",
+    "name": "Aperol Spritz",
     "ingredients": [
       {
-        "name": "Sekt / Prosecco",
-        "original_name": "Sekt / Prosecco",
+        "name": "Sparkling wine / prosecco",
         "quantity": "9 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Apérol",
-        "original_name": "Apérol ",
+        "name": "Aperol",
         "quantity": "6 cl",
         "garnish": false,
         "optional": false,
@@ -572,7 +531,6 @@
       },
       {
         "name": "Soda Water",
-        "original_name": "Soda Water",
         "quantity": "3 cl",
         "garnish": false,
         "optional": false,
@@ -580,16 +538,14 @@
       },
       {
         "name": "Orange Twist",
-        "original_name": "Orange Twist",
         "quantity": "1",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
-        "quantity": "Viel",
+        "name": "Ice",
+        "quantity": "Plenty",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -600,19 +556,19 @@
     "method_note": "Classic spritz technique; the exact quantities are those in the spreadsheet.",
     "steps": [
       "Fill a large wine glass with ice.",
-      "Add chilled prosecco, Apérol and soda water.",
+      "Add chilled prosecco, Aperol and soda water.",
       "Gently stir to combine without flattening the bubbles.",
       "Express the orange twist over the drink and garnish."
     ],
     "source_url": "https://www.liquor.com/recipes/aperol-spritz/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/orange-spritz.webp"
   },
   {
     "name": "Gran Classico Spritz",
     "ingredients": [
       {
-        "name": "Sekt / Prosecco",
-        "original_name": "Sekt / Prosecco",
+        "name": "Sparkling wine / prosecco",
         "quantity": "9 cl",
         "garnish": false,
         "optional": false,
@@ -620,7 +576,6 @@
       },
       {
         "name": "Tempus Fugit Gran Classico",
-        "original_name": "Tempus Fugit Gran Classico",
         "quantity": "6 cl",
         "garnish": false,
         "optional": false,
@@ -628,7 +583,6 @@
       },
       {
         "name": "Soda Water",
-        "original_name": "Soda Water",
         "quantity": "3 cl",
         "garnish": false,
         "optional": false,
@@ -636,16 +590,14 @@
       },
       {
         "name": "Orange Twist",
-        "original_name": "Orange Twist",
         "quantity": "1",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
-        "quantity": "Viel",
+        "name": "Ice",
+        "quantity": "Plenty",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -661,14 +613,14 @@
       "Garnish with the orange twist and serve while sparkling."
     ],
     "source_url": "https://selectaperitivo.com/select-spritz/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/orange-spritz.webp"
   },
   {
-    "name": "Gin & Tonic Pfeffer",
+    "name": "Pepper Gin & Tonic",
     "ingredients": [
       {
         "name": "Hendrick's Gin",
-        "original_name": "Hendrick's Gin",
         "quantity": "5 cl",
         "garnish": false,
         "optional": false,
@@ -676,23 +628,20 @@
       },
       {
         "name": "Schweppes Pink Pepper Tonic",
-        "original_name": "Schweppes Pink Pepper Tonic",
         "quantity": "20 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis ",
+        "name": "Ice",
         "quantity": "Mittel",
         "garnish": true,
         "optional": true,
         "kind": "ice"
       },
       {
-        "name": "Gurkenscheibe",
-        "original_name": "Gurkenscheibe",
+        "name": "Cucumber slice",
         "quantity": "1-2",
         "garnish": true,
         "optional": true,
@@ -709,14 +658,14 @@
       "Give a short stir and add the cucumber slice(s)."
     ],
     "source_url": "https://www.liquor.com/recipes/gin-and-tonic/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/gin-tonic.webp"
   },
   {
     "name": "Gin & Tonic Seventh Sense",
     "ingredients": [
       {
         "name": "Seventh Sense Gin",
-        "original_name": "Seventh Sense Gin ",
         "quantity": "5 cl",
         "garnish": false,
         "optional": false,
@@ -724,15 +673,13 @@
       },
       {
         "name": "Swiss Moutain Spring Provencale Tonic",
-        "original_name": "Swiss Moutain Spring Provencale Tonic",
         "quantity": "20 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis ",
+        "name": "Ice",
         "quantity": "Mittel",
         "garnish": true,
         "optional": true,
@@ -749,14 +696,14 @@
       "Stir gently once; no additional garnish is specified in the original recipe."
     ],
     "source_url": "https://www.liquor.com/recipes/gin-and-tonic/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/gin-tonic.webp"
   },
   {
-    "name": "Gin & Tonic Salbei",
+    "name": "Sage Gin & Tonic",
     "ingredients": [
       {
         "name": "Engine Gin",
-        "original_name": "Engine Gin",
         "quantity": "5 cl",
         "garnish": false,
         "optional": false,
@@ -764,15 +711,13 @@
       },
       {
         "name": "Tribute Tonic",
-        "original_name": "Tribute Tonic",
         "quantity": "20 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis ",
+        "name": "Ice",
         "quantity": "Mittel",
         "garnish": true,
         "optional": true,
@@ -781,7 +726,7 @@
     ],
     "technique": "Built",
     "glass": "Highball",
-    "method_note": "The name mentions sage (Salbei), but sage is NOT listed among the original ingredients. None has been added.",
+    "method_note": "The name mentions sage, but sage is not listed among the original ingredients, so none has been added.",
     "steps": [
       "Fill a highball glass with the listed amount of ice.",
       "Add Engine gin and top with Tribute tonic.",
@@ -789,47 +734,43 @@
       "Serve as written; the source spreadsheet specifies no sage or other garnish."
     ],
     "source_url": "https://www.liquor.com/recipes/gin-and-tonic/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/gin-tonic.webp"
   },
   {
     "name": "Basil Smash",
     "ingredients": [
       {
         "name": "Tanqueray London Dry Gin",
-        "original_name": "Tanqueray London Dry Gin",
         "quantity": "6 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Zucker Sirup",
-        "original_name": "Zucker Sirup",
+        "name": "Sugar syrup",
         "quantity": "2 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Zitronensaft",
-        "original_name": "Zitronensaft",
+        "name": "Lemon juice",
         "quantity": "2 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Basilikum Blätter",
-        "original_name": "Basilikum Blätter",
-        "quantity": "Viele",
+        "name": "Basil leaves",
+        "quantity": "Many",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
-        "quantity": "Viel",
+        "name": "Ice",
+        "quantity": "Plenty",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -845,30 +786,28 @@
       "Double-strain into a rocks glass with fresh ice."
     ],
     "source_url": "https://vinepair.com/cocktail-college/gin-basil-smash/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/basil-smash.webp"
   },
   {
     "name": "Mojito",
     "ingredients": [
       {
-        "name": "Weisser Rum",
-        "original_name": "Weisser Rum",
+        "name": "White rum",
         "quantity": "6 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Limette (4 Stücke)",
-        "original_name": "Limette (4 Stücke)",
+        "name": "Lime (4 pieces)",
         "quantity": "1/2",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Pfefferminze",
-        "original_name": "Pfefferminze",
+        "name": "Peppermint",
         "quantity": "1 Zweig",
         "garnish": false,
         "optional": false,
@@ -876,24 +815,21 @@
       },
       {
         "name": "Soda Water",
-        "original_name": "Soda Water",
         "quantity": "Glas auffüllen",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Brauner Zucker",
-        "original_name": "Brauner Zucker",
+        "name": "Brown sugar",
         "quantity": "1 EL",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
-        "quantity": "Viel",
+        "name": "Ice",
+        "quantity": "Plenty",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -909,14 +845,14 @@
       "Top with soda water to fill the glass and lift gently with a bar spoon."
     ],
     "source_url": "https://www.liquor.com/recipes/mojito/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/mojito.webp"
   },
   {
     "name": "Pimm's",
     "ingredients": [
       {
         "name": "Pimm's",
-        "original_name": "Pimm's",
         "quantity": "4,5 cl",
         "garnish": false,
         "optional": false,
@@ -924,31 +860,27 @@
       },
       {
         "name": "Ginger Beer",
-        "original_name": "Ginger Beer",
         "quantity": "20 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Fruchtstücke",
-        "original_name": "Fruchtstücke",
+        "name": "Fruit pieces",
         "quantity": "was es hat",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
-        "name": "Minze",
-        "original_name": "Minze",
+        "name": "Mint",
         "quantity": "5 Blätter",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
+        "name": "Ice",
         "quantity": "Mittel",
         "garnish": true,
         "optional": true,
@@ -965,14 +897,14 @@
       "Stir gently and finish with the mint leaves."
     ],
     "source_url": "https://www.liquor.com/recipes/pimms-cup/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/fruity-highball.webp"
   },
   {
     "name": "Kyiv Mule",
     "ingredients": [
       {
         "name": "Vodka",
-        "original_name": "Vodka ",
         "quantity": "5 cl",
         "garnish": false,
         "optional": false,
@@ -980,31 +912,27 @@
       },
       {
         "name": "Schweppes Ginger Beer & Chili",
-        "original_name": "Schweppes Ginger Beer & Chili",
         "quantity": "20 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Limettensaft (halbe Limette)",
-        "original_name": "Limettensaft (halbe Limette)",
+        "name": "Lime juice (half a lime)",
         "quantity": "1.5 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Minze Blätter",
-        "original_name": "Minze Blätter",
+        "name": "Mint leaves",
         "quantity": "6",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
+        "name": "Ice",
         "quantity": "Mittel",
         "garnish": true,
         "optional": true,
@@ -1021,14 +949,14 @@
       "Finish with the mint leaves."
     ],
     "source_url": "https://www.liquor.com/recipes/moscow-mule-cocktail-recipe/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/fruity-highball.webp"
   },
   {
     "name": "Dry Martini",
     "ingredients": [
       {
         "name": "Gin",
-        "original_name": "Gin",
         "quantity": "6 cl",
         "garnish": false,
         "optional": false,
@@ -1036,32 +964,28 @@
       },
       {
         "name": "Dry Vermouth",
-        "original_name": "Dry Vermouth",
         "quantity": "1 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Grüne Olive",
-        "original_name": "Grüne Olive",
+        "name": "Green olive",
         "quantity": "1",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
-        "name": "Zitronensaft",
-        "original_name": "Zitronensaft",
+        "name": "Lemon juice",
         "quantity": "1 Spritzer",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
-        "quantity": "Viel",
+        "name": "Ice",
+        "quantity": "Plenty",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -1077,22 +1001,21 @@
       "Garnish with the green olive."
     ],
     "source_url": "https://www.liquor.com/recipes/dry-martini/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/dry-martini.webp"
   },
   {
     "name": "Hugo",
     "ingredients": [
       {
-        "name": "Sekt / Prosecco",
-        "original_name": "Sekt / Prosecco",
+        "name": "Sparkling wine / prosecco",
         "quantity": "15 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Holunderblütensirup",
-        "original_name": "Holunderblütensirup",
+        "name": "Elderflower syrup",
         "quantity": "2 cl",
         "garnish": false,
         "optional": false,
@@ -1100,23 +1023,20 @@
       },
       {
         "name": "Soda Water",
-        "original_name": "Soda Water",
         "quantity": "5 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Minze Blätter",
-        "original_name": "Minze Blätter",
+        "name": "Mint leaves",
         "quantity": "4 Blätter",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Limette",
-        "original_name": "Limette",
+        "name": "Lime",
         "quantity": "1 Schnitz",
         "garnish": true,
         "optional": true,
@@ -1133,47 +1053,43 @@
       "Serve immediately. No ice was specified in the spreadsheet, so it is not added to the ingredient list."
     ],
     "source_url": "https://www.liquor.com/integrated/hugo-spritz-cocktail-recipe",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/limoncello-spritz.webp"
   },
   {
     "name": "Whiskey Sour",
     "ingredients": [
       {
         "name": "Whiskey",
-        "original_name": "Whiskey",
         "quantity": "6 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Zitronensaft",
-        "original_name": "Zitronensaft",
+        "name": "Lemon juice",
         "quantity": "4 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Zucker Sirup",
-        "original_name": "Zucker Sirup",
+        "name": "Sugar syrup",
         "quantity": "2 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
-        "name": "Eiweiss (optional)",
-        "original_name": "Eiweiss (optional)",
+        "name": "Egg white (optional)",
         "quantity": "1",
         "garnish": false,
         "optional": true,
         "kind": "ingredient"
       },
       {
-        "name": "Eis",
-        "original_name": "Eis",
-        "quantity": "Viel",
+        "name": "Ice",
+        "quantity": "Plenty",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -1189,6 +1105,7 @@
       "Strain into a rocks glass with fresh ice."
     ],
     "source_url": "https://www.liquor.com/recipes/whiskey-sour/",
-    "source_label": "Research reference (preparation method)"
+    "source_label": "Research reference (preparation method)",
+    "image_file": "seed_photos/amber-rocks.webp"
   }
 ]

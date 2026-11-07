@@ -1,5 +1,5 @@
-const VERSION='cabinet-assets-v1';
-const STATIC=['/static/style.css','/static/app.js','/static/icon.svg','/static/app-icon.png'];
+const VERSION='cabinet-assets-v2';
+const STATIC=['/static/style.css','/static/refinement.css','/static/app.js','/static/icon.svg','/static/app-icon.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(VERSION).then(c=>c.addAll(STATIC)));self.skipWaiting();});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==VERSION).map(k=>caches.delete(k)))));self.clients.claim();});
 self.addEventListener('fetch',event=>{
