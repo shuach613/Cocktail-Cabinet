@@ -40,12 +40,12 @@
     ],
     "technique": "Stirred",
     "glass": "Rocks glass",
-    "method_note": "Chocolate-accented Negroni using the bottle selection from your spreadsheet.",
+    "method_note": "Orange-and-cocoa botanicals give this equal-parts Negroni a subtle twist.",
     "steps": [
-      "Fill a mixing glass with ice.",
-      "Add the Elephant Orange & Cocoa gin, Campari and Carpano Antica Formula in the quantities listed.",
-      "Stir until thoroughly chilled, then strain into a rocks glass over fresh ice.",
-      "Express the orange twist over the glass and add it as garnish."
+      "Add ice to a mixing glass.",
+      "Pour in the gin, Campari and sweet red vermouth.",
+      "Stir until chilled, then strain into a rocks glass over fresh ice.",
+      "Express the oils from the orange twist over the drink and drop it into the glass."
     ],
     "source_url": "https://www.liquor.com/recipes/negroni/",
     "source_label": "Research reference (preparation method)",
@@ -92,12 +92,12 @@
     ],
     "technique": "Stirred",
     "glass": "Rocks glass",
-    "method_note": "Classic Negroni build and proportions using your listed bottles and quantities.",
+    "method_note": "Equal parts gin, bitter aperitivo and sweet red vermouth: aromatic and balanced.",
     "steps": [
       "Fill a mixing glass with ice.",
-      "Add Tanqueray London Dry Gin, Campari and Carpano Antica Formula.",
-      "Stir until cold, then strain over fresh ice in a rocks glass.",
-      "Express the orange twist over the drink and garnish."
+      "Pour in gin, Campari and sweet red vermouth.",
+      "Stir until thoroughly chilled, then strain into a rocks glass over fresh ice.",
+      "Express the orange twist over the drink and add it as a garnish."
     ],
     "source_url": "https://www.liquor.com/recipes/negroni/",
     "source_label": "Research reference (preparation method)",
@@ -122,7 +122,7 @@
       },
       {
         "name": "Soda Water",
-        "quantity": "Glas auffüllen",
+        "quantity": "To top up",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
@@ -144,12 +144,12 @@
     ],
     "technique": "Built",
     "glass": "Highball",
-    "method_note": "The spreadsheet lists alternative sweet vermouth brands; use one, not all.",
+    "method_note": "Choose one sweet red vermouth option, then top the bitters with soda for a lighter aperitif.",
     "steps": [
-      "Fill a highball or rocks glass with plenty of ice.",
+      "Fill a highball glass with ice.",
       "Add Campari and one of the listed sweet red vermouth options.",
-      "Top with soda water to fill the glass.",
-      "Stir gently and finish with the orange twist."
+      "Top up with chilled soda water and stir gently to keep the bubbles.",
+      "Express the orange twist over the drink and garnish."
     ],
     "source_url": "https://www.liquor.com/recipes/americano/",
     "source_label": "Research reference (preparation method)",
@@ -174,14 +174,14 @@
       },
       {
         "name": "Lemon juice",
-        "quantity": "max. 1 cl",
+        "quantity": "Up to 1 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
         "name": "Angostura Bitter Orange",
-        "quantity": "5 Tropfen",
+        "quantity": "5 drops",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
@@ -203,12 +203,12 @@
     ],
     "technique": "Stirred",
     "glass": "Rocks glass",
-    "method_note": "Adapted from the Bitter Giuseppe using the Giusti vermouth specified in the spreadsheet.",
+    "method_note": "Cynar and sweet vermouth bring herbal depth, lifted by fresh lemon and orange bitters.",
     "steps": [
-      "Express the lemon twist over a mixing glass.",
-      "Add Cynar, Giusti vermouth, lemon juice (no more than the listed amount) and orange bitters.",
-      "Add ice and stir until chilled.",
-      "Strain over fresh ice in a rocks glass, then garnish with the lemon twist."
+      "Express the oils from the lemon twist into a mixing glass.",
+      "Add Cynar, sweet red vermouth, up to 1 cl lemon juice and five drops of orange bitters.",
+      "Add ice and stir until thoroughly chilled.",
+      "Strain into a rocks glass over fresh ice and garnish with the lemon twist."
     ],
     "source_url": "https://www.diffordsguide.com/cocktails/recipe/4856/bitter-giuseppe",
     "source_label": "Research reference (preparation method)",
@@ -247,7 +247,7 @@
       },
       {
         "name": "Ice",
-        "quantity": "Mittel",
+        "quantity": "A moderate amount",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -255,12 +255,12 @@
     ],
     "technique": "Built",
     "glass": "Highball",
-    "method_note": "House variation; build technique adapted from an Americano. No exact published recipe was located.",
+    "method_note": "A boldly bittersweet aperitif with Gran Classico, Campari and Indian tonic.",
     "steps": [
-      "Fill a highball glass with ice.",
-      "Pour in the Gran Classico and Campari in the listed amounts.",
-      "Add the Indian tonic gently and briefly stir to combine without losing its fizz.",
-      "Express the orange twist over the drink and add it."
+      "Fill a highball glass with a moderate amount of ice.",
+      "Add the bitter aperitivo and Campari.",
+      "Slowly pour in the Indian tonic and stir once to preserve the bubbles.",
+      "Express the orange twist over the glass and add it as a garnish."
     ],
     "source_url": "https://www.liquor.com/recipes/americano/",
     "source_label": "Research reference (preparation method)",
@@ -271,14 +271,14 @@
     "ingredients": [
       {
         "name": "Select",
-        "quantity": "6-9 cl",
+        "quantity": "6–9 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
         "name": "Soda Water",
-        "quantity": "Glas auffüllen",
+        "quantity": "To top up",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
@@ -300,11 +300,11 @@
     ],
     "technique": "Built",
     "glass": "Highball",
-    "method_note": "House variation; technique adapted from the Select Americano, omitting vermouth as in your spreadsheet.",
+    "method_note": "A straightforward, refreshing long drink of Select and chilled soda.",
     "steps": [
-      "Fill a highball glass with plenty of ice.",
-      "Add Select in the range listed (6–9 cl).",
-      "Fill the glass with chilled soda water and gently stir.",
+      "Fill a highball glass with ice.",
+      "Pour in 6–9 cl Select, depending on how strong you prefer it.",
+      "Top up with chilled soda water and stir gently.",
       "Finish with an orange twist."
     ],
     "source_url": "https://selectaperitivo.com/our-cocktails/",
@@ -323,21 +323,21 @@
       },
       {
         "name": "Disaronno",
-        "quantity": "1,5 cl",
+        "quantity": "1.5 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
         "name": "Angostura Bitter Orange",
-        "quantity": "2 Tropfen",
+        "quantity": "2 drops",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
         "name": "Ice",
-        "quantity": "Mittel",
+        "quantity": "A moderate amount",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -345,10 +345,10 @@
     ],
     "technique": "Stirred",
     "glass": "Rocks glass",
-    "method_note": "House variation. A stirred amaretto-and-vermouth template was used; no exact published match verified.",
+    "method_note": "Amaretto softens sweet vermouth and orange bitters in this easy stirred drink.",
     "steps": [
-      "Fill a mixing glass with ice.",
-      "Measure in Giusti vermouth, Disaronno and the specified drops of orange bitters.",
+      "Add ice to a mixing glass.",
+      "Pour in sweet red vermouth and Disaronno, followed by two drops of orange bitters.",
       "Stir until well chilled.",
       "Strain into a rocks glass over fresh ice."
     ],
@@ -397,12 +397,12 @@
     ],
     "technique": "Built",
     "glass": "Wine glass",
-    "method_note": "Uses classic limoncello spritz technique, preserving your recipe’s ratios.",
+    "method_note": "Limoncello, prosecco and soda make a bright, sparkling aperitif.",
     "steps": [
-      "Fill a large wine glass with plenty of ice.",
-      "Add the limoncello, then gently pour in the chilled prosecco.",
-      "Top with soda water and give one gentle stir.",
-      "Express and add the lemon twist; serve immediately."
+      "Fill a large wine glass with ice.",
+      "Pour in the limoncello, followed by chilled prosecco.",
+      "Top with soda water and stir once, gently.",
+      "Express the lemon twist over the glass and add it as a garnish."
     ],
     "source_url": "https://www.bbcgoodfood.com/recipes/limoncello-spritz",
     "source_label": "Research reference (preparation method)",
@@ -449,11 +449,11 @@
     ],
     "technique": "Built",
     "glass": "Wine glass",
-    "method_note": "Jonas variant retains its different prosecco/limoncello/soda ratio.",
+    "method_note": "A lighter limoncello variation with a little more prosecco and soda.",
     "steps": [
-      "Fill a large wine glass with plenty of ice.",
-      "Measure the limoncello according to the Jonas version.",
-      "Add the prosecco and soda water in the amounts shown and stir very gently.",
+      "Fill a large wine glass with ice.",
+      "Add the limoncello, then pour in the chilled prosecco and soda water.",
+      "Stir gently to keep the drink sparkling.",
       "Finish with a lemon twist and serve."
     ],
     "source_url": "https://www.bbcgoodfood.com/recipes/limoncello-spritz",
@@ -501,11 +501,11 @@
     ],
     "technique": "Built",
     "glass": "Wine glass",
-    "method_note": "The official Select Spritz preparation uses prosecco, Select and soda with an olive garnish.",
+    "method_note": "A bittersweet spritz finished with a pickled olive.",
     "steps": [
-      "Fill a large wine glass with plenty of ice.",
-      "Add chilled prosecco, Select and soda water in the listed amounts.",
-      "Stir briefly and gently to retain carbonation.",
+      "Fill a large wine glass with ice.",
+      "Add chilled prosecco, Select and soda water.",
+      "Stir briefly and gently to keep the bubbles.",
       "Garnish with the pickled olive."
     ],
     "source_url": "https://selectaperitivo.com/select-spritz/",
@@ -553,12 +553,12 @@
     ],
     "technique": "Built",
     "glass": "Wine glass",
-    "method_note": "Classic spritz technique; the exact quantities are those in the spreadsheet.",
+    "method_note": "A sparkling orange aperitivo served with plenty of ice.",
     "steps": [
       "Fill a large wine glass with ice.",
-      "Add chilled prosecco, Aperol and soda water.",
-      "Gently stir to combine without flattening the bubbles.",
-      "Express the orange twist over the drink and garnish."
+      "Pour in chilled prosecco, Aperol and soda water.",
+      "Give it a gentle stir without flattening the bubbles.",
+      "Finish with an orange twist."
     ],
     "source_url": "https://www.liquor.com/recipes/aperol-spritz/",
     "source_label": "Research reference (preparation method)",
@@ -605,12 +605,12 @@
     ],
     "technique": "Built",
     "glass": "Wine glass",
-    "method_note": "House variation using the standard spritz method; the bitter aperitif is Gran Classico.",
+    "method_note": "A richly herbal bitter aperitivo gives this spritz extra depth.",
     "steps": [
-      "Fill a large wine glass with plenty of ice.",
-      "Add prosecco, Tempus Fugit Gran Classico and soda water using the listed quantities.",
-      "Stir once or twice very gently.",
-      "Garnish with the orange twist and serve while sparkling."
+      "Fill a large wine glass with ice.",
+      "Add the prosecco, bitter aperitivo and soda water.",
+      "Stir once or twice, gently, so the drink stays sparkling.",
+      "Garnish with an orange twist."
     ],
     "source_url": "https://selectaperitivo.com/select-spritz/",
     "source_label": "Research reference (preparation method)",
@@ -635,14 +635,14 @@
       },
       {
         "name": "Ice",
-        "quantity": "Mittel",
+        "quantity": "A moderate amount",
         "garnish": true,
         "optional": true,
         "kind": "ice"
       },
       {
         "name": "Cucumber slice",
-        "quantity": "1-2",
+        "quantity": "1–2",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
@@ -650,12 +650,12 @@
     ],
     "technique": "Built",
     "glass": "Highball",
-    "method_note": "Gin and tonic technique; the pink-pepper tonic is the designated mixer.",
+    "method_note": "A cucumber-finished gin and tonic with pink-pepper spice.",
     "steps": [
-      "Fill a highball or balloon glass with the listed amount of ice.",
-      "Pour in Hendrick’s gin.",
-      "Top gently with Schweppes Pink Pepper Tonic.",
-      "Give a short stir and add the cucumber slice(s)."
+      "Fill a highball or balloon glass with a moderate amount of ice.",
+      "Add the gin.",
+      "Pour in Schweppes Pink Pepper Tonic slowly to preserve its fizz.",
+      "Stir once and finish with one or two cucumber slices."
     ],
     "source_url": "https://www.liquor.com/recipes/gin-and-tonic/",
     "source_label": "Research reference (preparation method)",
@@ -680,7 +680,7 @@
       },
       {
         "name": "Ice",
-        "quantity": "Mittel",
+        "quantity": "A moderate amount",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -688,12 +688,12 @@
     ],
     "technique": "Built",
     "glass": "Highball",
-    "method_note": "Gin and tonic technique with the exact branded pairing from the spreadsheet.",
+    "method_note": "An aromatic gin and tonic with Provençale herbal notes.",
     "steps": [
-      "Fill a highball glass with the listed amount of ice.",
-      "Measure in Seventh Sense gin.",
-      "Slowly pour in Swiss Mountain Spring Provençale Tonic.",
-      "Stir gently once; no additional garnish is specified in the original recipe."
+      "Add a moderate amount of ice to a highball glass.",
+      "Pour in the gin.",
+      "Top with the Provençale tonic.",
+      "Stir once, gently, and serve."
     ],
     "source_url": "https://www.liquor.com/recipes/gin-and-tonic/",
     "source_label": "Research reference (preparation method)",
@@ -718,7 +718,7 @@
       },
       {
         "name": "Ice",
-        "quantity": "Mittel",
+        "quantity": "A moderate amount",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -726,12 +726,12 @@
     ],
     "technique": "Built",
     "glass": "Highball",
-    "method_note": "The name mentions sage, but sage is not listed among the original ingredients, so none has been added.",
+    "method_note": "A crisp gin and tonic served long. No sage garnish is included in this version.",
     "steps": [
-      "Fill a highball glass with the listed amount of ice.",
-      "Add Engine gin and top with Tribute tonic.",
-      "Gently stir once to combine.",
-      "Serve as written; the source spreadsheet specifies no sage or other garnish."
+      "Add a moderate amount of ice to a highball glass.",
+      "Pour in gin and top with tonic water.",
+      "Stir gently once to combine.",
+      "Serve without a garnish; none is included in this version."
     ],
     "source_url": "https://www.liquor.com/recipes/gin-and-tonic/",
     "source_label": "Research reference (preparation method)",
@@ -778,12 +778,12 @@
     ],
     "technique": "Shaken",
     "glass": "Rocks glass",
-    "method_note": "The muddle-and-shake technique follows published Gin Basil Smash recipes.",
+    "method_note": "A lively mix of gin, fresh basil and lemon, shaken until ice-cold.",
     "steps": [
-      "Place the basil leaves in a cocktail shaker and muddle gently to release their aroma.",
-      "Add Tanqueray gin, sugar syrup and lemon juice in the listed amounts.",
-      "Add ice and shake until thoroughly cold.",
-      "Double-strain into a rocks glass with fresh ice."
+      "Put the basil leaves in a cocktail shaker and muddle gently to release their aroma.",
+      "Add gin, lemon juice and sugar syrup, then fill the shaker with ice.",
+      "Shake vigorously until well chilled.",
+      "Double-strain into a rocks glass filled with fresh ice."
     ],
     "source_url": "https://vinepair.com/cocktail-college/gin-basil-smash/",
     "source_label": "Research reference (preparation method)",
@@ -801,28 +801,28 @@
       },
       {
         "name": "Lime (4 pieces)",
-        "quantity": "1/2",
+        "quantity": "½ lime",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
         "name": "Peppermint",
-        "quantity": "1 Zweig",
+        "quantity": "1 sprig",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
         "name": "Soda Water",
-        "quantity": "Glas auffüllen",
+        "quantity": "To top up",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
         "name": "Brown sugar",
-        "quantity": "1 EL",
+        "quantity": "1 tbsp",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
@@ -837,12 +837,12 @@
     ],
     "technique": "Built",
     "glass": "Highball",
-    "method_note": "Uses the classic muddled mint, lime and sugar approach with the original quantities.",
+    "method_note": "Fresh mint, lime and white rum topped with soda for a bright, refreshing highball.",
     "steps": [
-      "Place the lime pieces, brown sugar and mint in a highball glass.",
-      "Muddle gently to extract lime juice and release the mint aroma.",
+      "Place four lime wedges (from half a lime), brown sugar and mint in a highball glass.",
+      "Muddle gently to release the lime juice and mint aroma without shredding the leaves.",
       "Add white rum and plenty of ice.",
-      "Top with soda water to fill the glass and lift gently with a bar spoon."
+      "Top up with soda water and stir gently from the bottom of the glass."
     ],
     "source_url": "https://www.liquor.com/recipes/mojito/",
     "source_label": "Research reference (preparation method)",
@@ -853,7 +853,7 @@
     "ingredients": [
       {
         "name": "Pimm's",
-        "quantity": "4,5 cl",
+        "quantity": "4.5 cl",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
@@ -867,21 +867,21 @@
       },
       {
         "name": "Fruit pieces",
-        "quantity": "was es hat",
+        "quantity": "As available",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
         "name": "Mint",
-        "quantity": "5 Blätter",
+        "quantity": "5 leaves",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
       },
       {
         "name": "Ice",
-        "quantity": "Mittel",
+        "quantity": "A moderate amount",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -889,12 +889,12 @@
     ],
     "technique": "Built",
     "glass": "Highball",
-    "method_note": "Your Pimm’s uses ginger beer instead of the more usual ginger ale; retained as written.",
+    "method_note": "Ginger beer adds a spicy lift; finish with fresh mint and whatever fruit is on hand.",
     "steps": [
-      "Fill a large highball glass with ice.",
-      "Add Pimm’s, then the ginger beer in the listed amounts.",
-      "Add whatever prepared fruit pieces you have, as noted in the spreadsheet.",
-      "Stir gently and finish with the mint leaves."
+      "Fill a large highball glass with a moderate amount of ice.",
+      "Pour in the cup liqueur, then top with ginger beer.",
+      "Add whatever fresh fruit you have on hand.",
+      "Stir lightly and finish with five mint leaves."
     ],
     "source_url": "https://www.liquor.com/recipes/pimms-cup/",
     "source_label": "Research reference (preparation method)",
@@ -933,7 +933,7 @@
       },
       {
         "name": "Ice",
-        "quantity": "Mittel",
+        "quantity": "A moderate amount",
         "garnish": true,
         "optional": true,
         "kind": "ice"
@@ -941,11 +941,11 @@
     ],
     "technique": "Built",
     "glass": "Mule mug",
-    "method_note": "House mule variant with chili ginger beer and mint; technique follows a Moscow Mule.",
+    "method_note": "A mule-style highball with vodka, lime, spicy ginger beer and mint.",
     "steps": [
-      "Fill a mule mug or highball glass with the listed amount of ice.",
-      "Add vodka and freshly squeezed lime juice.",
-      "Slowly top with Schweppes Ginger Beer & Chili, stirring lightly.",
+      "Fill a mule mug or highball glass with a moderate amount of ice.",
+      "Add vodka and fresh lime juice.",
+      "Top with Schweppes Ginger Beer & Chili and stir gently.",
       "Finish with the mint leaves."
     ],
     "source_url": "https://www.liquor.com/recipes/moscow-mule-cocktail-recipe/",
@@ -978,7 +978,7 @@
       },
       {
         "name": "Lemon juice",
-        "quantity": "1 Spritzer",
+        "quantity": "A splash",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
@@ -993,12 +993,12 @@
     ],
     "technique": "Stirred",
     "glass": "Martini glass",
-    "method_note": "The spreadsheet includes a splash of lemon juice, unlike most classic dry martinis; retained as written.",
+    "method_note": "A dry gin martini finished with a small splash of lemon juice and an olive.",
     "steps": [
-      "Chill a martini or coupe glass.",
-      "Add gin, dry vermouth and the spreadsheet’s splash of lemon juice to a mixing glass with ice.",
-      "Stir until thoroughly chilled and strain into the cold glass.",
-      "Garnish with the green olive."
+      "Chill a martini glass.",
+      "Pour gin, dry vermouth and a splash of lemon juice into a mixing glass filled with ice.",
+      "Stir until very cold, then strain into the chilled glass.",
+      "Garnish with a green olive."
     ],
     "source_url": "https://www.liquor.com/recipes/dry-martini/",
     "source_label": "Research reference (preparation method)",
@@ -1030,14 +1030,14 @@
       },
       {
         "name": "Mint leaves",
-        "quantity": "4 Blätter",
+        "quantity": "4 leaves",
         "garnish": false,
         "optional": false,
         "kind": "ingredient"
       },
       {
         "name": "Lime",
-        "quantity": "1 Schnitz",
+        "quantity": "1 wedge",
         "garnish": true,
         "optional": true,
         "kind": "garnish"
@@ -1045,12 +1045,12 @@
     ],
     "technique": "Built",
     "glass": "Wine glass",
-    "method_note": "Hugo method adapted from an elderflower spritz, with syrup instead of elderflower liqueur.",
+    "method_note": "Prosecco, elderflower, mint and lime combine in this fragrant spritz.",
     "steps": [
-      "Gently press the mint leaves in a large wine glass with the elderflower syrup.",
-      "Add chilled prosecco and soda water in the listed quantities.",
-      "Stir briefly and gently; add the lime wedge.",
-      "Serve immediately. No ice was specified in the spreadsheet, so it is not added to the ingredient list."
+      "Gently press the mint leaves with the elderflower syrup in a large wine glass.",
+      "Pour in chilled prosecco, followed by soda water.",
+      "Stir gently and add the lime wedge.",
+      "Serve immediately."
     ],
     "source_url": "https://www.liquor.com/integrated/hugo-spritz-cocktail-recipe",
     "source_label": "Research reference (preparation method)",
@@ -1097,12 +1097,12 @@
     ],
     "technique": "Shaken",
     "glass": "Rocks glass",
-    "method_note": "With optional egg white, use a dry shake before shaking with ice.",
+    "method_note": "Whiskey, fresh lemon and syrup shaken cold, with optional egg white for a silky foam.",
     "steps": [
-      "Measure whiskey, lemon juice, sugar syrup and (if using) egg white into a shaker.",
-      "If using egg white, shake vigorously without ice first to create foam.",
-      "Add ice and shake until chilled. If omitting egg white, shake once with ice.",
-      "Strain into a rocks glass with fresh ice."
+      "Pour whiskey, lemon juice and sugar syrup into a cocktail shaker. Add the egg white if using.",
+      "If using egg white, shake without ice first to build a light foam.",
+      "Add ice and shake vigorously until cold. Without egg white, shake once with ice.",
+      "Strain into a rocks glass over fresh ice."
     ],
     "source_url": "https://www.liquor.com/recipes/whiskey-sour/",
     "source_label": "Research reference (preparation method)",

@@ -39,7 +39,7 @@
    <div class="match-group"><div class="match-group-heading"><h3>{{ heading }}</h3><small>{{ group|length }}</small></div>
     {% for r in group %}<a class="pantry-match" href="{{ url_for('recipe_view',recipe_id=r.id) }}">
       <span class="match-icon {% if r.can_make %}ready{% endif %}" aria-hidden="true">{{ '✓' if r.can_make else '+' }}</span>
-      <span class="match-body"><strong>{{ r.title }}</strong><small>{% if r.can_make %}{{ subheading }}{% else %}Need: {{ r.missing[:3]|map(attribute='name')|join(', ') }}{% if r.missing|length>3 %} +{{ r.missing|length-3 }} more{% endif %}{% endif %}</small></span>
+      <span class="match-body"><strong>{{ r.title }}</strong><small>{% if r.can_make %}{{ subheading }}{% else %}Need: {{ r.missing[:3]|map(attribute='display_name')|join(', ') }}{% if r.missing|length>3 %} +{{ r.missing|length-3 }} more{% endif %}{% endif %}</small></span>
       <span class="match-count">{{ r.match_count }}/{{ r.required_count }}</span>
     </a>{% endfor %}
    </div>

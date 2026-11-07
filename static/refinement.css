@@ -115,3 +115,16 @@ a.settings-link:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
  .settings-tabs{width:100%}.settings-tab{flex:1;padding:10px}
  .dialog-buttons .button{flex:1}
 }
+
+/* Pictogram: deep forest tile for light mode, warm softened forest in dark. */
+.brand-symbol.brand-pictogram{width:39px;height:39px;display:inline-flex;padding:0;background:transparent;border:0;overflow:hidden;flex:0 0 39px;border-radius:10px;box-shadow:0 0 0 1px var(--line)}
+.brand-pictogram img{width:100%;height:100%;display:block;object-fit:contain}
+.brand-pictogram-dark{display:none!important}
+html[data-theme=dark] .brand-pictogram-light{display:none!important}
+html[data-theme=dark] .brand-pictogram-dark{display:block!important}
+.auth-brand-icon{width:44px;height:44px;display:inline-block;object-fit:contain;flex:none;border-radius:11px}
+.auth-brand{gap:12px}
+.auth-mobile-brand{align-items:center;gap:9px}
+.auth-mobile-brand .auth-brand-icon{width:34px;height:34px}
+@media(max-width:900px){.auth-mobile-brand{display:flex}}
+@media(max-width:590px){.brand-symbol.brand-pictogram{width:34px;height:34px;flex-basis:34px;border-radius:9px}}

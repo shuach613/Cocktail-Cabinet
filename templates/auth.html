@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block title %}{% if mode=='setup' %}First-run setup{% elif mode=='invite' %}Accept invitation{% else %}Sign in{% endif %}{% endblock %}
 {% block auth_content %}
-<div class="auth-layout"><div class="auth-art"><div class="auth-brand">◉ <span>The Cocktail<br><b>Cabinet.</b></span></div><div class="auth-art-content"><span class="eyebrow light">A BETTER KIND OF RECIPE BOOK</span><h1>Something<br>good is<br><em>mixing.</em></h1><p>Your private collection of drinks, the bottles on your shelf, and the people you share them with.</p><div class="auth-drawing"><div class="draw-glass"><span></span></div><div class="draw-circle"></div></div></div><div class="auth-credits">THE GOOD STUFF, ALL IN ONE PLACE.</div></div>
-<section class="auth-panel"><div class="auth-panel-inner"><div class="auth-mobile-brand">◉ The Cocktail <b>Cabinet.</b></div>
+<div class="auth-layout"><div class="auth-art"><div class="auth-brand"><img class="auth-brand-icon" src="{{ url_for('static',filename='icon-dark.svg') }}" alt=""> <span>The Cocktail<br><b>Cabinet.</b></span></div><div class="auth-art-content"><span class="eyebrow light">A BETTER KIND OF RECIPE BOOK</span><h1>Something<br>good is<br><em>mixing.</em></h1><p>Your private collection of drinks, the bottles on your shelf, and the people you share them with.</p><div class="auth-drawing"><div class="draw-glass"><span></span></div><div class="draw-circle"></div></div></div><div class="auth-credits">THE GOOD STUFF, ALL IN ONE PLACE.</div></div>
+<section class="auth-panel"><div class="auth-panel-inner"><div class="auth-mobile-brand"><img class="auth-brand-icon" src="{{ url_for('static',filename='icon.svg') }}" alt=""> The Cocktail <b>Cabinet.</b></div>
  {% if mode=='expired' %}<span class="eyebrow">INVITATION</span><h2>This link has expired.</h2><p class="muted">An invitation can only be used once and is valid for seven days. Ask your administrator for a new link.</p><a class="button" href="{{ url_for('login') }}">Back to sign in</a>
  {% else %}
  <span class="eyebrow">{% if mode=='setup' %}FIRST TIME HERE{% elif mode=='invite' %}YOU'RE INVITED{% else %}WELCOME BACK{% endif %}</span>

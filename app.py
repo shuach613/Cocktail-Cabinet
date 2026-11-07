@@ -145,6 +145,23 @@ def headers(resp):
                                             "connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'")
     return resp
 
+@app.template_filter('with_ingredient_types')
+def with_ingredient_types(text, items):
+    """Contextualize exact product names in free-text recipe instructions.
+
+    Only registered branded ingredients belonging to the displayed recipe are
+    considered. Replacement is plain text and is auto-escaped by Jinja; no
+    unsafe HTML markup or guesswork about partial brand nicknames is needed.
+    """
+    display = {item['name'].casefold(): item['display_name'] for item in items
+               if item.get('is_brand') and item.get('display_name') != item['name']}
+    if not display or not text:
+        return text
+    names = sorted(display, key=len, reverse=True)
+    pattern = re.compile(r'(?<!\w)(' + '|'.join(re.escape(n) for n in names) + r')(?!\w)', re.IGNORECASE)
+    return pattern.sub(lambda match: display[match.group(0).casefold()], text)
+
+
 @app.context_processor
 def ctx(): return {'csrf_token':session.get('_csrf'),'viewer':getattr(g,'user',None), 'recipe_image_url': recipe_image_url}
 

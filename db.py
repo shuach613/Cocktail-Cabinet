@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from flask import g
 from catalog import TREE, CLASSIFICATIONS, GENERIC_LABELS
-from migrations import apply_english_photos_v2
+from migrations import apply_english_photos_v2, apply_recipe_polish_v3
 
 DATA_DIR = Path(os.getenv('DATA_DIR', '/data'))
 DB_PATH = DATA_DIR / 'cabinet.sqlite3'
@@ -82,6 +82,7 @@ def ensure_db():
             seed(con)
             con.execute("INSERT INTO settings(key,value) VALUES('seeded_v1','true')")
         apply_english_photos_v2(con)
+        apply_recipe_polish_v3(con)
 
 def seed(con):
     def add_tree(tree,parent=None):
@@ -147,6 +148,25 @@ def ingredient_matches(item,p_cat_ids,p_ing_ids,expanded,explicit,ancestors):
                 if generic in expanded.get(owned_ing,set()): return True
     return False
 
+def branded_display_name(name, is_brand, category_ids, categories, ancestor_lookup):
+    """Return a friendly brand label using only its *actual* taxonomy tags.
+
+    Show leaf-most explicitly assigned categories, suppressing redundant parents
+    (e.g. Gin is omitted when London Dry Gin is listed). This is calculated at
+    read time, so category edits automatically update all existing recipes.
+    """
+    if not is_brand or not category_ids:
+        return name
+    names = {cat['id']: cat['name'] for cat in categories}
+    specific = [cid for cid in category_ids
+                if cid in names and not any(
+                    cid != other and cid in ancestor_lookup(other)
+                    for other in category_ids)]
+    # Category IDs preserve the administrator's taxonomy insertion order.
+    classification = ', '.join(names[cid] for cid in sorted(specific))
+    return f'{name} ({classification})' if classification else name
+
+
 def recipe_card(con,recipe,pantry_cats,pantry_ings,maps):
     cats,expanded,explicit,ancestors=maps
     items=con.execute('''SELECT ri.*,i.name,i.is_brand FROM recipe_items ri JOIN ingredients i ON i.id=ri.ingredient_id
@@ -154,6 +174,8 @@ def recipe_card(con,recipe,pantry_cats,pantry_ings,maps):
     data=[dict(i) for i in items]
     for item in data:
         item['categories']=sorted(expanded.get(item['ingredient_id'],set()))
+        item['display_name']=branded_display_name(
+            item['name'], item['is_brand'], explicit.get(item['ingredient_id'],set()), cats, ancestors)
         item['matched']=bool(ingredient_matches(item,pantry_cats,pantry_ings,expanded,explicit,ancestors))
     needs=[i for i in data if i['kind']=='ingredient' and not i['optional']]
     missing=[i for i in needs if not i['matched']]
