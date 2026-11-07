@@ -34,7 +34,8 @@ def test_pantry_groups_products_and_excludes_ice(client):
     assert response.status_code==200
     assert b'Specific bottles & brands' not in response.data
     assert b'Tanqueray London Dry Gin' in response.data
-    assert b'Ice is always assumed available' in response.data
+    assert b'Ice is always assumed available' not in response.data
+    assert b'icons.svg#chevron-down' in response.data
     assert b'"Ice"' not in response.data  # no ice shelf input label
     con=db.connect()
     ice=con.execute("SELECT id FROM categories WHERE name='Ice'").fetchone()['id']
