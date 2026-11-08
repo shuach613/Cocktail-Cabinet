@@ -69,6 +69,7 @@ def register_management_routes(bp, permitted, admin_only):
     @bp.get('/ingredients/<int:ingredient_id>')
     @permitted('read')
     def catalog_ingredient_detail(ingredient_id):
+        if (response := denied()): return response
         con = get_db()
         try:
             item = get_ingredient(con, ingredient_id)
@@ -80,6 +81,7 @@ def register_management_routes(bp, permitted, admin_only):
     @bp.get('/categories/<int:category_id>')
     @permitted('read')
     def catalog_category_detail(category_id):
+        if (response := denied()): return response
         try:
             item = get_category(get_db(), category_id)
             refs = counts_category(get_db(), category_id)
@@ -307,7 +309,7 @@ def register_management_routes(bp, permitted, admin_only):
     def management_update_user(user_id):
         if (response := denied()): return response
         def op(con):
-            body = json_object({"active", "role", "username", "email"})
+            body = json_object({"active", "role", "username", "email", "confirm_admin"})
             if not body:
                 raise ValueError("Provide at least one field.")
             row = con.execute(
@@ -319,6 +321,8 @@ def register_management_routes(bp, permitted, admin_only):
             role = body.get("role", row["role"])
             if role not in ("admin", "member"):
                 raise ValueError("role must be admin or member.")
+            if row["role"] != "admin" and role == "admin" and body.get("confirm_admin") is not True:
+                raise ValueError("Promoting a member to admin requires confirm_admin=true.")
             if user_id == g.user["id"] and (not active or role != "admin"):
                 raise CatalogConflict("Cannot deactivate or demote your own administrator account.")
             if row["role"] == "admin" and (role != "admin" or not active):
