@@ -7,6 +7,7 @@ from pathlib import Path
 from flask import g
 from catalog import TREE, CLASSIFICATIONS, GENERIC_LABELS
 from migrations import apply_english_photos_v2, apply_recipe_polish_v3
+from api_schema import initialize_api_schema
 
 DATA_DIR = Path(os.getenv('DATA_DIR', '/data'))
 DB_PATH = DATA_DIR / 'cabinet.sqlite3'
@@ -83,6 +84,7 @@ def ensure_db():
             con.execute("INSERT INTO settings(key,value) VALUES('seeded_v1','true')")
         apply_english_photos_v2(con)
         apply_recipe_polish_v3(con)
+        initialize_api_schema(con)
 
 def seed(con):
     def add_tree(tree,parent=None):

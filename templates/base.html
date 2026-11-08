@@ -13,7 +13,9 @@
  <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
  <link rel="stylesheet" href="{{ url_for('static',filename='refinement.css') }}">
  <link rel="stylesheet" href="{{ url_for('static',filename='premium.css') }}">
+ <link rel="stylesheet" href="{{ url_for('static',filename='api.css') }}">
  <meta name="csrf-token" content="{{ csrf_token }}">
+ <meta name="collection-revision" content="{{ collection_revision }}">
  <title>{% block title %}Cocktail Cabinet{% endblock %} · The Cocktail Cabinet</title>
 </head>
 <body data-auth="{{ 'yes' if viewer else 'no' }}">
@@ -41,6 +43,7 @@
 {% else %}<main class="auth-root">{% block auth_content %}{% endblock %}</main>{% endif %}
 {% with messages=get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-stack" role="status">{% for kind,text in messages %}<div class="flash {{ kind }}">{{ text }}</div>{% endfor %}</div>{% endif %}{% endwith %}
 <script src="{{ url_for('static',filename='app.js') }}" defer></script>
+<script src="{{ url_for('static',filename='live.js') }}" defer></script>
 {% block extra_scripts %}{% endblock %}
 </body>
 </html>

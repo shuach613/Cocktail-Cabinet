@@ -136,3 +136,29 @@ The application uses the **Bordeaux & Champagne** design system in both light an
 
 The installed PWA uses its own matching cocktail-shaker-and-glass icons, plus a same-origin, versioned static-asset cache. The browser theme follows the device initially, then remembers a user's explicit light/dark choice. No extra secrets, database migrations, Compose changes or third-party UI dependencies are introduced by this redesign.
 
+
+## Per-user REST API (v1)
+
+Cocktail Cabinet now includes a private JSON API at `/api/v1/`. Each request requires a personal, hashed bearer token issued under **Settings → API access** or **My account → API access**. Tokens are either **read-only** or **read/write**, are revocable, can expire, and always inherit the owner's website permissions. Session cookies cannot be used as API credentials. No new .env, Docker ports, databases or setup steps are needed.
+
+- **Recipes:** `GET /api/v1/recipes` (paginated; `page`, `per_page`, `q`, `technique`), `GET /api/v1/recipes/{id}`, `POST /api/v1/recipes`, `PATCH/PUT /api/v1/recipes/{id}`, `DELETE /api/v1/recipes/{id}`.
+- **Private recipe images:** `GET /api/v1/recipes/{id}/image?download=1` (binary WebP), `POST /api/v1/recipes/{id}/image` (multipart form with file field `image`; JPG/PNG/WebP up to 4MB), `DELETE /api/v1/recipes/{id}/image`. All three require bearer authentication; uploading/deleting also requires write scope and recipe ownership or admin.
+- **Ingredients/categories:** `GET /api/v1/ingredients` and `/categories`; `POST /api/v1/ingredients` supports a new branded ingredient plus new nested categories transactionally. Administrators can additionally rename/reclassify ingredients and create/move categories through their API endpoints.
+- **Integration helpers:** `GET /api/v1/me`, `GET /api/v1/changes` (collection revision), `GET /api/v1/openapi.json` (full authenticated OpenAPI 3.0 documentation).
+- **Visibility:** API and browser edits immediately affect the shared SQLite database. Open, visible recipe/collection pages in the PWA/desktop browser check for revisions every **5 seconds** and automatically update, without a manual reload. When the user has unsaved shelf selections, a refresh notice preserves their input.
+- **Persistence:** API tokens, users, recipes and photos survive ordinary Docker image updates in the original `cabinet_data` volume. New tables and revision triggers are created automatically and idempotently. Back up the volume before upgrading.
+
+Example:
+
+```bash
+curl -H 'Authorization: Bearer YOUR_PERSONAL_TOKEN' \
+  'https://cocktails.example.com/api/v1/recipes?page=1&per_page=50'
+
+curl -L -H 'Authorization: Bearer YOUR_PERSONAL_TOKEN' \
+  'https://cocktails.example.com/api/v1/recipes/1/image?download=1' -o cocktail.webp
+
+curl -X POST -H 'Authorization: Bearer YOUR_WRITE_TOKEN' \
+  -F 'image=@cocktail.jpg' 'https://cocktails.example.com/api/v1/recipes/23/image'
+```
+
+Use HTTPS and keep tokens in an integration's secrets store, never in query strings. Image URLs in JSON responses are private and must be fetched with the same Authorization header. The PWA service worker continues to cache only public static files, not private API, photo or recipe responses.

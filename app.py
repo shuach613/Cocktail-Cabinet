@@ -24,6 +24,7 @@ from PIL import Image, UnidentifiedImageError
 from db import (DATA_DIR, get_db, close_db, ensure_db, connect, ingredient_category_maps,
                 recipe_card)
 from bootstrap import persistent_secret
+from api_schema import collection_revision
 
 app = Flask(__name__)
 # Reuse the automatically generated signing key in the persistent Docker volume.
@@ -117,6 +118,10 @@ def admin_required(fn):
 
 @app.before_request
 def security():
+    if request.path.startswith('/api/v1/'):
+        # API requests are authenticated with personal bearer tokens, not sessions.
+        g.user = None
+        return
     con=get_db()
     uid=session.get('user_id')
     g.user=con.execute('SELECT * FROM users WHERE id=? AND active=1',(uid,)).fetchone() if uid else None
@@ -163,7 +168,7 @@ def with_ingredient_types(text, items):
 
 
 @app.context_processor
-def ctx(): return {'csrf_token':session.get('_csrf'),'viewer':getattr(g,'user',None), 'recipe_image_url': recipe_image_url}
+def ctx(): return {'csrf_token':session.get('_csrf'),'viewer':getattr(g,'user',None), 'recipe_image_url': recipe_image_url, 'collection_revision': collection_revision(get_db())}
 
 @app.get('/health')
 def health(): return {'status':'ok'}
@@ -705,5 +710,8 @@ def sw():
 @app.errorhandler(413)
 def too_large(_):
     return 'Image or request too large (4 MB maximum).',413
+
+from api import register_api
+register_api(app)
 
 if __name__=='__main__': app.run(host='0.0.0.0',port=int(os.getenv('PORT','8080')),debug=False)
