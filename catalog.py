@@ -11,7 +11,7 @@ TREE = {
     'Aperitifs & liqueurs': {
         'Bitter aperitivo': {'Italian red bitter': {}},
         'Amaro': {}, 'Cocktail bitters': {'Orange bitters': {}},
-        'Limoncello': {}, 'Amaretto': {}, 
+        'Limoncello': {}, 'Amaretto': {}, 'Liqueurs': {},
     },
     'Fortified wine': {'Vermouth': {'Sweet red vermouth': {}, 'Dry vermouth': {}}},
     'Wine': {'Sparkling wine': {}},
@@ -27,7 +27,7 @@ CLASSIFICATIONS = {
  'Tanqueray London Dry Gin':['London Dry Gin'],
  "Hendrick's Gin":['Gin'], 'Seventh Sense Gin':['Gin'], 'Engine Gin':['Gin'], 'Gin':['Gin'],
  'Campari':['Italian red bitter'], 'Select':['Italian red bitter'], 'Tempus Fugit Gran Classico':['Bitter aperitivo'],
- 'Cynar':['Amaro'], 'Pimm\'s':['Aperitifs & liqueurs'],
+ 'Cynar':['Amaro'], 'Pimm\'s':['Liqueurs'],
  'Carpano Antica Formula':['Sweet red vermouth'],
  'Carpano Antica Formula / Cocchi/Dos Deus':['Sweet red vermouth'],
  'Giuseppe Giusti Vermouth':['Sweet red vermouth'], 'Dry Vermouth':['Dry vermouth'],
