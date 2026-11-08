@@ -162,3 +162,15 @@ curl -X POST -H 'Authorization: Bearer YOUR_WRITE_TOKEN' \
 ```
 
 Use HTTPS and keep tokens in an integration's secrets store, never in query strings. Image URLs in JSON responses are private and must be fetched with the same Authorization header. The PWA service worker continues to cache only public static files, not private API, photo or recipe responses.
+
+## ChatGPT / Model Context Protocol connector
+
+Cocktail Cabinet now exposes a private Streamable HTTP MCP endpoint at `/mcp`, using
+existing per-user API keys for compatible MCP clients and secure OAuth 2.1 account
+linking for ChatGPT. The connection offers recipe CRUD, classification browsing,
+photo downloads/uploads, and the same live PWA synchronization as the REST API.
+
+See [MCP connector setup and security](docs/MCP_CONNECTOR.md) for step-by-step
+Synology, ChatGPT and bearer-key client instructions. No extra container, port,
+`.env` file or database reset is necessary. **ChatGPT write-enabled MCP support
+is subject to account/workspace availability.** Do not paste API keys into chats.

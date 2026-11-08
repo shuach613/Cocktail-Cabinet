@@ -118,9 +118,13 @@ def admin_required(fn):
 
 @app.before_request
 def security():
-    if request.path.startswith('/api/v1/'):
-        # API requests are authenticated with personal bearer tokens, not sessions.
+    if (request.path.startswith('/api/v1/') or request.path == '/mcp' or
+            request.path in ('/oauth/register', '/oauth/token', '/oauth/revoke')):
+        # Machine-to-machine endpoints authenticate their own bearer credentials.
+        # Browser sessions and CSRF tokens are NEVER accepted as substitutes.
         g.user = None
+        if request.path == '/mcp':
+            request.max_content_length = 6_000_000  # 4MB photo as base64 JSON
         return
     con=get_db()
     uid=session.get('user_id')
@@ -713,5 +717,7 @@ def too_large(_):
 
 from api import register_api
 register_api(app)
+from mcp_connector import register_mcp
+register_mcp(app)
 
 if __name__=='__main__': app.run(host='0.0.0.0',port=int(os.getenv('PORT','8080')),debug=False)
