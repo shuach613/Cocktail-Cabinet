@@ -10,6 +10,8 @@
  if(!meta)return;
  const initial=Number(meta.content);
  if(!Number.isSafeInteger(initial))return;
+ const shelfMeta=document.querySelector('meta[name="shelf-revision"]');
+ let shelfRevision=shelfMeta?Number(shelfMeta.content):0;
  let revision=initial, busy=false,changed=false;
  let unsavedShelf=false;
  const shelf=document.getElementById('pantry-form');
@@ -35,8 +37,9 @@
    if(response.status===401||response.redirected)return;
    if(!response.ok)return;
    const data=await response.json();
-   if(typeof data.revision==='number'&&data.revision!==revision){
-    revision=data.revision;changed=true;
+   if((typeof data.revision==='number'&&data.revision!==revision)||
+      (typeof data.shelf_revision==='number'&&data.shelf_revision!==shelfRevision)){
+    revision=data.revision;shelfRevision=data.shelf_revision;changed=true;
     if(unsavedShelf){showUpdateNotice();return;}
     location.reload();
    }

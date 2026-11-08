@@ -175,3 +175,16 @@ After merging and deploying, open a **new** OAuth connection attempt and click
 inspect Chrome DevTools → Console and Network for a CSP violation or a failed
 `POST /oauth/authorize`, sharing only the status codes and safe error text.
 Do not share a callback URL containing an OAuth `code`, `state` or tokens.
+
+## Read and update the connected user's shelf
+
+Use `get_my_shelf` to find a bottle or generic subcategory ID and its
+current ownership flag. Use `set_shelf_item_owned` with
+`{"ingredient_id":12,"owned":true}` for a brand or
+`{"category_id":7,"owned":false}` for a generic category; never both IDs.
+
+For a batch, `update_my_shelf` accepts `{"changes":[...]}` with at most
+100 entries, validated and committed together. No other owned selections,
+catalogue entries or recipes are modified. Permissions follow the connected
+user and token read/write scope. The installed PWA detects edits through a
+per-user revision counter.

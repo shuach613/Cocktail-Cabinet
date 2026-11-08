@@ -178,6 +178,73 @@
             }
           }
         }
+      },
+      "ShelfChange": {
+        "type": "object",
+        "required": [
+          "owned"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "ingredient_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "category_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "owned": {
+            "type": "boolean"
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "ingredient_id"
+            ]
+          },
+          {
+            "required": [
+              "category_id"
+            ]
+          }
+        ]
+      },
+      "Shelf": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer"
+          },
+          "revision": {
+            "type": "integer"
+          },
+          "owned_category_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "owned_ingredient_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
       }
     }
   },
@@ -735,7 +802,7 @@
     },
     "/changes": {
       "get": {
-        "summary": "Current collection revision for synchronization",
+        "summary": "Current shared collection revision and this user's private shelf revision",
         "operationId": "getChanges",
         "security": [
           {
@@ -761,6 +828,113 @@
         "responses": {
           "200": {
             "description": "OpenAPI schema"
+          }
+        }
+      }
+    },
+    "/shelf": {
+      "get": {
+        "operationId": "getMyShelf",
+        "summary": "List the connected user's shelf and owned state",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authenticated personal shelf response"
+          },
+          "400": {
+            "description": "Invalid shelf operation"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Read-only token"
+          }
+        }
+      }
+    },
+    "/shelf/items": {
+      "post": {
+        "operationId": "setShelfItemOwned",
+        "summary": "Mark one branded bottle or generic subcategory owned/unowned, without replacing other selections",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authenticated personal shelf response"
+          },
+          "400": {
+            "description": "Invalid shelf operation"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Read-only token"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShelfChange"
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateMyShelf",
+        "summary": "Atomically change up to 100 shelf selections; preserve all unspecified selections",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authenticated personal shelf response"
+          },
+          "400": {
+            "description": "Invalid shelf operation"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Read-only token"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "changes"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "changes": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 100,
+                    "items": {
+                      "$ref": "#/components/schemas/ShelfChange"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }

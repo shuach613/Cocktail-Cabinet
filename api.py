@@ -21,7 +21,8 @@ from flask import Blueprint, abort, flash, g, jsonify, redirect, render_template
 from PIL import Image, ImageOps, UnidentifiedImageError
 from werkzeug.exceptions import HTTPException
 
-from api_schema import collection_revision
+from api_schema import collection_revision, shelf_revision
+from shelf_api import shelf_state, apply_shelf_changes
 import db as db_module
 from db import get_db, ingredient_category_maps, recipe_card
 
@@ -498,10 +499,40 @@ def register_api(app):
         except (ValueError, sqlite3.IntegrityError) as exc:
             return error(str(exc), 400)
 
+    @bp.get('/shelf')
+    @permitted('read')
+    def get_my_shelf():
+        return jsonify({'data': shelf_state(get_db(), g.user['id'])})
+
+    @bp.post('/shelf/items')
+    @permitted('write')
+    def set_shelf_item_owned():
+        payload=request.get_json(silent=True)
+        if not isinstance(payload,dict):
+            return error('Send a shelf item JSON object.',400)
+        try:
+            state=apply_shelf_changes(get_db(),g.user['id'],[payload])
+        except ValueError as exc:
+            return error(str(exc),400)
+        return jsonify({'data':state})
+
+    @bp.patch('/shelf/items')
+    @permitted('write')
+    def update_my_shelf():
+        payload=request.get_json(silent=True)
+        if not isinstance(payload,dict) or set(payload)!={'changes'}:
+            return error('Send a JSON object with a changes array.',400)
+        try:
+            state=apply_shelf_changes(get_db(),g.user['id'],payload['changes'])
+        except ValueError as exc:
+            return error(str(exc),400)
+        return jsonify({'data':state})
+
     @bp.get('/changes')
     @permitted('read')
     def changes():
-        return jsonify({'revision': collection_revision(get_db())})
+        return jsonify({'revision': collection_revision(get_db()),
+                        'shelf_revision': shelf_revision(get_db(),g.user['id'])})
 
     @bp.get('/openapi.json')
     @permitted('read')
@@ -568,4 +599,5 @@ def register_api(app):
     @app.get('/live/revision')
     @login_required
     def browser_revision():
-        return jsonify({'revision': collection_revision(get_db())})
+        return jsonify({'revision': collection_revision(get_db()),
+                        'shelf_revision': shelf_revision(get_db(),g.user['id'])})
