@@ -208,13 +208,21 @@ def setup():
 def login():
     con=get_db()
     if not con.execute('SELECT 1 FROM users LIMIT 1').fetchone(): return redirect(url_for('setup'))
-    if logged_in(): return redirect(url_for('index'))
+    if logged_in():
+        # OAuth may revisit /login while a valid session already exists.
+        # Respect the safe local continuation instead of losing ChatGPT linking.
+        nxt=request.args.get('next','') or session.get('pending_oauth_return','')
+        if nxt.startswith('/') and not nxt.startswith('//') and not urlsplit(nxt).netloc:
+            return redirect(nxt)
+        return redirect(url_for('index'))
     if request.method=='POST':
         user=con.execute('SELECT * FROM users WHERE email=? COLLATE NOCASE OR username=? COLLATE NOCASE',
                          (request.form.get('identity',''),request.form.get('identity',''))).fetchone()
         if user and user['active'] and check_password_hash(user['password_hash'],request.form.get('password','')):
+            # Save the pending OAuth continuation before session.clear().
+            fallback=session.get('pending_oauth_return','')
             session.clear();session.permanent=True;session['user_id']=user['id']
-            nxt=request.form.get('next','')
+            nxt=request.form.get('next','') or fallback
             if nxt.startswith('/') and not nxt.startswith('//') and not urlsplit(nxt).netloc:
                 return redirect(nxt)
             return redirect(url_for('index'))

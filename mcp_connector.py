@@ -265,6 +265,7 @@ def register_mcp(app):
                         'grant_types_supported':['authorization_code','refresh_token'],
                         'token_endpoint_auth_methods_supported':['none'],
                         'code_challenge_methods_supported':['S256'],
+                        'authorization_response_iss_parameter_supported':True,
                         'scopes_supported':['recipes:read','recipes:write']})
 
     @app.post('/oauth/register')
@@ -314,6 +315,10 @@ def register_mcp(app):
         if not valid:return oauth_error('invalid_request',400)
         client,uri,challenge,scope,resource,state=valid
         if not getattr(g,'user',None):
+            # The OAuth request must survive the login round-trip. The signed,
+            # same-site Flask session is a fallback if a login form loses its
+            # hidden `next` field; authorization is revalidated on return.
+            session['pending_oauth_return'] = request.full_path
             return redirect(url_for('login',next=request.full_path))
         if g.user['must_change_password']:
             return redirect(url_for('account'))
@@ -330,6 +335,11 @@ def register_mcp(app):
                                   ' '.join(sorted(scope)),resource,stamp(now()+timedelta(seconds=CODE_TTL))))
                 parameters={'code':code}
             if state:parameters['state']=state
+            # RFC 9207 issuer identification is required for ChatGPT's stable
+            # /connector_platform_oauth_redirect callback. Echo it for both
+            # approvals and denials to prevent authorization-server mix-ups.
+            parameters['iss']=public_origin()
+            session.pop('pending_oauth_return',None)
             u=urlsplit(uri);q=list(parse_qsl(u.query,keep_blank_values=True));q.extend(parameters.items())
             return redirect(urlunsplit((u.scheme,u.netloc,u.path,urlencode(q),'')))
         return render_template('mcp_consent.html',client=client,resource=resource,

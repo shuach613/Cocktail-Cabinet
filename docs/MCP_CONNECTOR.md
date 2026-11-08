@@ -136,3 +136,22 @@ If the ChatGPT custom plugin feature is not available on your plan, clients
 using the OpenAI Responses API can call an MCP server with `server_url` and a
 bearer credential. This requires separate OpenAI API access and is not the
 same as an installed ChatGPT plugin.
+
+## Troubleshoot: browser stays on Cocktail Cabinet after linking
+
+When ChatGPT launches OAuth, **log in** if prompted, then look for the
+**Connect Cocktail Cabinet** consent screen. Click **Allow connection** there:
+only that button issues the authorization code and redirects to ChatGPT.
+Signing in or opening the normal collection homepage is not enough.
+
+If the login page returns to the ordinary homepage instead of the consent
+screen, retry from ChatGPT after updating to a release containing the OAuth
+login-continuation fix. The server now preserves the pending authorization
+request through login and advertises RFC 9207 issuer identification, allowing
+ChatGPT's stable `https://chatgpt.com/connector_platform_oauth_redirect` callback.
+After upgrading, disconnect and recreate the ChatGPT connection to fetch the
+updated OAuth metadata and exact callback URI. Test with a read-only tool first.
+
+Never share the callback URL containing `code` or `state`, nor any access
+or refresh tokens. For support, share only the **path** of the page where the
+flow stops (e.g. `/login`, `/`, `/oauth/authorize`), not its query string.
