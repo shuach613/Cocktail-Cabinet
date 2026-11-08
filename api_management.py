@@ -401,10 +401,9 @@ def register_management_routes(bp, permitted, admin_only):
                 from app import smtp_invite
                 data["email_sent"] = smtp_invite(data["email"],data["invitation_url"])
             except Exception:
-                bp.logger if False else None
                 data["email_sent"] = False
                 data["email_warning"] = "Could not send email; use the invitation_url."
-        return reply, 201
+        return jsonify({'data': data}), 201
 
     @bp.delete('/invitations/<int:invite_id>')
     @permitted('write')
