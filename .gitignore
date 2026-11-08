@@ -8,3 +8,6 @@ __pycache__/
 *.db
 data/
 .DS_Store
+
+# Generated UI screenshots and local browser review output
+artifacts/
