@@ -96,7 +96,7 @@ def test_dependency_preview_rejects_unsafe_deletion_and_read_only_access(client)
     assert api(client, "DELETE", f"/categories/{spirit}").status_code == 409
     assert api(client, "DELETE", f"/ingredients/{gin}", token="ccb_member_write").status_code == 403
     assert api(client, "DELETE", f"/ingredients/{gin}", token="ccb_admin_read").status_code == 403
-    assert api(client, "GET", f"/categories/{spirit}", token="ccb_member_write").status_code == 200
+    assert api(client, "GET", f"/categories/{spirit}", token="ccb_member_write").status_code == 403
     assert api(client, "GET", "/users", token="ccb_member_write").status_code == 403
     assert api(client, "GET", "/users", token="ccb_admin_read").status_code == 200
     with db.connect() as con:
@@ -214,7 +214,7 @@ def test_admin_user_invitation_token_and_member_access(client):
     assert result.status_code==201,result.json
     user_id=result.json["data"]["id"]
     assert api(client,"PATCH",f"/users/{user_id}",{"active":False}).status_code==200
-    assert api(client,"PATCH",f"/users/{user_id}",{"role":"admin","active":True}).status_code==200
+    assert api(client,"PATCH",f"/users/{user_id}",{"role":"admin","active":True,"confirm_admin":True}).status_code==200
     assert api(client,"PATCH","/users/1",{"active":False}).status_code==409
     assert api(client,"POST",f"/users/{user_id}/reset-password",{
         "temporary_password":"a new safe password 123"}).status_code==200
