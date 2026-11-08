@@ -36,7 +36,7 @@ CLASSIFICATIONS = {
  'Sparkling wine / prosecco':['Sparkling wine'],
  'Soda Water':['Soda water'], 'Indian Tonic':['Indian tonic'],
  'Schweppes Pink Pepper Tonic':['Pepper tonic'],
- 'Swiss Mountain Spring Provencale Tonic':['Mediterranean tonic'], 'Tribute Tonic':['Tonic water'],
+ 'Swiss Mountain Spring Provencale Tonic':['Mediterranean tonic'], 'Swiss Moutain Spring Provencale Tonic':['Mediterranean tonic'], 'Tribute Tonic':['Tonic water'],
  'Ginger Beer':['Ginger beer'], 'Schweppes Ginger Beer & Chili':['Ginger beer'],
  'Sugar syrup':['Sugar syrup'], 'Brown sugar':['Brown sugar'], 'Elderflower syrup':['Elderflower syrup'],
  'Lemon juice':['Lemon juice'], 'Lime juice (half a lime)':['Lime juice'],
