@@ -182,7 +182,7 @@ body{font-family:Lato,"Helvetica Neue",Arial,sans-serif;line-height:1.55;
 .feature-banner h2{line-height:1.14;letter-spacing:-.037em;text-wrap:balance}
 .feature-banner .banner-link{min-height:38px;display:inline-flex;align-items:center;gap:7px}
 .feature-photo{object-fit:cover;object-position:center;
- mask-image:linear-gradient(90deg,transparent,#000 44%);pointer-events:none}
+ mask-image:linear-gradient(90deg,transparent,black 44%);pointer-events:none}
 .filters{align-items:stretch;gap:10px;margin:0 0 23px}
 .search-wrap{min-height:48px;display:flex;align-items:center;gap:10px;
  padding:0 14px;border:1px solid var(--line);background:var(--panel-raised)}
