@@ -174,3 +174,16 @@ See [MCP connector setup and security](docs/MCP_CONNECTOR.md) for step-by-step
 Synology, ChatGPT and bearer-key client instructions. No extra container, port,
 `.env` file or database reset is necessary. **ChatGPT write-enabled MCP support
 is subject to account/workspace availability.** Do not paste API keys into chats.
+
+## Personal shelf API and MCP actions
+
+The ingredient catalogue is shared, but **My Shelf ownership is per user**.
+Bearer-authenticated operations always use the connected account:
+
+- `GET /api/v1/shelf`: selectable branded bottles and generic subcategories, with owned flags, selected IDs and the personal shelf revision.
+- `POST /api/v1/shelf/items`: mark one bottle owned, for example `{"ingredient_id":12,"owned":true}`, or remove a generic category using `{"category_id":7,"owned":false}`.
+- `PATCH /api/v1/shelf/items`: atomic bulk updates, for example `{"changes":[{"ingredient_id":12,"owned":true},{"category_id":7,"owned":false}]}`.
+
+Only write-scoped tokens can change ownership. Even administrators can only change **their own** shelf through these endpoints. Unmentioned items are preserved, and ice cannot be marked owned. These operations never modify shared ingredients or recipes.
+
+MCP offers the equivalent `get_my_shelf`, `set_shelf_item_owned` and `update_my_shelf` tools. Existing ingredient matching remains intact. A per-user revision updates open PWA pages automatically (about five seconds) without refreshing other users' shelves or discarding unsaved form selections.
