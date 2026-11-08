@@ -108,7 +108,16 @@ def capture(playwright):
                     if not response or response.status >= 400:
                         ERRORS.append(f"{theme}/{label}/{screen}: HTTP {response.status if response else 'none'}")
                         continue
-                    page.evaluate("() => document.fonts.ready")
+                    page.evaluate("async () => { await document.fonts.ready; return true; }")
+                    try:
+                        page.wait_for_function(
+                            "Array.from(document.images).every(i => i.complete)",
+                            timeout=4000,
+                        )
+                    except Exception:
+                        # Report any failed/missing images below; still capture
+                        # the screen if an unrelated remote font/photo stalls.
+                        pass
                     page.screenshot(
                         path=str(SHOTS / f"{theme}-{label}-{screen}.png"),
                         full_page=True, animations="disabled",
