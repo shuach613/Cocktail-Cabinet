@@ -173,6 +173,7 @@ def test_oauth_dynamic_registration_pkce_consent_and_refresh(client):
     screen=client.get('/oauth/authorize',query_string=args)
     assert screen.status_code==200
     assert b'Allow connection' in screen.data
+    assert "form-action 'self' https://chatgpt.com;" in screen.headers['Content-Security-Policy']
     approved=client.post('/oauth/authorize',data={'_csrf':csrf(client),**args,'decision':'allow'})
     assert approved.status_code==302,approved.data
     from urllib.parse import urlsplit,parse_qs
@@ -248,6 +249,14 @@ def test_oauth_logged_out_login_preserves_chatgpt_callback_and_issuer(client):
     consent=client.get(sign_in.headers['Location'])
     assert consent.status_code==200
     assert b'Allow connection' in consent.data
+    # Chrome enforces CSP form-action against cross-origin redirects following
+    # a form POST. Only this OAuth consent page may redirect the browser's form
+    # navigation to the registered ChatGPT callback.
+    csp=consent.headers['Content-Security-Policy']
+    assert "form-action 'self' https://chatgpt.com;" in csp
+    assert "form-action 'self';" in client.get('/').headers['Content-Security-Policy']
+    assert 'https://chatgpt.com' not in client.get('/login').headers['Content-Security-Policy']
+    assert 'form-action https:;' not in csp
     result=client.post('/oauth/authorize',data={
         '_csrf':csrf(client),**args,'decision':'allow'})
     assert result.status_code==302

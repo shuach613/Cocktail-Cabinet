@@ -155,3 +155,23 @@ updated OAuth metadata and exact callback URI. Test with a read-only tool first.
 Never share the callback URL containing `code` or `state`, nor any access
 or refresh tokens. For support, share only the **path** of the page where the
 flow stops (e.g. `/login`, `/`, `/oauth/authorize`), not its query string.
+
+## Chrome consent form does not return to ChatGPT
+
+The site uses a strict Content Security Policy (`form-action 'self'`) for all
+normal pages. In Chromium, this can block the **cross-origin 302 redirect**
+after submitting the OAuth consent form, even if the original POST targets
+Cocktail Cabinet. The result can look exactly like an inert **Allow connection**
+button, while ChatGPT stays disconnected.
+
+The `/oauth/authorize` **consent HTML** now uses a narrowly scoped CSP:
+`form-action 'self' https://chatgpt.com`. It permits return to the registered
+ChatGPT OAuth callback but still prevents all other cross-origin form targets.
+The OAuth callback remains validated against the client-specific registration;
+we do **not** allow arbitrary redirect hosts or weaken CSP elsewhere.
+
+After merging and deploying, open a **new** OAuth connection attempt and click
+**Allow connection**. The browser should return to ChatGPT. If it does not,
+inspect Chrome DevTools → Console and Network for a CSP violation or a failed
+`POST /oauth/authorize`, sharing only the status codes and safe error text.
+Do not share a callback URL containing an OAuth `code`, `state` or tokens.
