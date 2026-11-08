@@ -21,28 +21,29 @@
  <title>{% block title %}Cocktail Cabinet{% endblock %} · The Cocktail Cabinet</title>
 </head>
 <body data-auth="{{ 'yes' if viewer else 'no' }}">
+<a class="skip-link" href="#main-content">Skip to content</a>
 {% if viewer %}
  <div class="shell">
   <aside class="desktop-sidebar" aria-label="Primary navigation">
    <a class="brand" href="{{ url_for('index') }}"><span class="brand-symbol brand-pictogram"><img class="brand-pictogram-light" src="{{ url_for('static',filename='icon.svg',v=5) }}" alt=""><img class="brand-pictogram-dark" src="{{ url_for('static',filename='icon-dark.svg',v=5) }}" alt=""></span><span>The Cocktail<br><b>Cabinet.</b></span></a>
    <div class="sidebar-eyebrow">YOUR BAR, BEAUTIFULLY KEPT</div>
    <nav class="sidebar-nav">
-    <a class="nav-link {% if request.endpoint in ['index','recipe_view'] %}active{% endif %}" href="{{ url_for('index') }}">{{ icon('house','nav-icon') }} Discover</a>
-    <a class="nav-link {% if request.endpoint=='pantry' %}active{% endif %}" href="{{ url_for('pantry') }}">{{ icon('glass-water','nav-icon') }} My shelf</a>
-    <a class="nav-link {% if request.endpoint=='recipe_new' %}active{% endif %}" href="{{ url_for('recipe_new') }}">{{ icon('plus-circle','nav-icon') }} Add a recipe</a>
-    <a class="nav-link {% if request.endpoint in ['settings','ingredients','manage_recipes','recipe_edit','admin','account'] %}active{% endif %}" href="{{ url_for('settings') }}">{{ icon('settings','nav-icon') }} Settings</a>
+    <a class="nav-link {% if request.endpoint in ['index','recipe_view'] %}active{% endif %}" href="{{ url_for('index') }}" {% if request.endpoint in ['index','recipe_view'] %}aria-current="page"{% endif %}>{{ icon('house','nav-icon') }} Discover</a>
+    <a class="nav-link {% if request.endpoint=='pantry' %}active{% endif %}" href="{{ url_for('pantry') }}" {% if request.endpoint=='pantry' %}aria-current="page"{% endif %}>{{ icon('glass-water','nav-icon') }} My shelf</a>
+    <a class="nav-link {% if request.endpoint=='recipe_new' %}active{% endif %}" href="{{ url_for('recipe_new') }}" {% if request.endpoint=='recipe_new' %}aria-current="page"{% endif %}>{{ icon('plus-circle','nav-icon') }} Add a recipe</a>
+    <a class="nav-link {% if request.endpoint in ['settings','ingredients','manage_recipes','recipe_edit','admin','account','api_access'] %}active{% endif %}" href="{{ url_for('settings') }}" {% if request.endpoint in ['settings','ingredients','manage_recipes','recipe_edit','admin','account','api_access'] %}aria-current="page"{% endif %}>{{ icon('settings','nav-icon') }} Settings</a>
    </nav>
    <div class="sidebar-bottom"><div class="sidebar-profile"><span class="avatar">{{ viewer.username[0]|upper }}</span><span><strong>{{ viewer.username }}</strong><small>{{ 'Administrator' if viewer.role=='admin' else 'Member' }}</small></span></div><a href="{{ url_for('account') }}" class="tiny-link">My account</a><form action="{{ url_for('logout') }}" method="post"><input type="hidden" name="_csrf" value="{{ csrf_token }}"><button class="text-button">Sign out</button></form></div>
   </aside>
   <div class="main-column">
    <header class="mobile-header"><a class="brand brand-mobile" href="{{ url_for('index') }}"><span class="brand-symbol brand-pictogram"><img class="brand-pictogram-light" src="{{ url_for('static',filename='icon.svg',v=5) }}" alt=""><img class="brand-pictogram-dark" src="{{ url_for('static',filename='icon-dark.svg',v=5) }}" alt=""></span><span>The Cocktail <b>Cabinet.</b></span></a><button class="mobile-theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode"><span class="theme-icon-stack">{{ icon('moon','theme-moon') }}{{ icon('sun','theme-sun') }}</span></button><a href="{{ url_for('account') }}" class="avatar" aria-label="My account">{{ viewer.username[0]|upper }}</a></header>
    <div class="top-actions"><span class="top-actions-caption">GOOD DRINKS, GOOD COMPANY.</span><button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode"><span class="theme-icon-stack">{{ icon('moon','theme-moon') }}{{ icon('sun','theme-sun') }}</span> <span class="theme-label">Appearance</span></button></div>
-   <main class="main-content">{% block content %}{% endblock %}</main>
+   <main class="main-content" id="main-content" tabindex="-1">{% block content %}{% endblock %}</main>
    <footer class="page-footer">The Cocktail Cabinet · Private collection · Mix thoughtfully.</footer>
   </div>
  </div>
- <nav class="bottom-nav" aria-label="Mobile navigation"><a class="{% if request.endpoint in ['index','recipe_view'] %}active{% endif %}" href="{{ url_for('index') }}">{{ icon('house','nav-icon') }}<span>Discover</span></a><a class="{% if request.endpoint=='pantry' %}active{% endif %}" href="{{ url_for('pantry') }}">{{ icon('glass-water','nav-icon') }}<span>My shelf</span></a><a class="mobile-add {% if request.endpoint=='recipe_new' %}active{% endif %}" href="{{ url_for('recipe_new') }}">{{ icon('plus-circle','nav-icon') }}<span>Add recipe</span></a><a class="{% if request.endpoint in ['settings','ingredients','manage_recipes','recipe_edit','admin','account'] %}active{% endif %}" href="{{ url_for('settings') }}">{{ icon('settings','nav-icon') }}<span>Settings</span></a></nav>
-{% else %}<main class="auth-root">{% block auth_content %}{% endblock %}</main>{% endif %}
+ <nav class="bottom-nav" aria-label="Mobile navigation"><a class="{% if request.endpoint in ['index','recipe_view'] %}active{% endif %}" href="{{ url_for('index') }}" {% if request.endpoint in ['index','recipe_view'] %}aria-current="page"{% endif %}>{{ icon('house','nav-icon') }}<span>Discover</span></a><a class="{% if request.endpoint=='pantry' %}active{% endif %}" href="{{ url_for('pantry') }}" {% if request.endpoint=='pantry' %}aria-current="page"{% endif %}>{{ icon('glass-water','nav-icon') }}<span>My shelf</span></a><a class="mobile-add {% if request.endpoint=='recipe_new' %}active{% endif %}" href="{{ url_for('recipe_new') }}" {% if request.endpoint=='recipe_new' %}aria-current="page"{% endif %}>{{ icon('plus-circle','nav-icon') }}<span>Add recipe</span></a><a class="{% if request.endpoint in ['settings','ingredients','manage_recipes','recipe_edit','admin','account','api_access'] %}active{% endif %}" href="{{ url_for('settings') }}" {% if request.endpoint in ['settings','ingredients','manage_recipes','recipe_edit','admin','account','api_access'] %}aria-current="page"{% endif %}>{{ icon('settings','nav-icon') }}<span>Settings</span></a></nav>
+{% else %}<main class="auth-root" id="main-content" tabindex="-1">{% block auth_content %}{% endblock %}</main>{% endif %}
 {% with messages=get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-stack" role="status">{% for kind,text in messages %}<div class="flash {{ kind }}">{{ text }}</div>{% endfor %}</div>{% endif %}{% endwith %}
 <script src="{{ url_for('static',filename='app.js',v=2) }}" defer></script>
 <script src="{{ url_for('static',filename='live.js') }}" defer></script>
