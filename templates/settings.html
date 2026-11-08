@@ -3,6 +3,7 @@
 <div class="page-heading"><span class="eyebrow">THE DETAILS, SIMPLIFIED</span><h1>Settings <em>& management.</em></h1><p class="intro">Manage the collection, your account and how the app looks.</p></div>
 <div class="settings-grid">
  <a class="settings-link" href="{{ url_for('account') }}"><span class="settings-icon">{{ icon('user') }}</span><span><strong>My account</strong><small>Password and profile</small></span><span class="settings-arrow">{{ icon('chevron-right') }}</span></a>
+ <a class="settings-link" href="{{ url_for('api_access') }}"><span class="settings-icon">{{ icon('key') }}</span><span><strong>API access</strong><small>Personal tokens for integrations and automations</small></span><span class="settings-arrow">{{ icon('chevron-right') }}</span></a>
  <a class="settings-link" href="{{ url_for('manage_recipes') }}"><span class="settings-icon">{{ icon('book-open') }}</span><span><strong>Manage recipes</strong><small>{{ 'Edit any recipe, update photos or remove entries' if viewer.role=='admin' else 'Edit or remove your own recipes' }}</small></span><span class="settings-arrow">{{ icon('chevron-right') }}</span></a>
  {% if viewer.role=='admin' %}
  <a class="settings-link" href="{{ url_for('ingredients') }}"><span class="settings-icon">{{ icon('list-tree') }}</span><span><strong>Ingredients & categories</strong><small>Organize bottles, classification and the category tree</small></span><span class="settings-arrow">{{ icon('chevron-right') }}</span></a>

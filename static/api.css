@@ -1,0 +1,18 @@
+/* API access uses the existing Lato and Bordeaux & Champagne theme tokens. */
+.api-layout{display:grid;grid-template-columns: minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+.api-create-card,.api-token-card{height:100%}
+.api-token-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+.api-token-row:last-child{border-bottom:0}
+.api-token-details{display:flex;flex-direction:column;gap:4px;min-width:0;overflow-wrap:anywhere}
+.api-token-details strong{font-weight:900;font-size:15px}
+.api-token-details code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--accent)}
+.api-token-details small{color:var(--muted);font-size:12px}
+.api-token-row form{flex-shrink:0}
+.api-revoked{font-size:12px;color:var(--muted)}
+.api-help{margin-top:22px}
+.api-help pre{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:20px;overflow-x:auto;max-width:100%;font-size:12px}
+.api-help code{font-family:ui-monospace,Menlo,Consolas,monospace}
+.api-actions{display:flex;align-items:center;gap:12px;margin-top:22px;flex-wrap:wrap}
+#issued-api-token{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+@media(max-width:850px){.api-layout{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:590px){.api-token-row{align-items:flex-start}.api-token-details{flex:1}.api-actions .button{flex:1}}

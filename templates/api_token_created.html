@@ -1,0 +1,9 @@
+{% from '_icons.html' import icon %}
+{% extends 'base.html' %}{% block title %}API token created{% endblock %}{% block content %}
+<a class="back-link" href="{{ url_for('api_access') }}">← API access</a>
+<div class="page-heading"><span class="eyebrow">CONNECTION READY</span><h1>Your personal <em>API token.</em></h1><p class="intro">The token for <strong>{{ name }}</strong> is ready. Copy it now: it cannot be displayed again.</p></div>
+<section class="editor-panel narrow-card"><div class="panel-heading"><span class="section-kicker">SHOWS ONCE</span><h2>Save this token securely</h2><p class="subtle">{{ 'Read & write' if scope=='write' else 'Read-only' }} access{% if expires %} · expires {{ expires[:10] }}{% else %} · no expiration{% endif %}. Do not share it in screenshots, URLs or public code.</p></div>
+ <label class="field">Personal token<input id="issued-api-token" type="text" readonly spellcheck="false" autocomplete="off" value="{{ token }}"></label>
+ <div class="api-actions"><button class="button" type="button" data-copy-input="issued-api-token">Copy token {{ icon('check') }}</button><a class="button secondary" href="{{ url_for('api_access') }}">Done</a></div>
+</section>
+{% endblock %}
