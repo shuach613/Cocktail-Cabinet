@@ -1,0 +1,33 @@
+{% from '_icons.html' import icon %}
+{% extends 'base.html' %}{% block title %}API access{% endblock %}{% block content %}
+<a class="back-link" href="{{ url_for('account') }}">← My account</a>
+<div class="page-heading"><span class="eyebrow">PERSONAL INTEGRATIONS</span><h1>API <em>access.</em></h1><p class="intro">Connect automations or other applications securely, using a token linked to your account. Every request follows your usual recipe permissions.</p></div>
+<div class="api-layout">
+ <section class="editor-panel api-create-card">
+  <div class="panel-heading"><span class="section-kicker">NEW CONNECTION</span><h2>Create a personal token</h2><p class="subtle">Tokens are displayed once. Keep them somewhere safe; anyone holding one has its permissions.</p></div>
+  <form class="form-stack" method="post" action="{{ url_for('api_token_create') }}">
+   <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+   <label>Connection name<input type="text" name="name" maxlength="80" required placeholder="e.g. n8n or Home Assistant" autocomplete="off"></label>
+   <label>Access level<select name="scope"><option value="read">Read-only: recipes, ingredients and images</option><option value="write">Read &amp; write: limited by my account permissions</option></select></label>
+   <label>Expiration<select name="expires"><option value="90">90 days (recommended)</option><option value="30">30 days</option><option value="365">1 year</option><option value="0">No expiration</option></select></label>
+   <button class="button wide" type="submit">Create API token {{ icon('chevron-right') }}</button>
+  </form>
+ </section>
+ <section class="editor-panel api-token-card">
+  <div class="panel-heading"><span class="section-kicker">YOUR CONNECTIONS</span><h2>Issued tokens</h2><p class="subtle">Revoke an access token any time without changing your password.</p></div>
+  {% for token in tokens %}
+   <div class="api-token-row">
+    <div class="api-token-details"><strong>{{ token.name }}</strong><code>{{ token.token_prefix }}…</code>
+     <small>{{ 'Read-only' if token.scope=='read' else 'Read & write' }} · {{ 'Revoked' if token.revoked_at else ('Expires ' ~ token.expires_at[:10] if token.expires_at else 'No expiration') }}{% if token.last_used_at %} · Last used {{ token.last_used_at[:10] }}{% endif %}</small>
+    </div>
+    {% if not token.revoked_at %}<form method="post" action="{{ url_for('api_token_revoke',token_id=token.id) }}" data-confirm="Revoke access for {{ token.name }}? This cannot be undone."><input type="hidden" name="_csrf" value="{{ csrf_token }}"><button class="button secondary small" type="submit">Revoke</button></form>{% else %}<span class="api-revoked">Revoked</span>{% endif %}
+   </div>
+  {% else %}<p class="subtle">No tokens yet. Create one for your first integration.</p>{% endfor %}
+ </section>
+</div>
+<section class="editor-panel api-help"><span class="section-kicker">HOW TO CONNECT</span><h2>Use your API</h2><p class="subtle">Send your token in an <code>Authorization: Bearer</code> header over HTTPS. Browser sign-in cookies do not authenticate API requests. API photos are private and use the same header.</p>
+ <pre><code>GET /api/v1/recipes
+Authorization: Bearer YOUR_PERSONAL_TOKEN</code></pre>
+ <p class="subtle">The versioned API supports listing, creating, editing and removing recipes, managing ingredient categories, and downloading or uploading recipe photos. Machine-readable documentation: <code>GET /api/v1/openapi.json</code> (requires a token). Updates appear in the app automatically when a collection page is open.</p>
+</section>
+{% endblock %}
