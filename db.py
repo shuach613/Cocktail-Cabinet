@@ -9,6 +9,7 @@ from catalog import TREE, CLASSIFICATIONS, GENERIC_LABELS
 from migrations import apply_english_photos_v2, apply_recipe_polish_v3
 from api_schema import initialize_api_schema
 from mcp_schema import initialize_mcp_schema
+from taxonomy_cleanup import apply_taxonomy_cleanup_v4
 
 DATA_DIR = Path(os.getenv('DATA_DIR', '/data'))
 DB_PATH = DATA_DIR / 'cabinet.sqlite3'
@@ -87,6 +88,7 @@ def ensure_db():
         apply_recipe_polish_v3(con)
         initialize_api_schema(con)
         initialize_mcp_schema(con)
+        apply_taxonomy_cleanup_v4(con)
 
 def seed(con):
     def add_tree(tree,parent=None):
