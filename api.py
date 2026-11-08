@@ -599,4 +599,5 @@ def register_api(app):
     @app.get('/live/revision')
     @login_required
     def browser_revision():
-        return jsonify({'revision': collection_revision(get_db())})
+        return jsonify({'revision': collection_revision(get_db()),
+                        'shelf_revision': shelf_revision(get_db(),g.user['id'])})
