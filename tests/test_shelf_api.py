@@ -256,5 +256,5 @@ def test_pwa_cache_bumped_for_shelf_live_updates():
     from pathlib import Path
     static=Path(__file__).resolve().parents[1]/'static'
     worker=(static/'sw.js').read_text(encoding='utf-8')
-    assert 'cabinet-assets-v6-polish2' in worker
+    assert 'cabinet-assets-v7-atelier1' in worker
     assert '/static/live.js' in worker
