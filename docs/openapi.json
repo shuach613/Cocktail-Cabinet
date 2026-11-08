@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Cocktail Cabinet API",
-    "version": "1.0.0",
-    "description": "Private self-hosted cocktail collection. Each request requires a personal bearer token. Write operations also check recipe ownership and administrator role. All images use authenticated downloads; never embed tokens in URLs."
+    "version": "1.1.0",
+    "description": "Private self-hosted cocktail collection. Bearer tokens grant read or read/write access, never more than the owning account's role. Members manage personal shelves, own recipes and own account/tokens. Administrators additionally manage shared ingredients/categories, members and invitations. Destructive catalog operations reject references unless explicitly merged; merges and batches are transactional. Passwords and newly issued credentials are REST-only and never exposed through MCP tool output."
   },
   "servers": [
     {
@@ -264,6 +264,61 @@
           },
           "401": {
             "description": "Invalid token"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update connected user's username or email",
+        "operationId": "update_connected_user_s_username_or_email",
+        "description": "Current password is required for changes. Requires write-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "current_password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "current_password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
           }
         }
       }
@@ -669,40 +724,153 @@
     },
     "/ingredients/{ingredient_id}": {
       "patch": {
-        "summary": "Admin-only rename or reclassify ingredient",
-        "operationId": "updateIngredient",
+        "summary": "Update ingredient name, brand flag and categories",
+        "operationId": "update_ingredient_name_brand_flag_and_categories",
+        "description": "Requires an administrator account. Requires write-scoped token.",
         "security": [
           {
             "personalBearer": []
           }
         ],
-        "responses": {
-          "200": {
-            "description": "Updated"
-          },
-          "403": {
-            "description": "Not an administrator"
+        "parameters": [
+          {
+            "name": "ingredient_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
           }
-        },
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
+                "additionalProperties": false,
                 "properties": {
                   "name": {
                     "type": "string"
                   },
+                  "is_brand": {
+                    "type": "boolean"
+                  },
                   "categories": {
                     "type": "array",
                     "items": {
-                      "type": "integer"
-                    }
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "minItems": 1
                   }
-                }
+                },
+                "required": []
               }
             }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get ingredient details and recipe/shelf dependencies",
+        "operationId": "get_ingredient_details_and_recipe_shelf_dependencies",
+        "description": "Read-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "ingredient_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete unused ingredient",
+        "operationId": "delete_unused_ingredient",
+        "description": "Fails with 409 if any recipe or shelf references remain; use a merge to preserve references. Requires an administrator account. Requires write-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "ingredient_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
           }
         }
       }
@@ -764,38 +932,153 @@
     },
     "/categories/{category_id}": {
       "patch": {
-        "summary": "Admin-only rename or move category",
-        "operationId": "updateCategory",
+        "summary": "Rename or reparent category",
+        "operationId": "rename_or_reparent_category",
+        "description": "Rejects cycles and ownership-invalidating root-status changes. Requires an administrator account. Requires write-scoped token.",
         "security": [
           {
             "personalBearer": []
           }
         ],
-        "responses": {
-          "200": {
-            "description": "Updated"
-          },
-          "403": {
-            "description": "Not an administrator"
+        "parameters": [
+          {
+            "name": "category_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
           }
-        },
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
+                "additionalProperties": false,
                 "properties": {
                   "name": {
                     "type": "string"
                   },
                   "parent_id": {
-                    "type": "integer",
-                    "nullable": true
+                    "oneOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   }
-                }
+                },
+                "required": []
               }
             }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      },
+      "get": {
+        "summary": "Inspect category children, ingredients and ownership dependencies",
+        "operationId": "inspect_category_children_ingredients_and_ownership_dependencies",
+        "description": "Read-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "category_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete empty unowned category",
+        "operationId": "delete_empty_unowned_category",
+        "description": "Requires an administrator account. Requires write-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "category_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
           }
         }
       }
@@ -935,6 +1218,878 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/ingredients/{ingredient_id}/merge": {
+      "post": {
+        "summary": "Merge ingredient into retained target",
+        "operationId": "merge_ingredient_into_retained_target",
+        "description": "Transfers every original recipe line and quantity, classification and permitted shelf ownership. Source is deleted. Requires an administrator account. Requires write-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "ingredient_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "target_id": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "target_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      }
+    },
+    "/categories/{category_id}/merge": {
+      "post": {
+        "summary": "Merge one category into another",
+        "operationId": "merge_one_category_into_another",
+        "description": "Moves children, ingredients and per-user owned categories. Rejects ancestor cycles. Requires an administrator account. Requires write-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "category_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "target_id": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "target_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      }
+    },
+    "/catalog/batch": {
+      "post": {
+        "summary": "Atomically apply up to 50 catalog management operations",
+        "operationId": "atomically_apply_up_to_50_catalog_management_operations",
+        "description": "Entire batch rolls back when any operation fails, including violated foreign keys. Requires an administrator account. Requires write-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "operations": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 50,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "action": {
+                          "type": "string",
+                          "enum": [
+                            "update_ingredient",
+                            "delete_ingredient",
+                            "merge_ingredient",
+                            "update_category",
+                            "delete_category",
+                            "merge_category"
+                          ]
+                        },
+                        "ingredient_id": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "category_id": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "source_id": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "target_id": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "is_brand": {
+                          "type": "boolean"
+                        },
+                        "parent_id": {
+                          "oneOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "categories": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer",
+                            "minimum": 1
+                          },
+                          "minItems": 1
+                        }
+                      },
+                      "required": [
+                        "action"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "operations"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      }
+    },
+    "/recommendations": {
+      "get": {
+        "summary": "Group recipes by availability on connected user's shelf",
+        "operationId": "group_recipes_by_availability_on_connected_user_s_shelf",
+        "description": "Read-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      }
+    },
+    "/recipes/{recipe_id}/availability": {
+      "get": {
+        "summary": "Read recipe ingredient matching for connected user's own shelf",
+        "operationId": "read_recipe_ingredient_matching_for_connected_user_s_own_shelf",
+        "description": "Read-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "recipe_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      }
+    },
+    "/me/password": {
+      "post": {
+        "summary": "Change own password and revoke all API/MCP credentials",
+        "operationId": "change_own_password_and_revoke_all_api_mcp_credentials",
+        "description": "At least 12 characters; current password required. All issued API tokens and OAuth refresh credentials are revoked. Requires write-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "current_password": {
+                    "type": "string"
+                  },
+                  "new_password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "current_password",
+                  "new_password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      }
+    },
+    "/tokens": {
+      "get": {
+        "summary": "List own API tokens without disclosing secrets",
+        "operationId": "list_own_api_tokens_without_disclosing_secrets",
+        "description": "Read-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      },
+      "post": {
+        "summary": "Issue own personal read/write token",
+        "operationId": "issue_own_personal_read_write_token",
+        "description": "Returns plaintext secret exactly once. Keep out of logs and chats; REST only, not MCP. Requires write-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "scope": {
+                    "type": "string",
+                    "enum": [
+                      "read",
+                      "write"
+                    ]
+                  },
+                  "expires_days": {
+                    "type": "integer",
+                    "enum": [
+                      0,
+                      30,
+                      90,
+                      365
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "scope"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      }
+    },
+    "/tokens/{token_id}": {
+      "delete": {
+        "summary": "Revoke own API token and associated OAuth refresh credentials",
+        "operationId": "revoke_own_api_token_and_associated_oauth_refresh_credentials",
+        "description": "Requires write-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "token_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "List members and administrators",
+        "operationId": "list_members_and_administrators",
+        "description": "Requires an administrator account. Read-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create member or explicitly authorized admin account",
+        "operationId": "create_member_or_explicitly_authorized_admin_account",
+        "description": "New account must change temporary password at first login; allow admin only with confirm_admin=true. Requires an administrator account. Requires write-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "temporary_password": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "member",
+                      "admin"
+                    ]
+                  },
+                  "confirm_admin": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "username",
+                  "email",
+                  "temporary_password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      }
+    },
+    "/users/{user_id}": {
+      "patch": {
+        "summary": "Change member status, role, username or email",
+        "operationId": "change_member_status_role_username_or_email",
+        "description": "Cannot deactivate/demote self or the sole active admin. Revokes credentials when role or activity changes. Requires an administrator account. Requires write-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "member",
+                      "admin"
+                    ]
+                  },
+                  "username": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      }
+    },
+    "/users/{user_id}/reset-password": {
+      "post": {
+        "summary": "Reset another user's temporary password",
+        "operationId": "reset_another_user_s_temporary_password",
+        "description": "Revokes all user's tokens and requires password change at next login. REST only; avoid placing password in chats. Requires an administrator account. Requires write-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "temporary_password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "temporary_password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      }
+    },
+    "/invitations": {
+      "get": {
+        "summary": "List invitations without secret links",
+        "operationId": "list_invitations_without_secret_links",
+        "description": "Requires an administrator account. Read-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create expiring single-use invitation",
+        "operationId": "create_expiring_single_use_invitation",
+        "description": "Returns secret invitation_url once; email can optionally be sent through configured SMTP. Requires an administrator account. Requires write-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "send_email": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
+          }
+        }
+      }
+    },
+    "/invitations/{invite_id}": {
+      "delete": {
+        "summary": "Revoke unused invitation",
+        "operationId": "revoke_unused_invitation",
+        "description": "Requires an administrator account. Requires write-scoped token.",
+        "security": [
+          {
+            "personalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "invite_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "Token/role permission denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Protected recipe/shelf/category reference or conflicting edit; operation rolled back"
           }
         }
       }
