@@ -250,3 +250,11 @@ def test_openapi_shelf_contract_is_private_and_live_js_tracks_user_revision(clie
     assert '/shelf' in spec['paths']
     assert {'post','patch'} <= set(spec['paths']['/shelf/items'])
     assert 'shelf_revision' in client.get('/static/live.js').data.decode()
+
+
+def test_pwa_cache_bumped_for_shelf_live_updates():
+    from pathlib import Path
+    static=Path(__file__).resolve().parents[1]/'static'
+    worker=(static/'sw.js').read_text(encoding='utf-8')
+    assert 'cabinet-assets-v5-shelf1' in worker
+    assert '/static/live.js' in worker
