@@ -182,6 +182,35 @@ The app includes a **Streamable HTTP MCP endpoint at `/mcp`**, hosted by the sam
 
 See [MCP connector setup and troubleshooting](docs/MCP_CONNECTOR.md) for the detailed OAuth flow, examples and security considerations. Availability of custom connectors and write actions depends on the client's supported capabilities.
 
+## Full management API
+
+The REST API also supports the administrator-only catalogue and account
+operations available in the website, plus dependency-safe bulk operations:
+
+- `PATCH /api/v1/ingredients/{id}` — rename, recategorise or update brand status.
+- `GET /api/v1/ingredients/{id}` and `GET /api/v1/categories/{id}` — inspect dependencies before changing or deleting.
+- `POST /api/v1/ingredients/{id}/merge` and `POST /api/v1/categories/{id}/merge` — transfer associated recipe references, category links and eligible owned shelf selections.
+- `DELETE /api/v1/ingredients/{id}` and `DELETE /api/v1/categories/{id}` — reject deletion while references remain; do not silently destroy recipes or shelves.
+- `POST /api/v1/catalog/batch` — atomic multi-operation catalogue updates.
+- `GET /api/v1/recommendations` and `GET /api/v1/recipes/{id}/availability` — the authenticated user's recipe-readiness results.
+- `GET/POST /api/v1/users`, `PATCH /api/v1/users/{id}`, `POST /api/v1/users/{id}/reset-password` — administrative member management.
+- `GET/POST /api/v1/invitations` and `DELETE /api/v1/invitations/{id}` — invitations and revocation.
+- `PATCH /api/v1/me`, `POST /api/v1/me/password`, `GET/POST /api/v1/tokens`, `DELETE /api/v1/tokens/{id}` — personal profile and credential management.
+
+Every write still requires a **write-scoped token**, and shared catalogue and
+member administration require an **administrator** account. All API actions
+reuse the same SQLite data as the website. Existing recipes and ownership
+records are preserved during merges, and a rejected batch rolls back entirely.
+
+The ChatGPT MCP connector exposes catalogue maintenance, invitation management,
+account-status administration and recipe-readiness tools as well. To avoid
+leaking credentials into chats, operations that create or change passwords or
+issue personal API tokens remain REST-/website-only.
+
+See [the complete OpenAPI reference](docs/openapi.json) and
+[MCP connector guide](docs/MCP_CONNECTOR.md) for precise schemas and safety
+rules. Refresh the installed connector's tools after deploying an updated image.
+
 ## Development
 
 The app deliberately uses a small stack: **Python 3.12, Flask, Werkzeug, SQLite, Gunicorn, Pillow, Jinja templates, CSS and minimal JavaScript**. It has no separate frontend build process or external database requirement.
