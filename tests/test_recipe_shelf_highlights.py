@@ -112,6 +112,10 @@ def test_recipe_highlights_owned_generic_matches_and_preserves_manual_checklist(
         assert row["status"]
         assert not row["prep_checked"]
     assert "3 of 3" in html
+    assert 'role="progressbar"' in html
+    assert 'aria-valuenow="3"' in html
+    assert 'aria-valuemax="3"' in html
+    assert 'style="width:100%"' in html
     assert "Missing from your shelf:" not in html
     # Optional garnish and ice are not counted as missing, and ice is never highlighted.
     assert "is-on-shelf" not in rows[ingredients["Ice"]]["classes"]
@@ -147,6 +151,26 @@ def test_exact_brand_and_generic_shelf_match_distinction(client):
 def test_no_shelf_highlights_for_empty_ownership_and_login_required(client):
     assert client.get("/recipes/1").status_code == 302
     setup(client)
-    rows, _ = recipe_rows(client, "Classic Negroni")
+    rows, html = recipe_rows(client, "Classic Negroni")
     assert not any(row["status"] for row in rows.values())
+    assert 'aria-valuenow="0"' in html
+    assert 'style="width:0%"' in html
     assert all(row["shelf_state"] in {"neutral","missing"} for row in rows.values())
+
+
+def test_premium_finishing_stylesheet_keeps_existing_palette_and_all_pages(client):
+    setup(client)
+    for route in ('/', '/pantry', '/settings', '/recipes/2'):
+        response = client.get(route)
+        assert response.status_code == 200, (route, response.status_code)
+        assert b'finishing.css?v=1' in response.data
+    css_response = client.get('/static/finishing.css')
+    assert css_response.status_code == 200
+    css = css_response.get_data(as_text=True)
+    # The finish layer only consumes established design tokens. It never
+    # defines a different light/dark color palette or modifies backend data.
+    import re
+    assert not re.search(r'--(?:bg|surface|ink|muted|line|accent|champagne|brand-wine|focus)\s*:', css)
+    assert '.ingredient-line.is-on-shelf' in css
+    assert 'aspect-ratio:4/3' in css  # Do not crop existing 4:3 photos into widescreen cards.
+    assert '@media(max-width:480px)' in css
