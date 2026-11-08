@@ -24,7 +24,7 @@ from PIL import Image, UnidentifiedImageError
 from db import (DATA_DIR, get_db, close_db, ensure_db, connect, ingredient_category_maps,
                 recipe_card)
 from bootstrap import persistent_secret
-from api_schema import collection_revision
+from api_schema import collection_revision, shelf_revision
 
 app = Flask(__name__)
 # Reuse the automatically generated signing key in the persistent Docker volume.
@@ -179,7 +179,7 @@ def with_ingredient_types(text, items):
 
 
 @app.context_processor
-def ctx(): return {'csrf_token':session.get('_csrf'),'viewer':getattr(g,'user',None), 'recipe_image_url': recipe_image_url, 'collection_revision': collection_revision(get_db())}
+def ctx(): return {'csrf_token':session.get('_csrf'),'viewer':getattr(g,'user',None), 'recipe_image_url': recipe_image_url, 'collection_revision': collection_revision(get_db()), 'shelf_revision': shelf_revision(get_db(),g.user['id']) if getattr(g,'user',None) else 0}
 
 @app.get('/health')
 def health(): return {'status':'ok'}

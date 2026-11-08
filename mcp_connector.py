@@ -140,6 +140,15 @@ def mcp_tools():
     add('get_recipe','Get one complete cocktail recipe.',{'recipe_id':integer('Recipe ID')},('recipe_id',))
     add('list_ingredients','List ingredient names, branded bottles and their generic classifications.')
     add('list_categories','List ingredient categories and parent category IDs.')
+    shelf_change=schema({
+        'ingredient_id':integer('Specific branded product ID; choose this OR category_id'),
+        'category_id':integer('Generic ingredient subcategory ID; choose this OR ingredient_id'),
+        'owned':{'type':'boolean','description':'True to mark owned; false to mark not owned'}
+    },('owned',))
+    add('get_my_shelf','Read the connected user\'s personal shelf. Returns every selectable bottle and generic category with owned status and IDs.')
+    add('set_shelf_item_owned','Mark one bottle or generic subcategory owned or not owned on the connected user\'s shelf, preserving every other selection.',shelf_change['properties'],('owned',),write=True)
+    add('update_my_shelf','Atomically mark multiple bottles/categories owned or unowned without replacing any other shelf choices.',
+        {'changes':{'type':'array','items':shelf_change,'minItems':1,'maxItems':100}},('changes',),write=True)
     add('create_recipe','Add a cocktail recipe; categories may be created transactionally with the recipe.',recipe,
         ('title','technique','steps','items'),write=True)
     add('update_recipe','Modify a recipe, subject to ownership and token permissions.',
@@ -193,6 +202,9 @@ def _tool_result(resp):
 def _call_tool(app, name, args, bearer):
     methods={
         'get_account':('GET','/api/v1/me'),
+        'get_my_shelf':('GET','/api/v1/shelf'),
+        'set_shelf_item_owned':('POST','/api/v1/shelf/items'),
+        'update_my_shelf':('PATCH','/api/v1/shelf/items'),
         'list_recipes':('GET','/api/v1/recipes'),
         'get_recipe':('GET',f"/api/v1/recipes/{args.get('recipe_id')}"),
         'list_ingredients':('GET','/api/v1/ingredients'),
