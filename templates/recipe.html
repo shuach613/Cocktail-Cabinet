@@ -17,7 +17,7 @@
       <input type="checkbox" data-prep-item="{{ i.id }}" aria-label="Mark {{ i.display_name }} as prepared">
       <span class="ingredient-text">{{ i.display_name }}{% if i.optional %}<small>{{ 'Garnish / ice' if i.kind!='ingredient' else 'Optional' }}</small>{% endif %}</span>
       {% if i.kind != 'ice' and i.matched %}
-      <span class="ingredient-shelf-status" aria-label="Available from your shelf">{{ icon('check') }}<span>On your shelf</span></span>
+      <span class="ingredient-shelf-status" aria-label="{% if i.ingredient_id in owned_products %}Owned bottle{% else %}Covered by your shelf{% endif %}">{{ icon('check') }}<span>{% if i.ingredient_id in owned_products %}On your shelf{% else %}Shelf match{% endif %}</span></span>
       {% endif %}
       <strong>{{ i.quantity or '—' }}</strong>
     </label>
