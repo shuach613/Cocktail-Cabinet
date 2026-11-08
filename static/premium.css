@@ -399,12 +399,31 @@ html[data-theme="dark"] .flash{border-left-color:var(--champagne-strong)}
    Shared theme tokens support both light and dark mode. */
 .ingredient-shelf-summary{margin:12px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
 .ingredient-shelf-summary strong{color:var(--champagne-strong);font-weight:900}
-.ingredient-line.is-on-shelf{background:var(--champagne-surface);border-radius:10px;border-bottom-color:var(--champagne-border);padding-inline:12px;margin-inline:-12px}
-.ingredient-shelf-status{display:inline-flex;align-items:center;gap:5px;flex:0 1 auto;min-width:0;color:var(--champagne-strong);font-size:11px;font-weight:800;line-height:1.3;white-space:nowrap}
-.ingredient-shelf-status .ui-icon{width:15px;height:15px;flex:0 0 15px}
-.ingredient-line.is-on-shelf .ingredient-text{font-weight:700}
+.ingredient-line.is-on-shelf{
+ background:color-mix(in srgb,var(--champagne-surface) 62%,var(--surface));
+ border-bottom-color:var(--champagne-border);
+ border-inline-start:3px solid var(--champagne);
+ border-radius:9px;
+ padding-inline:10px;
+ margin-inline:-10px;
+}
+.ingredient-shelf-status{
+ display:inline-flex;align-items:center;gap:6px;flex:0 1 auto;min-width:0;
+ color:var(--champagne-strong);font-size:11px;font-weight:750;line-height:1.3;
+ white-space:nowrap;
+}
+.shelf-status-symbol{
+ display:grid;place-items:center;width:20px;height:20px;flex:0 0 20px;
+ border:1px solid var(--champagne-border);border-radius:50%;
+ background:var(--champagne-pale);
+}
+.shelf-status-symbol .ui-icon{width:12px;height:12px}
+.ingredient-line.is-on-shelf .ingredient-text{font-weight:650}
+html[data-theme="dark"] .ingredient-line.is-on-shelf{
+ background:color-mix(in srgb,var(--champagne-surface) 38%,var(--surface));
+}
 @media(max-width:590px){
- .ingredient-line.is-on-shelf{margin-inline:-8px;padding-inline:8px}
+ .ingredient-line.is-on-shelf{margin-inline:-7px;padding-inline:7px}
  .ingredient-shelf-status{flex-basis:20px;justify-content:center}
- .ingredient-shelf-status span{display:none}
+ .ingredient-shelf-status>span:last-child{display:none}
 }

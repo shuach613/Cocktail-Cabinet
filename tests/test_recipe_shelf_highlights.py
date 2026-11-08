@@ -32,6 +32,7 @@ class IngredientRows(HTMLParser):
             self.current = attrs.get("data-ingredient-id")
             self.rows[self.current] = {
                 "classes": attrs.get("class", "").split(),
+                "shelf_state": attrs.get("data-shelf-state"),
                 "status": False, "prep_checked": False, "text": "",
             }
             self.depth = 1
@@ -107,6 +108,7 @@ def test_recipe_highlights_owned_generic_matches_and_preserves_manual_checklist(
     for ingredient in ("Tanqueray London Dry Gin", "Campari", "Carpano Antica Formula"):
         row = rows[ingredients[ingredient]]
         assert "is-on-shelf" in row["classes"]
+        assert row["shelf_state"] == "category"
         assert row["status"]
         assert not row["prep_checked"]
     assert "3 of 3" in html
@@ -114,6 +116,7 @@ def test_recipe_highlights_owned_generic_matches_and_preserves_manual_checklist(
     # Optional garnish and ice are not counted as missing, and ice is never highlighted.
     assert "is-on-shelf" not in rows[ingredients["Ice"]]["classes"]
     assert not rows[ingredients["Ice"]]["status"]
+    assert rows[ingredients["Ice"]]["shelf_state"] == "neutral"
     with db.connect() as con:
         assert recipes_before == [tuple(r) for r in con.execute("SELECT * FROM recipes ORDER BY id")]
         assert lines_before == [tuple(r) for r in con.execute("SELECT * FROM recipe_items ORDER BY id")]
@@ -130,6 +133,7 @@ def test_exact_brand_and_generic_shelf_match_distinction(client):
     rows, html = recipe_rows(client, "Gin & Tonic Seventh Sense")
     assert "is-on-shelf" in rows[ingredient["Seventh Sense Gin"]]["classes"]
     assert "Shelf match" in rows[ingredient["Seventh Sense Gin"]]["text"]
+    assert rows[ingredient["Seventh Sense Gin"]]["shelf_state"] == "category"
     with db.connect() as con:
         with con:
             con.execute("INSERT INTO pantry(user_id,ingredient_id) VALUES(?,?)",
@@ -137,6 +141,7 @@ def test_exact_brand_and_generic_shelf_match_distinction(client):
     rows, _ = recipe_rows(client, "Gin & Tonic Seventh Sense")
     assert rows[ingredient["Seventh Sense Gin"]]["status"]
     assert "On your shelf" in rows[ingredient["Seventh Sense Gin"]]["text"]
+    assert rows[ingredient["Seventh Sense Gin"]]["shelf_state"] == "owned"
 
 
 def test_no_shelf_highlights_for_empty_ownership_and_login_required(client):
@@ -144,3 +149,4 @@ def test_no_shelf_highlights_for_empty_ownership_and_login_required(client):
     setup(client)
     rows, _ = recipe_rows(client, "Classic Negroni")
     assert not any(row["status"] for row in rows.values())
+    assert all(row["shelf_state"] in {"neutral","missing"} for row in rows.values())
