@@ -12,12 +12,12 @@
   {% endif %}
   <div class="ingredient-list">
     {% for i in recipe['items'] %}
-    <label class="ingredient-line{% if i.kind != 'ice' and i.matched %} is-on-shelf{% endif %}" data-ingredient-id="{{ i.ingredient_id }}">
+    <label class="ingredient-line{% if i.kind != 'ice' and i.matched %} is-on-shelf{% endif %}" data-ingredient-id="{{ i.ingredient_id }}" data-shelf-state="{% if i.kind == 'ice' %}neutral{% elif i.matched and i.ingredient_id in owned_products %}owned{% elif i.matched %}category{% else %}missing{% endif %}">
       {# The checkbox tracks preparation only; shelf ownership comes from i.matched. #}
       <input type="checkbox" data-prep-item="{{ i.id }}" aria-label="Mark {{ i.display_name }} as prepared">
       <span class="ingredient-text">{{ i.display_name }}{% if i.optional %}<small>{{ 'Garnish / ice' if i.kind!='ingredient' else 'Optional' }}</small>{% endif %}</span>
       {% if i.kind != 'ice' and i.matched %}
-      <span class="ingredient-shelf-status" aria-label="{% if i.ingredient_id in owned_products %}Owned bottle{% else %}Covered by your shelf{% endif %}">{{ icon('check') }}<span>{% if i.ingredient_id in owned_products %}On your shelf{% else %}Shelf match{% endif %}</span></span>
+      <span class="ingredient-shelf-status" aria-label="{% if i.ingredient_id in owned_products %}Owned bottle{% else %}Covered by your shelf{% endif %}"><span class="shelf-status-symbol">{{ icon('check') }}</span><span>{% if i.ingredient_id in owned_products %}On your shelf{% else %}Shelf match{% endif %}</span></span>
       {% endif %}
       <strong>{{ i.quantity or '—' }}</strong>
     </label>
