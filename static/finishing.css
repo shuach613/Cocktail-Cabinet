@@ -1,0 +1,279 @@
+/* Premium finishing pass
+   Keep the existing Bordeaux/Champagne palette and Lato typography.
+   This layer improves proportion, rhythm and interaction throughout the app;
+   it does not redefine the established light/dark theme tokens. */
+
+/* Shared rhythm and accessible, restrained interaction */
+:where(.recipe-card,.settings-link,.management-item,.pantry-controls,.pantry-results,.editor-panel){
+  border-color:var(--line);
+}
+:where(.button,.filter-button,.nav-link,.settings-link,.pantry-match,.shelf-option,.recipe-card){
+  transition:background-color .18s ease,border-color .18s ease,box-shadow .2s ease,
+             color .18s ease,transform .2s ease;
+}
+:where(.button,.filter-button):active{transform:translateY(0)}
+:where(.recipe-card,.settings-link,.pantry-match):focus-visible{
+  outline:3px solid var(--focus);outline-offset:4px;
+}
+:where(.field input,.field select,.field textarea,.form-stack input,.form-stack select,
+       .filters select,.search-wrap,.shelf-search,.catalog-search):focus-within{
+  border-color:var(--champagne-strong);
+}
+:where(.field input,.field select,.field textarea,.form-stack input,.form-stack select,
+       .filters select):focus-visible{
+  border-color:var(--champagne-strong);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--champagne) 22%,transparent);
+}
+:where(.eyebrow,.section-kicker,.sidebar-eyebrow){letter-spacing:.135em}
+:where(.section-heading,.panel-heading,.pantry-results-heading){border-bottom-color:var(--line)}
+:where(.section-heading h2,.panel-heading h2,.pantry-results-heading h2){
+  line-height:1.17;letter-spacing:-.025em;
+}
+
+/* Navigation: ease of scanning without turning active links into big badges. */
+.desktop-sidebar{border-inline-end:1px solid var(--line)}
+.sidebar-nav{gap:5px}
+.nav-link{border:1px solid transparent;border-radius:11px}
+.nav-link.active{
+  border-color:color-mix(in srgb,var(--champagne-border) 53%,transparent);
+  box-shadow:inset 2px 0 0 var(--champagne-strong);
+}
+.nav-link:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.bottom-nav a:focus-visible,.bottom-nav button:focus-visible{
+  outline:2px solid var(--focus);outline-offset:-3px;
+}
+.theme-toggle,.mobile-theme-toggle{box-shadow:none}
+.theme-toggle:focus-visible,.mobile-theme-toggle:focus-visible{
+  outline:2px solid var(--focus);outline-offset:3px;
+}
+
+/* Discover: photography is the hero, rather than heavy hover effects. */
+.discover-header{margin-bottom:30px}
+.discover-header .intro{max-width:58ch}
+.feature-banner{box-shadow:var(--shadow);overflow:hidden}
+.feature-banner:before{width:3px}
+.feature-banner h2{line-height:1.11}
+.section-heading{margin-top:2px;padding-bottom:14px}
+.filters{align-items:stretch;gap:10px}
+.search-wrap,.filters select{
+  border-radius:11px;
+  transition:border-color .18s ease,box-shadow .18s ease;
+}
+.search-wrap:focus-within{border-color:var(--champagne-strong);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--champagne) 18%,transparent)}
+.filter-button{border-radius:11px}
+.recipe-grid{align-items:stretch;gap:18px}
+.recipe-card{
+  display:flex;flex-direction:column;min-width:0;
+  overflow:hidden;border-radius:18px;
+  box-shadow:var(--control-shadow);
+}
+.recipe-card:after{height:2px;opacity:.48;inset-inline:20px}
+.card-visual{
+  position:relative;flex:0 0 auto;width:100%;
+  height:auto;aspect-ratio:4/3;
+  overflow:hidden;background:var(--surface-muted);
+}
+.card-visual img{
+  width:100%;height:100%;object-fit:cover;object-position:center;
+  filter:none;transition:transform .35s ease;
+}
+.card-method{top:14px;left:14px;border-radius:999px;box-shadow:var(--control-shadow)}
+.card-content{
+  display:flex;flex:1;flex-direction:column;min-width:0;
+  padding:19px 19px 17px;
+}
+.card-caption{font-size:10px;font-weight:900;letter-spacing:.075em;line-height:1.45}
+.card-content h3{
+  min-height:0;margin:10px 0 22px;
+  font-size:clamp(18px,1.55vw,22px);line-height:1.19;
+  letter-spacing:-.025em;overflow-wrap:anywhere;
+}
+.card-foot{margin-top:auto;display:flex;gap:12px;align-items:center}
+.card-foot>span:first-child{
+  display:block;flex:1;min-width:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;
+}
+.card-arrow{flex:0 0 auto;width:31px;height:31px}
+@media(hover:hover){
+ .recipe-card:hover{
+   transform:translateY(-2px);
+   border-color:var(--champagne-border);
+   box-shadow:var(--shadow);
+ }
+ .recipe-card:hover .card-visual img{transform:scale(1.02)}
+ .recipe-card:hover .card-arrow{transform:translate(1px,-1px)}
+}
+
+/* Recipe detail: visually clear inventory matches, quietly luxurious. */
+.back-link{font-weight:700}
+.detail-hero{overflow:hidden;box-shadow:var(--control-shadow)}
+.detail-copy h1{line-height:1.08}
+.detail-copy p{max-width:61ch}
+.detail-columns{align-items:start;gap:clamp(24px,3vw,48px)}
+.detail-method{
+  border-inline-start:1px solid var(--line);
+  padding-inline-start:clamp(18px,2.4vw,36px);
+}
+.detail-ingredients h2,.detail-method h2{letter-spacing:-.025em}
+.ingredient-shelf-summary{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  gap:9px 18px;margin:17px 0 0;padding:11px 13px;
+  border:1px solid var(--line);border-radius:11px;
+  background:color-mix(in srgb,var(--surface-muted) 62%,var(--surface));
+  font-size:12px;line-height:1.55;
+}
+.ingredient-shelf-summary strong{color:var(--champagne-strong);font-weight:900}
+.ingredient-shelf-meter{
+  display:block;flex:0 0 82px;height:4px;border-radius:999px;
+  background:var(--line);overflow:hidden;
+}
+.ingredient-shelf-meter>span{
+  display:block;height:100%;border-radius:inherit;
+  background:var(--champagne-strong);
+  transition:width .2s ease;
+}
+.ingredient-list{display:grid;gap:5px;margin-top:16px;border-top:0}
+.ingredient-line{
+  min-height:62px;margin-inline:0;
+  padding:10px 12px;gap:12px;
+  border:1px solid transparent;border-bottom-color:var(--line);
+  border-radius:10px;
+}
+.ingredient-line.is-on-shelf{
+  margin-inline:0;padding:10px 12px;
+  border:1px solid transparent;
+  border-inline-start:2px solid var(--champagne);
+  background:color-mix(in srgb,var(--champagne-surface) 36%,var(--surface));
+  border-radius:10px;
+}
+.ingredient-line.is-on-shelf .ingredient-text{font-weight:700}
+.ingredient-line input[data-prep-item]{flex:0 0 20px}
+.ingredient-line input[data-prep-item]:focus-visible{
+  outline:2px solid var(--focus);outline-offset:3px;
+}
+.ingredient-text{line-height:1.35;overflow-wrap:anywhere}
+.ingredient-shelf-status{
+  display:inline-flex;align-items:center;gap:5px;
+  flex:0 1 auto;padding:3px 7px 3px 4px;min-width:0;
+  border:1px solid var(--champagne-border);border-radius:999px;
+  background:color-mix(in srgb,var(--champagne-surface) 70%,var(--surface));
+  color:var(--champagne-strong);font-size:10.5px;
+  font-weight:700;line-height:1.3;white-space:nowrap;
+}
+.shelf-status-symbol{
+  width:18px;height:18px;flex:0 0 18px;
+  border-radius:50%;
+  background:var(--champagne-pale);border:0;
+}
+.shelf-status-symbol .ui-icon{width:12px;height:12px}
+.ingredient-line strong{
+  font-weight:900;font-size:13px;
+  font-variant-numeric:tabular-nums;
+  color:var(--ink);
+}
+html[data-theme="dark"] .ingredient-line.is-on-shelf{
+  background:color-mix(in srgb,var(--champagne-surface) 29%,var(--surface));
+}
+.availability-note{
+  margin-top:21px;padding:14px 16px;
+  border-radius:12px;border-color:var(--line);
+  background:var(--surface-muted);
+}
+.availability-note a{text-underline-offset:3px}
+.steps{margin-top:22px}
+.steps li{gap:17px;padding-bottom:18px;margin-bottom:18px}
+.step-num{
+  width:33px;height:33px;flex-basis:33px;
+  background:var(--champagne-surface);color:var(--champagne-strong);
+}
+.steps p{line-height:1.7;max-width:66ch}
+
+/* Shelf: calm hierarchy, unmistakable selected state, stronger hit targets. */
+.pantry-layout{align-items:start}
+.pantry-controls,.pantry-results{border-radius:18px;box-shadow:var(--control-shadow)}
+.shelf-branch{border-radius:12px}
+.shelf-branch-title{font-weight:700;letter-spacing:-.006em}
+.shelf-option{border:1px solid transparent;line-height:1.35}
+.shelf-option:focus-within{
+  border-color:var(--champagne-border);
+  outline:2px solid var(--focus);outline-offset:1px;
+}
+.shelf-product:has(input:checked){
+  background:color-mix(in srgb,var(--champagne-surface) 40%,var(--surface));
+  box-shadow:inset 2px 0 0 var(--champagne-strong);
+}
+.shelf-generic:has(input:checked){
+  border-inline-start:3px solid var(--champagne-strong);
+}
+.pantry-match{border-radius:10px;padding-inline:10px;margin-inline:-10px}
+.pantry-match:focus-visible{outline-offset:0}
+@media(hover:hover){
+ .shelf-option:hover{background:var(--surface-hover)}
+ .pantry-match:hover{background:var(--surface-hover);transform:translateX(2px)}
+}
+.match-body{min-width:0}
+.match-body small{overflow-wrap:anywhere}
+.match-count{font-variant-numeric:tabular-nums;white-space:nowrap}
+.save-bottom{min-height:48px}
+
+/* Editor, settings and account controls: consistent surfaces and typography. */
+.editor-panel,.settings-link,.management-item{border-radius:17px}
+.editor-panel{border-color:var(--line);box-shadow:var(--control-shadow)}
+.editor-panel .panel-heading{padding-bottom:16px}
+.ingredient-editor-row{border:1px solid var(--line);background:var(--surface-muted)}
+.ingredient-row-top,.ingredient-row-bottom{gap:14px}
+.settings-link{border:1px solid var(--line);box-shadow:var(--control-shadow)}
+.settings-link strong{letter-spacing:-.01em}
+.settings-link small{line-height:1.5}
+.settings-arrow{transition:transform .18s ease}
+.management-item{border:1px solid var(--line)}
+@media(hover:hover){
+ .settings-link:hover,.management-item:hover{border-color:var(--champagne-border);box-shadow:var(--shadow)}
+ .settings-link:hover{transform:translateY(-2px)}
+ .settings-link:hover .settings-arrow{transform:translateX(2px)}
+}
+:where(.category-pick-option,.catalog-item,.taxonomy-node,.category-dialog){
+  border-color:var(--line);
+}
+
+/* Narrow screens: no cramped two-column cards or truncated availability labels. */
+@media(max-width:900px){
+ .detail-method{padding-inline-start:clamp(16px,2.5vw,28px)}
+ .recipe-grid{gap:15px}
+}
+@media(max-width:760px){
+ .detail-columns{grid-template-columns:minmax(0,1fr);gap:31px}
+ .detail-method{
+   padding-inline-start:0;padding-top:26px;
+   border-inline-start:0;border-top:1px solid var(--line);
+ }
+}
+@media(max-width:590px){
+ .discover-header{margin-bottom:25px}
+ .feature-banner{margin-bottom:32px}
+ .recipe-grid{gap:12px}
+ .card-content{padding:14px 13px 14px}
+ .card-content h3{font-size:17px;min-height:0;margin:7px 0 18px}
+ .card-caption{font-size:9px}
+ .card-arrow{width:29px;height:29px}
+ .ingredient-line{padding:10px 9px;gap:10px}
+ .ingredient-line.is-on-shelf{margin:0;padding:10px 9px}
+ .ingredient-shelf-summary{margin-top:15px}
+ .ingredient-shelf-status{padding:2px;border:0;background:transparent}
+ .ingredient-shelf-status>span:last-child{display:none}
+ .shelf-status-symbol{border:1px solid var(--champagne-border);background:var(--champagne-pale)}
+ .steps li{gap:14px}
+}
+@media(max-width:480px){
+ .recipe-grid{grid-template-columns:minmax(0,1fr);gap:16px}
+ .card-content{padding:17px 17px 16px}
+ .card-content h3{font-size:20px;line-height:1.2;margin-bottom:19px}
+ .card-caption{font-size:10px}
+ .card-foot{font-size:12px}
+ .feature-banner h2{font-size:27px}
+}
+@media(prefers-reduced-motion:reduce){
+ :where(.recipe-card,.settings-link,.management-item,.pantry-match,.card-visual img,
+        .ingredient-shelf-meter>span){transition:none!important}
+}
