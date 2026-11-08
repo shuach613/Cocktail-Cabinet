@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import os
 import re
+import sys
 import tempfile
 import threading
 from pathlib import Path
@@ -21,6 +22,7 @@ from werkzeug.security import generate_password_hash
 from werkzeug.serving import make_server
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 DATA_DIR = tempfile.mkdtemp(prefix="cabinet-ui-audit-")
 os.environ.update({
     "DATA_DIR": DATA_DIR,
