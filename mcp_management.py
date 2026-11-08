@@ -49,9 +49,9 @@ def management_tool_definitions():
             "is_brand":boolean("Brand flag"),"parent_id":{"type":["integer","null"]}
         },"required":["action"],"additionalProperties":False}}
     return [
-        entry("get_ingredient_details","Inspect a catalogue ingredient's recipe references and shelf owners before editing.",
+        entry("get_ingredient_details","Administrator-only: inspect an ingredient's recipe references and shelf owners before editing.",
               {"ingredient_id":integer("Ingredient ID")},("ingredient_id",)),
-        entry("get_category_details","Inspect child categories, classified ingredients and shelf owners before deleting or merging.",
+        entry("get_category_details","Administrator-only: inspect child categories, classified ingredients and shelf owners before deleting or merging.",
               {"category_id":integer("Category ID")},("category_id",)),
         entry("update_ingredient","Administrator-only: rename, change brand/generic flag, or replace an existing ingredient's category IDs without changing recipe lines.",
               {"ingredient_id":integer("Existing ingredient ID"),"name":string("Updated name"),
@@ -80,6 +80,7 @@ def management_tool_definitions():
         entry("update_user","Administrator-only: change a member's status, role, username or email. Revokes affected tokens on role/activation changes. Confirm sensitive changes.",
               {"user_id":integer("User ID"),"active":boolean("Enabled account"),
                "role":{"type":"string","enum":["member","admin"]},
+               "confirm_admin":boolean("Explicitly confirm a promotion to administrator"),
                "username":string("Account name"),"email":string("Account email")},
               ("user_id",),write=True),
         entry("list_invitations","Administrator-only: inspect issued invitations, expiry and whether used/revoked. No raw invitation tokens."),
