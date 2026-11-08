@@ -55,7 +55,7 @@ def test_theme_metadata_and_pwa_cache_are_consistent():
     for path in ['premium.css','theme-init.js','icons.svg','app-icon.png','app-icon-512.png']:
         assert path in sw
     assert "url.pathname.startsWith('/static/')" in sw
-    assert 'cabinet-assets-v6-polish2' in sw
+    assert 'cabinet-assets-v7-atelier1' in sw
     manifest=json.loads((ROOT/'static/manifest.webmanifest').read_text(encoding='utf-8'))
     assert manifest['display']=='standalone'
     assert manifest['background_color']=='#F8F4EE'
