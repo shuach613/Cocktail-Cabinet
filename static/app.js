@@ -11,13 +11,33 @@ document.querySelectorAll('[data-copy-input]').forEach(b=>b.addEventListener('cl
 
 // Shared settings UI: separated panels avoid one overwhelming ingredients page.
 const tabButtons=[...document.querySelectorAll('[data-settings-tab]')];
-function switchTab(tab){
- tabButtons.forEach(button=>button.setAttribute('aria-selected',String(button.dataset.settingsTab===tab)));
- document.querySelectorAll('[data-settings-panel]').forEach(panel=>{panel.hidden=panel.dataset.settingsPanel!==tab;});
+function switchTab(tab, focus=false){
+ tabButtons.forEach(button=>{
+  const isActive=button.dataset.settingsTab===tab;
+  button.setAttribute('aria-selected',String(isActive));
+  button.tabIndex=isActive?0:-1;
+  if(isActive&&focus)button.focus();
+ });
+ document.querySelectorAll('[data-settings-panel]').forEach(panel=>{
+  panel.hidden=panel.dataset.settingsPanel!==tab;
+ });
 }
 if(tabButtons.length){
- const params=new URLSearchParams(location.search);switchTab(params.get('tab')==='products'?'products':'categories');
- tabButtons.forEach(button=>button.addEventListener('click',()=>switchTab(button.dataset.settingsTab)));
+ const params=new URLSearchParams(location.search);
+ switchTab(params.get('tab')==='products'?'products':'categories');
+ tabButtons.forEach((button,index)=>{
+  button.addEventListener('click',()=>switchTab(button.dataset.settingsTab));
+  button.addEventListener('keydown',event=>{
+   let next=-1;
+   if(event.key==='ArrowRight')next=(index+1)%tabButtons.length;
+   if(event.key==='ArrowLeft')next=(index+tabButtons.length-1)%tabButtons.length;
+   if(event.key==='Home')next=0;
+   if(event.key==='End')next=tabButtons.length-1;
+   if(next<0)return;
+   event.preventDefault();
+   switchTab(tabButtons[next].dataset.settingsTab,true);
+  });
+ });
 }
 const catalogSearch=document.getElementById('catalog-search');
 if(catalogSearch){catalogSearch.addEventListener('input',()=>{const q=catalogSearch.value.trim().toLocaleLowerCase();document.querySelectorAll('.catalog-item').forEach(el=>{el.hidden=!((el.dataset.search||'').includes(q));});});}

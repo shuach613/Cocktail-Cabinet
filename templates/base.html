@@ -14,7 +14,7 @@
  <link rel="stylesheet" href="{{ url_for('static',filename='refinement.css') }}">
  <link rel="stylesheet" href="{{ url_for('static',filename='premium.css') }}">
  <link rel="stylesheet" href="{{ url_for('static',filename='api.css') }}">
- <link rel="stylesheet" href="{{ url_for('static',filename='finishing.css',v=1) }}">
+ <link rel="stylesheet" href="{{ url_for('static',filename='finishing.css',v=2) }}">
  <meta name="csrf-token" content="{{ csrf_token }}">
  <meta name="collection-revision" content="{{ collection_revision }}">
  <meta name="shelf-revision" content="{{ shelf_revision }}">
@@ -44,7 +44,7 @@
  <nav class="bottom-nav" aria-label="Mobile navigation"><a class="{% if request.endpoint in ['index','recipe_view'] %}active{% endif %}" href="{{ url_for('index') }}">{{ icon('house','nav-icon') }}<span>Discover</span></a><a class="{% if request.endpoint=='pantry' %}active{% endif %}" href="{{ url_for('pantry') }}">{{ icon('glass-water','nav-icon') }}<span>My shelf</span></a><a class="mobile-add {% if request.endpoint=='recipe_new' %}active{% endif %}" href="{{ url_for('recipe_new') }}">{{ icon('plus-circle','nav-icon') }}<span>Add recipe</span></a><a class="{% if request.endpoint in ['settings','ingredients','manage_recipes','recipe_edit','admin','account'] %}active{% endif %}" href="{{ url_for('settings') }}">{{ icon('settings','nav-icon') }}<span>Settings</span></a></nav>
 {% else %}<main class="auth-root">{% block auth_content %}{% endblock %}</main>{% endif %}
 {% with messages=get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-stack" role="status">{% for kind,text in messages %}<div class="flash {{ kind }}">{{ text }}</div>{% endfor %}</div>{% endif %}{% endwith %}
-<script src="{{ url_for('static',filename='app.js') }}" defer></script>
+<script src="{{ url_for('static',filename='app.js',v=2) }}" defer></script>
 <script src="{{ url_for('static',filename='live.js') }}" defer></script>
 {% block extra_scripts %}{% endblock %}
 </body>

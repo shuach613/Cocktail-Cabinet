@@ -188,3 +188,45 @@ For a batch, `update_my_shelf` accepts `{"changes":[...]}` with at most
 catalogue entries or recipes are modified. Permissions follow the connected
 user and token read/write scope. The installed PWA detects edits through a
 per-user revision counter.
+
+
+## Full management API and ChatGPT tools
+
+A read/write personal bearer token can now perform the website's data operations
+through the REST API, with the **same user and administrator permission rules**.
+The connected ChatGPT account also receives dedicated management tools after
+reloading its MCP tool list.
+
+For administrators, the connector includes:
+`get_ingredient_details`, `get_category_details`, `update_ingredient`,
+`delete_ingredient`, `merge_ingredients`, `update_category`,
+`delete_category`, `merge_categories`, `batch_catalog_changes`,
+`list_users`, `update_user`, `list_invitations`, `create_invitation`,
+and `revoke_invitation`.
+
+For members and administrators: `get_shelf_recommendations`,
+`get_recipe_availability`, `list_api_tokens`, `revoke_api_token`, plus
+the existing own-shelf, recipe and photo operations.
+
+**Deletion is dependency-aware.** Deleting an ingredient referenced by a recipe
+or owned on any user's shelf returns HTTP 409. Deleting a category with child
+categories, classified ingredients or shelf owners also returns HTTP 409.
+Review those references first, then use an explicit merge where appropriate.
+Ingredient merging keeps every recipe row, measurement, optional flag, garnish
+and preparation step, and transfers ownership to the retained product.
+Category merging preserves classifications, descendants and per-user shelf
+selections. Batch changes run as a single database transaction and fully roll
+back if any step fails. No admin action can silently delete recipes.
+
+**Private credentials remain REST-/website-only, not MCP tools.** The full API
+also supports account password changes, personal API-token issuance/revocation,
+member creation, temporary password resets and invitation administration.
+Passwords, newly issued API secrets and temporary credentials should never be
+entered into ChatGPT prompts. Administrative writes require both an active admin
+account and a write-scoped token. Individual members can still update their own
+shelves and own recipes but never another user's shelf or the shared taxonomy.
+
+New REST routes are described in the authenticated [OpenAPI specification](../docs/openapi.json).
+Refer to the [repository README](../README.md) for deployment. After publishing
+this branch and updating the container, **refresh tools** for the installed
+ChatGPT connection so it discovers the new MCP actions.

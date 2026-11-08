@@ -398,36 +398,12 @@ def register_api(app):
     @permitted('write')
     def ingredient_update(ingredient_id):
         denied = admin_only()
-        if denied:
-            return denied
-        con = get_db()
-        ing = con.execute('SELECT * FROM ingredients WHERE id=?', (ingredient_id,)).fetchone()
-        if ing is None:
-            abort(404)
-        payload = request.get_json(silent=True)
-        if not isinstance(payload, dict):
-            return error('Send an ingredient JSON object.', 400)
-        try:
-            name = required_string(payload.get('name', ing['name']), 130)
-            categories = payload.get('categories')
-            with con:
-                con.execute('UPDATE ingredients SET name=? WHERE id=?', (name,ingredient_id))
-                if categories is not None:
-                    if not isinstance(categories, list) or not categories:
-                        raise ValueError('Provide category ids as a nonempty list.')
-                    try:
-                        ids = {int(v) for v in categories}
-                    except (TypeError, ValueError):
-                        raise ValueError('Invalid ingredient category identifier.')
-                    valid = {r['id'] for r in con.execute('SELECT id FROM categories')}
-                    if not ids <= valid:
-                        raise ValueError('Invalid category id.')
-                    con.execute('DELETE FROM ingredient_categories WHERE ingredient_id=?', (ingredient_id,))
-                    con.executemany('INSERT INTO ingredient_categories(ingredient_id,category_id) VALUES(?,?)',
-                                    [(ingredient_id, cid) for cid in ids])
-            return jsonify({'data': {'id': ingredient_id, 'name': name}})
-        except (ValueError, sqlite3.IntegrityError) as exc:
-            return error(str(exc), 400)
+        if denied: return denied
+        from catalog_management import update_ingredient
+        from api_management import execute, json_object
+        return execute(lambda con: update_ingredient(
+            con, ingredient_id, json_object({'name','is_brand','categories'})
+        ))
 
     @bp.get('/categories')
     @permitted('read')
@@ -466,38 +442,12 @@ def register_api(app):
     @permitted('write')
     def category_update(category_id):
         denied = admin_only()
-        if denied:
-            return denied
-        con = get_db()
-        row = con.execute('SELECT * FROM categories WHERE id=?', (category_id,)).fetchone()
-        if row is None:
-            abort(404)
-        payload = request.get_json(silent=True)
-        if not isinstance(payload, dict):
-            return error('Send a category JSON object.', 400)
-        try:
-            name = required_string(payload.get('name', row['name']), 65)
-            parent = payload.get('parent_id', row['parent_id'])
-            if parent not in (None, ''):
-                parent = int(parent)
-                ids = {category_id}
-                while parent is not None:
-                    if parent in ids:
-                        raise ValueError('Cannot make a category its own descendant.')
-                    ids.add(parent)
-                    p = con.execute('SELECT parent_id FROM categories WHERE id=?', (parent,)).fetchone()
-                    if p is None:
-                        raise ValueError('Invalid parent category.')
-                    parent = p['parent_id']
-                parent = int(payload.get('parent_id', row['parent_id']))
-            else:
-                parent = None
-            with con:
-                con.execute('UPDATE categories SET name=?,parent_id=? WHERE id=?',
-                            (name,parent,category_id))
-            return jsonify({'data': {'id':category_id,'name':name,'parent_id':parent}})
-        except (ValueError, sqlite3.IntegrityError) as exc:
-            return error(str(exc), 400)
+        if denied: return denied
+        from catalog_management import update_category
+        from api_management import execute, json_object
+        return execute(lambda con: update_category(
+            con, category_id, json_object({'name','parent_id'})
+        ))
 
     @bp.get('/shelf')
     @permitted('read')
@@ -539,6 +489,9 @@ def register_api(app):
     def openapi_spec():
         return send_from_directory(Path(__file__).resolve().parent / 'docs',
                                    'openapi.json', mimetype='application/json')
+
+    from api_management import register_management_routes
+    register_management_routes(bp, permitted, admin_only)
 
     app.register_blueprint(bp)
 
