@@ -1,189 +1,239 @@
-# The Cocktail Cabinet
+<p align="center">
+  <img src="static/icon.svg" width="88" height="88" alt="The Cocktail Cabinet icon">
+</p>
 
-A **private, PWA-first cocktail recipe app** with a spacious desktop interface. Made to live on a Synology NAS (or any Docker host). Built with Flask, SQLite, server-rendered HTML, small progressive enhancements and the Lato font family.
+<h1 align="center">The Cocktail Cabinet</h1>
 
-## What it does
+<p align="center">
+  <strong>Your private bar, beautifully kept.</strong><br>
+  A self-hosted cocktail collection that knows what's on your shelf.
+</p>
 
-- **Private by design:** login required to see recipes, the shelf, photos or the ingredient catalogue. No public signup.
-- **First-run setup without `.env`:** the container generates and persists private keys automatically. Retrieve the one-time setup key from the container logs, then create the first administrator in the browser. The setup page closes permanently once an account exists.
-- **Admin-controlled users:** create members with temporary passwords or generate **single-use, seven-day, email-bound invitations**. Invitee chooses their username/password. The link token is stored as a hash and becomes invalid after use or revocation. Optional SMTP email delivery; otherwise copy and send the link.
-- **Share recipes:** signed-in members can add recipes and add ingredients directly from the editor, including creating entirely new subcategories inside the Add Recipe flow. Recipe editing, photo replacement and deletion live under **Settings → Manage recipes** (members manage their own; admins can manage all).
-- **Multi-level classification:** a bottle can live under several categories (Elephant Orange & Cocoa Gin → Gin, London Dry Gin and Citrus Gin). Brands appear within their categories, not in a separate list. The recipe editor can create a new ingredient *and* a new nested category, saving both atomically with the recipe. Admins organize shared categories, rename or merge labels under **Settings → Ingredients & categories**.
-- **My shelf:** searchable nested families and named products, touch-friendly toggles and synced bottle choices across overlapping categories. Saved per account, with ready recipes, one-missing and several-missing groups. **Ice is always assumed available and never shown as a shelf choice.**
-- **22 initial recipes, 105 original ingredient lines:** imported from the original spreadsheet, preserving the measurements and personal variations while presenting names, ingredients, and instructions in idiomatic English. Research sources are kept for internal provenance but are **not displayed** on recipe pages. Bundled photorealistic drink images accompany the seeded recipes; users can upload their own photos.
-- **Search and filters:** by drink, ingredient, ingredient category, preparation method.
-- **Mobile PWA:** installable over HTTPS with Discover, My Shelf, Add Recipe, and Settings in the thumb-friendly bottom bar; separate roomy desktop sidebar. Public static code/assets may be cached, while **private recipes and photos require login and are never cached by the service worker**.
-- **Light/dark:** user switch, device default, persistent preference. Lato via Google Fonts with local system fallback.
+<p align="center">
+  <strong>Flask + SQLite</strong> · <strong>Docker</strong> · <strong>Installable PWA</strong> · <strong>REST API + MCP</strong>
+</p>
 
-## Synology deployment — one YAML file, no `.env`
+---
 
-Use [`compose.yaml`](compose.yaml) as the complete project configuration. **No `.env`, `.env.example`, pre-generated passwords, or manual secrets are required.** The app generates its session signing key and first-run administrator setup token inside the persistent `cabinet_data` volume.
+## A look inside
 
-### Deploy through Synology Container Manager
+![Illustrative dark-mode Discover interface, showing the sidebar, My Shelf banner, filters and recipe cards](docs/interface-preview.svg)
 
-1. Open **Container Manager → Project → Create**. Give the project a name (e.g. `cocktail-cabinet`) and optionally set its path to `/volume1/docker/cocktail-cabinet`.
-2. Select **Create `docker-compose.yml`**, paste the entire contents of [`compose.yaml`](compose.yaml), and deploy. You do **not** need to create an `.env` file or fill in any secret variables.
-3. The container listens on NAS port **1931**. In **DSM → Login Portal → Advanced → Reverse Proxy**, forward your chosen **HTTPS** hostname to port `1931` on the NAS. Use a valid TLS certificate. Do not expose the HTTP port directly to the internet.
-4. Open **Container Manager → Container → cocktail-cabinet → Log** (or run `sudo docker logs cocktail-cabinet` over SSH). Find the line **`One-time administrator setup key:`** and copy its value. This secret is visible only to whoever can inspect your container logs; **do not share it**.
-5. Go to **`https://YOUR-HOSTNAME/setup`** and enter that one-time key, your name, email address and your chosen strong password. The first user becomes administrator. The setup key is invalidated and the setup route closes once the admin is created.
-6. Sign in, create accounts or generate one-time invitation links from the administrator area, and install the PWA from your mobile browser.
+<sub>Illustrated interface preview based on the application's current Bordeaux-and-champagne design. The recipe photos shown are bundled public sample assets, not screenshots of a private account. Recipe counts and content will differ between installations.</sub>
 
-**Private GitHub image:** The image is published by GitHub Actions as `ghcr.io/shuach613/cocktail-cabinet:latest`. Since the repository/package may be private, first log the NAS into GHCR using a GitHub personal access token with `read:packages` and package access, or set the package's visibility appropriately. This registry login is separate from the app's user login and does not require an `.env` file.
+The collection is built around real drink photography:
 
-### Alternative: deploy from SSH using the same YAML
+| Gin & tonic | Classic Negroni | Aperol Spritz |
+|:---:|:---:|:---:|
+| <img src="seed/photos/gin-tonic.webp" width="270" alt="Gin and tonic in a large glass"> | <img src="seed/photos/negroni.webp" width="270" alt="Negroni in a rocks glass"> | <img src="seed/photos/orange-spritz.webp" width="270" alt="Orange spritz in a wine glass"> |
 
-Save [`compose.yaml`](compose.yaml) as `/volume1/docker/cocktail-cabinet/compose.yaml` and run:
+The interface includes **light and dark modes**, a spacious desktop sidebar, a compact mobile navigation bar and a consistent Bordeaux-and-champagne visual language. Recipe cards follow the photography's 4:3 format; typography, surfaces and controls are designed to stay readable on phones as well as larger screens.
 
-```sh
+## What you can do
+
+| Area | Features |
+| --- | --- |
+| **Discover** | Search by cocktail or ingredient, filter by category or preparation method, and open full recipes with photos, measurements and instructions. |
+| **My Shelf** | Mark specific bottles or generic ingredient categories as owned. Browse a nested, searchable hierarchy and see which cocktails you can make. Each user has their own shelf. |
+| **Recipe availability** | Individual recipe ingredients receive a quiet champagne accent and checkmark when matched by your shelf, along with an essential-ingredient availability indicator. Exact bottle ownership and category-based matches are distinguished. |
+| **Recipes** | Add and edit cocktails, ingredients, steps, garnishes, classifications and photos. Members manage their recipes; administrators can manage the entire collection. |
+| **Ingredient catalogue** | Classify bottles into one or more categories. Category changes update recipe labels and shelf matching without guessing from brand names. |
+| **Accounts** | Private sign-in, first-run administrator setup, account management, optional invitation emails and single-use invitation links. No public sign-up. |
+| **Integrations** | Personal read-only or read/write REST tokens, a remote MCP connector, recipe-image transfer and per-user shelf updates. |
+| **PWA** | Install the site from a supported mobile browser over HTTPS; follow the system theme or choose your own. |
+
+The initial database ships with **22 curated cocktails and 105 ingredient lines**. It is a starting collection, not a limit: members can add recipes and administrators can organize the catalogue. Seeded photos are included, and a recipe's own uploaded photo takes precedence.
+
+### Matching is based on what you actually have
+
+A recipe calling for generic **Gin** can match a suitable owned gin bottle or generic gin shelf selection. A recipe asking for a **particular branded bottle** is not automatically treated as satisfied by a different brand. Ingredients can belong to multiple category branches (for example, London Dry Gin and Citrus Gin).
+
+On a recipe page, the availability accents are deliberately subtle: a light champagne wash, narrow edge, compact checkmark and a small progress indicator. The separate preparation checkboxes are still manual—they never change your shelf. **Ice is assumed available** and is not offered as a shelf item. Optional ingredients and garnishes do not block a cocktail's ready-to-make status.
+
+## Deploy with Docker or Synology Container Manager
+
+The production deployment is a single service in [`compose.yaml`](compose.yaml) using the image:
+
+```text
+ghcr.io/shuach613/cocktail-cabinet:latest
+```
+
+**Requirements:** a Docker host running Linux/amd64 (including a compatible Synology NAS), Docker Compose or Container Manager, persistent storage and—recommended for real use—an HTTPS reverse proxy. The published GitHub Actions image targets **linux/amd64**. The app's internal port is `8080`; the supplied Compose file exposes NAS port **`1931`**.
+
+No `.env` file or manually generated application secret is required for the supplied Compose deployment.
+
+### Option A: Synology Container Manager
+
+1. Open **Container Manager → Project → Create**. Choose a project name such as `cocktail-cabinet` and a directory such as `/volume1/docker/cocktail-cabinet`.
+2. Choose to create a project from a Compose file and paste the contents of [`compose.yaml`](compose.yaml).
+3. Start the project. Keep its named `cabinet_data` volume: this is where accounts, recipes, uploads and secrets live.
+4. Set up **DSM → Login Portal → Advanced → Reverse Proxy** to forward an HTTPS hostname to `http://127.0.0.1:1931` on your NAS (adjust the destination to the NAS address appropriate to your setup).
+5. In the container logs, find **`One-time administrator setup key:`**. The key is sensitive; don't share it or publish it.
+6. Visit `https://YOUR-HOSTNAME/setup` and use that key to create the first administrator. Then sign in and begin building your shelf.
+
+If your GHCR package requires authentication, configure access to the package on the Docker host first. Registry permissions are independent of Cocktail Cabinet accounts.
+
+### Option B: SSH / Docker Compose
+
+Save [`compose.yaml`](compose.yaml) in your intended project directory and run:
+
+```bash
 cd /volume1/docker/cocktail-cabinet
 sudo docker compose pull
 sudo docker compose up -d --remove-orphans
 sudo docker logs cocktail-cabinet 2>&1 | grep 'One-time administrator setup key:'
 ```
 
-Open `https://YOUR-HOSTNAME/setup` and finish administrator creation. If the key is not in the most recent log lines, use Container Manager's full log view. For existing installations that already have an administrator, **there is no setup key**; simply log in normally.
+Use the printed key **only on the initial setup screen**. If an administrator already exists, the one-time key is no longer generated and the setup route remains closed.
 
-### Configuration and persistence
+### Configuration
 
-- **Port:** change `1931:8080` directly in `compose.yaml` if needed.
-- **HTTPS:** `COOKIE_SECURE: "true"` and `TRUST_PROXY: "true"` are already set in `compose.yaml` for a Synology HTTPS reverse proxy. Only if testing on a trusted HTTP-only LAN, temporarily set both to `"false"` **in the YAML itself**, then restore HTTPS settings. An HTTPS connection is necessary for normal PWA installation.
-- **SMTP invitations (optional):** uncomment and edit the `SMTP_*` entries in `compose.yaml` to send invitation emails. Otherwise, the administrator can copy each single-use invitation URL and send it manually. Keep SMTP passwords private; Docker/DSM project editors may be able to view configuration values.
-- **Private session secret:** automatically stored as `/data/.session-secret`, never printed in logs. Keep the `cabinet_data` volume; the secret remains stable across container restarts and image upgrades.
-- **One-time admin token:** stored as `/data/.admin-setup-token` until the first admin completes setup. It is printed to Docker logs while setup is pending and deleted after successful setup; it cannot grant another account afterward.
-- **Updates:** run `sudo docker compose pull && sudo docker compose up -d` from your project folder or update the image in Container Manager. The `cabinet_data` named volume preserves accounts, recipes, photos, invitations, pantry, and instance secrets. Never use `docker compose down -v` for routine updates. Keep the same Compose project name to preserve the same named volume.
-- **Backup:** back up the *entire* `cabinet_data` volume (including hidden `.session-secret`, SQLite database, and `/data/uploads/`). Stop the container for a consistent filesystem backup or use SQLite's `.backup` operation before copying while live.
+The supplied Compose file contains these commonly adjusted settings:
 
-**Upgrading from the earlier `.env`-based version:** Once the YAML is replaced, the app generates a persistent session secret automatically. Existing users and recipes remain in the same data volume, but active sessions may need to log in again because the cookie-signing secret has changed. The first-run admin screen will **not** reopen if users already exist. You can retire the old `.env` after confirming the new deployment works.
+| Setting | Default | Purpose |
+| --- | --- | --- |
+| Host port | `1931:8080` | Change the left-hand port if needed. |
+| `DATA_DIR` | `/data` | Persistent application data inside the container. |
+| `COOKIE_SECURE` | `true` | Secure session cookies; keep enabled behind HTTPS. |
+| `TRUST_PROXY` | `true` | Honor headers from your trusted reverse proxy. |
+| `SMTP_*` | Unset | Optional email delivery for invitations. Without SMTP, copy the invitation URL yourself. |
 
-### Local development without `.env`
+Only set `COOKIE_SECURE=false` and `TRUST_PROXY=false` when intentionally testing on an HTTP-only trusted local environment. Do **not** expose the application's unencrypted HTTP listener directly to the public internet.
 
-To build the Docker image locally using the same configuration, run:
+### Persistent data, updates and backup
 
-```sh
-docker compose -f compose.yaml -f compose.local.yaml up -d --build
+The named volume mounted at `/data` contains:
+
+- `cabinet.sqlite3` — accounts, recipes, categories, shelves, invitations and API credentials.
+- `uploads/` — uploaded cocktail photographs.
+- `.session-secret` — persistent cookie-signing secret.
+- `.admin-setup-token` — temporary setup token, removed after administrator creation.
+
+Update in place:
+
+```bash
+cd /volume1/docker/cocktail-cabinet
+sudo docker compose pull
+sudo docker compose up -d --remove-orphans
 ```
 
-For Python development outside Docker, set a writable local data path and HTTP-only flags for your own machine (shell variables, not a file). GitHub Actions automatically tests the code before publishing the image.
+**Back up the entire `cabinet_data` volume before upgrading**, including hidden files and uploaded photos. For a consistent backup, stop writes and copy the volume or use SQLite's online backup functionality together with a separate upload-file backup. Keep the same Compose project/volume. **Never use `docker compose down -v` for a routine update**; that removes named volumes.
 
+Database initialization and migrations are automatic and designed to preserve user-created content, recipe references and per-account shelf selections. Existing installations do **not** require another first-run administrator setup.
 
-## Bordeaux & Champagne design system
+## Using the app
 
-The app uses **Lato** across desktop and mobile and offers coordinated light and dark palettes. Bordeaux is the identity color; **champagne is the visible complementary accent** for primary actions, selected navigation, category hierarchy, recipe badges, step counters, filter buttons, Settings icons, and ready-to-make indicators. Each theme uses contrast-adjusted champagne text and background tokens rather than reusing one gold shade everywhere. Success states deliberately avoid unrelated green styling.
+### The ingredient shelf
 
-The shaker-and-coupe pictogram uses Bordeaux/charcoal with champagne metalwork in both SVG variants, including its PWA icon sizes. The favicon responds to the selected app theme; the service worker cache and icon URLs are versioned so updates replace older assets. On some mobile platforms an already-installed PWA may need to be removed and reinstalled to refresh its home-screen icon.
+Choose either **a particular bottle** (for example, a named gin or amaretto) or **any item in a generic category** (for example, Indian tonic). Saved selections are private to your account. The matching engine categorizes recipes as ready to make, missing one ingredient, or missing more ingredients.
 
-No database migration or Compose update is required for this appearance-only change.
+The curated hierarchy currently includes specialist gin subtypes (London Dry, Citrus and Specialty), whisky including separate Bourbon and Single Malt, tonic types (Indian, Pepper and Mediterranean), and other ingredient families. You can extend or reorganize categories as an administrator.
 
-## Updating an existing installation
+### Recipe creation and editing
 
-The new image runs a **one-time, transactional database migration** on first start, using the same persistent `cabinet_data` volume. It updates unchanged English translations and unmodified seed images without overwriting custom recipe fields or user-uploaded photos. Ingredient IDs, category mappings, user accounts, saved shelves, invitations and user-created recipes remain intact. The migration is version-marked so container restarts do not reapply it.
+In **Add a recipe**, enter the title, method, glassware, ingredients, exact quantities and ordered instructions. For a new ingredient, choose its categories or create a nested subcategory during the same edit. You can also upload a JPEG, PNG or WebP image (up to 4 MB); the server processes uploaded photos into private WebP files.
 
-**Back up your named `cabinet_data` volume before upgrading.** Keep your current Compose YAML and project name; no new environment variables, `.env` file or administrator setup are necessary. The PR branch is not published as `:latest` until merged; review and merge it before updating Synology.
+The collection includes a **Settings → Manage recipes** screen for editing, replacing images or removing entries. Administrators can edit all recipes; regular members can edit their own.
 
-### Adding a new ingredient and subcategory
+### Invitations and privacy
 
-1. Tap **Add Recipe** and type the new ingredient, for example `Singleton`.
-2. Select existing classifications or tap **Create a new category** (for example `Single Malt Scotch Whisky`, with `Scotch Whisky` as its parent).
-3. Select the newly created category for that ingredient and save the recipe. The new category and ingredient are committed with the recipe; if validation fails, everything rolls back together.
-4. Admins can reorganize categories, rename ingredients and merge duplicate labels via **Settings → Ingredients & categories**. The category tree is used throughout My Shelf and recipe search.
+Only administrators can invite people or manage accounts. Invitations are single-use, email-bound and valid for seven days unless used or revoked. SMTP is optional, so the app can operate without an email provider. Recipe pages, uploaded photos and API data require authentication; the service worker only caches public static assets, **not your private collection**.
 
-## Taxonomy and matching semantics
+## REST API
 
-- Categories form a tree. Example: `Spirits → Gin → London Dry Gin` and `Spirits → Gin → Citrus Gin`.
-- An ingredient can be assigned to **multiple independent leaves**, plus their ancestors by inheritance. Elephant Orange & Cocoa is tagged `London Dry Gin` **and** `Citrus Gin` (the producer describes a citrus-rich London Dry-based gin).
-- Selecting **Gin** on the shelf matches any recipe requiring a gin product. Selecting **London Dry Gin** matches London Dry products and recipes calling only for generic Gin; it does not claim to satisfy a citrus-specific branded ingredient unless that ingredient is tagged London Dry as well.
-- Selecting a **specific bottle** satisfies a recipe calling for that bottle and generic recipes in the bottle's family. It does not imply you own another named brand.
-- Missing essentials are calculated from recipe ingredients marked `Essential`, not `Ice`, `Garnish`, or `Optional`.
-- An original entry listing multiple alternative vermouth brands is treated as a generic sweet red vermouth requirement while its original visible wording is preserved.
-- Brand taxonomy is editable; do not apply automatic string substitutions or guess an unknown brand's type. New ingredient labels always require explicit classification.
+The authenticated JSON API lives at **`/api/v1/`**. Create personal credentials in **Settings → API access**, choosing read-only or read/write permissions. Tokens inherit the permissions of the account that created them. Never put tokens in a public repository, URL query string or chat message.
 
-## Research provenance
+| Resource | Main endpoints |
+| --- | --- |
+| Recipes | `GET /api/v1/recipes`, `GET /api/v1/recipes/{id}`, `POST /api/v1/recipes`, `PATCH /api/v1/recipes/{id}`, `DELETE /api/v1/recipes/{id}` |
+| Recipe images | `GET /api/v1/recipes/{id}/image`, `POST /api/v1/recipes/{id}/image`, `DELETE /api/v1/recipes/{id}/image` |
+| Ingredients and categories | `GET /api/v1/ingredients`, `GET /api/v1/categories`, plus permission-controlled management endpoints |
+| Personal shelf | `GET /api/v1/shelf`, `POST /api/v1/shelf/items`, `PATCH /api/v1/shelf/items` |
+| Account and sync | `GET /api/v1/me`, `GET /api/v1/changes` |
+| API schema | `GET /api/v1/openapi.json` |
 
-Original preparation references remain in the seed/DB for maintenance and auditability, but are never rendered to members in the recipe interface. The English display translation respects the intended drink, exact amounts, branded products, and personal variations. For instance, Sage Gin & Tonic retains its name without silently adding sage to ingredients because none was listed in the original workbook.
+Example: retrieve your recipes (replace the hostname and token locally):
 
-## Security and operations
+```bash
+curl -H "Authorization: Bearer YOUR_PERSONAL_TOKEN" \
+  "https://YOUR-HOSTNAME/api/v1/recipes?page=1&per_page=50"
+```
 
-- Cookies use `HttpOnly`, `SameSite=Lax`, `Secure` by default. A strong session secret is generated automatically and kept in the persistent Docker volume; no manual secret configuration is necessary.
-- Form and JSON mutations require session-bound CSRF protection. Passwords are hashed with Werkzeug's modern password hashing. A one-time setup key printed to administrator-only Docker logs must be supplied before the first admin account can be created. Restrict access to container logs and complete setup promptly.
-- Invitation tokens are random and stored hashed; expired, used or revoked invitations cannot be reused.
-- Uploads are re-encoded by Pillow with constrained dimensions, stored under random names, and served only to logged-in users.
-- A strict-ish CSP prevents remote scripts; fonts are served via Google's CSS/font endpoints. To make fonts completely self-hosted, include a properly licensed Lato build separately.
-- This compact app does not currently implement password reset emails or distributed login rate limits. Consider reverse-proxy rate limiting and strong passwords before internet exposure. Protect the NAS and keep backups.
-- SQLite is meant for this small private membership; one Gunicorn worker with four threads uses WAL and busy timeout. This is *not* intended for high-concurrency public hosting.
+Mark one item as owned:
 
-## Development and tests
+```bash
+curl -X POST "https://YOUR-HOSTNAME/api/v1/shelf/items" \
+  -H "Authorization: Bearer YOUR_WRITE_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"ingredient_id":12,"owned":true}'
+```
 
-```sh
+Bulk shelf changes use `PATCH /api/v1/shelf/items` with a `changes` array of up to 100 operations. They **do not replace unrelated owned items** and never change shared recipes or ingredient classifications.
+
+A lightweight revision check lets visible browser pages refresh after API/MCP changes, usually within about **five seconds**. Pending shelf edits and active recipe preparation checklists are protected from disruptive automatic refreshes.
+
+## Connect ChatGPT or another MCP client
+
+The app includes a **Streamable HTTP MCP endpoint at `/mcp`**, hosted by the same Flask service—no additional container, database or port.
+
+- **ChatGPT:** use the custom MCP connection flow available in your ChatGPT account, supply `https://YOUR-HOSTNAME/mcp` and authorize through Cocktail Cabinet's OAuth account-linking page. Your permissions stay tied to the account you approve.
+- **Other compatible clients:** a personal API token can be supplied as a bearer credential over HTTPS.
+- **Tools:** read/create/update/delete recipes according to permissions; browse ingredients and categories; download or replace recipe photos; and inspect or update the connected user's own shelf via `get_my_shelf`, `set_shelf_item_owned` and `update_my_shelf`.
+
+See [MCP connector setup and troubleshooting](docs/MCP_CONNECTOR.md) for the detailed OAuth flow, examples and security considerations. Availability of custom connectors and write actions depends on the client's supported capabilities.
+
+## Development
+
+The app deliberately uses a small stack: **Python 3.12, Flask, Werkzeug, SQLite, Gunicorn, Pillow, Jinja templates, CSS and minimal JavaScript**. It has no separate frontend build process or external database requirement.
+
+### Run locally with Python
+
+```bash
 python -m venv .venv
 . .venv/bin/activate
 pip install -r requirements-dev.txt
 DATA_DIR="$(mktemp -d)" COOKIE_SECURE=false TRUST_PROXY=false python app.py
 ```
 
-Or use the local-build Compose override shown above. No `.env` file is involved. The automated tests cover the 22-recipe import, taxonomy, login-only access, first-run administrator setup (including the automatically generated key), single-use invitations, recipe authoring, and ingredient matching. GitHub Actions runs `python -m pytest -q` before building the Docker image.
-
-### Recipe copy, brand labels and identity
-
-The recipe interface uses English cocktail terminology, with sources retained only as internal editorial references. System-supplied recipe descriptions, quantities and preparation steps are refined through the versioned `recipe_english_copy_v3` migration. It changes only unchanged seed-owned fields, leaving customized recipes and quantities alone. Back up the persistent `/data` volume before deploying updates; no new admin setup is required.
-
-Recipe ingredients display a branded product followed by its **most specific saved generic categories**, e.g. `Tanqueray London Dry Gin (London Dry Gin)` or `Elephant Gin Orange & Cocoa (London Dry Gin, Citrus Gin)`. These labels are computed at render time, so edits in Settings → Ingredients & Categories take effect across all recipes automatically. Unbranded ingredients are displayed plainly.
-
-The web, favicon and PWA identity share a compact cocktail-shaker-and-coupe pictogram. Light and dark themes use harmonizing SVG variants, while the installed PWA has matching 192px and 512px PNG icons. The service worker's static-asset version is updated to refresh them; on some phones the home-screen icon may need the PWA to be reinstalled to update.
-
-### Bordeaux & Champagne interface
-
-The application uses the **Bordeaux & Champagne** design system in both light and dark modes, with Lato throughout. Mobile and desktop share the same SVG icon set, tactile navigation, and responsive recipe/shelf layouts. The shelf does not require selecting ice or display any ice explanation; matching behavior remains unchanged.
-
-The installed PWA uses its own matching cocktail-shaker-and-glass icons, plus a same-origin, versioned static-asset cache. The browser theme follows the device initially, then remembers a user's explicit light/dark choice. No extra secrets, database migrations, Compose changes or third-party UI dependencies are introduced by this redesign.
-
-
-## Per-user REST API (v1)
-
-Cocktail Cabinet now includes a private JSON API at `/api/v1/`. Each request requires a personal, hashed bearer token issued under **Settings → API access** or **My account → API access**. Tokens are either **read-only** or **read/write**, are revocable, can expire, and always inherit the owner's website permissions. Session cookies cannot be used as API credentials. No new .env, Docker ports, databases or setup steps are needed.
-
-- **Recipes:** `GET /api/v1/recipes` (paginated; `page`, `per_page`, `q`, `technique`), `GET /api/v1/recipes/{id}`, `POST /api/v1/recipes`, `PATCH/PUT /api/v1/recipes/{id}`, `DELETE /api/v1/recipes/{id}`.
-- **Private recipe images:** `GET /api/v1/recipes/{id}/image?download=1` (binary WebP), `POST /api/v1/recipes/{id}/image` (multipart form with file field `image`; JPG/PNG/WebP up to 4MB), `DELETE /api/v1/recipes/{id}/image`. All three require bearer authentication; uploading/deleting also requires write scope and recipe ownership or admin.
-- **Ingredients/categories:** `GET /api/v1/ingredients` and `/categories`; `POST /api/v1/ingredients` supports a new branded ingredient plus new nested categories transactionally. Administrators can additionally rename/reclassify ingredients and create/move categories through their API endpoints.
-- **Integration helpers:** `GET /api/v1/me`, `GET /api/v1/changes` (collection revision), `GET /api/v1/openapi.json` (full authenticated OpenAPI 3.0 documentation).
-- **Visibility:** API and browser edits immediately affect the shared SQLite database. Open, visible recipe/collection pages in the PWA/desktop browser check for revisions every **5 seconds** and automatically update, without a manual reload. When the user has unsaved shelf selections, a refresh notice preserves their input.
-- **Persistence:** API tokens, users, recipes and photos survive ordinary Docker image updates in the original `cabinet_data` volume. New tables and revision triggers are created automatically and idempotently. Back up the volume before upgrading.
-
-Example:
+### Build the container locally
 
 ```bash
-curl -H 'Authorization: Bearer YOUR_PERSONAL_TOKEN' \
-  'https://cocktails.example.com/api/v1/recipes?page=1&per_page=50'
-
-curl -L -H 'Authorization: Bearer YOUR_PERSONAL_TOKEN' \
-  'https://cocktails.example.com/api/v1/recipes/1/image?download=1' -o cocktail.webp
-
-curl -X POST -H 'Authorization: Bearer YOUR_WRITE_TOKEN' \
-  -F 'image=@cocktail.jpg' 'https://cocktails.example.com/api/v1/recipes/23/image'
+docker compose -f compose.yaml -f compose.local.yaml up -d --build
 ```
 
-Use HTTPS and keep tokens in an integration's secrets store, never in query strings. Image URLs in JSON responses are private and must be fetched with the same Authorization header. The PWA service worker continues to cache only public static files, not private API, photo or recipe responses.
+### Run tests
 
-## ChatGPT / Model Context Protocol connector
+```bash
+python -m pytest -q
+```
 
-Cocktail Cabinet now exposes a private Streamable HTTP MCP endpoint at `/mcp`, using
-existing per-user API keys for compatible MCP clients and secure OAuth 2.1 account
-linking for ChatGPT. The connection offers recipe CRUD, classification browsing,
-photo downloads/uploads, and the same live PWA synchronization as the REST API.
+GitHub Actions runs the test suite on pull requests and builds/publishes the GHCR image on pushes to `main` after tests pass.
 
-See [MCP connector setup and security](docs/MCP_CONNECTOR.md) for step-by-step
-Synology, ChatGPT and bearer-key client instructions. No extra container, port,
-`.env` file or database reset is necessary. **ChatGPT write-enabled MCP support
-is subject to account/workspace availability.** Do not paste API keys into chats.
+### Project map
 
-## Personal shelf API and MCP actions
+```text
+app.py                  Browser routes, accounts and recipe pages
+db.py                   SQLite schema, seed data and matching
+catalog.py              Curated ingredient taxonomy
+shelf_api.py             Per-user owned-ingredient logic
+api.py                   Authenticated REST endpoints
+mcp_connector.py         MCP endpoint and tools
+templates/               Server-rendered pages
+static/                  Light/dark styles, scripts, icons and PWA assets
+seed/                    Starter cocktails and public sample photos
+tests/                   Integration and regression tests
+compose.yaml             Production Docker deployment
+docs/MCP_CONNECTOR.md    MCP and OAuth integration guide
+```
 
-The ingredient catalogue is shared, but **My Shelf ownership is per user**.
-Bearer-authenticated operations always use the connected account:
+## Security notes
 
-- `GET /api/v1/shelf`: selectable branded bottles and generic subcategories, with owned flags, selected IDs and the personal shelf revision.
-- `POST /api/v1/shelf/items`: mark one bottle owned, for example `{"ingredient_id":12,"owned":true}`, or remove a generic category using `{"category_id":7,"owned":false}`.
-- `PATCH /api/v1/shelf/items`: atomic bulk updates, for example `{"changes":[{"ingredient_id":12,"owned":true},{"category_id":7,"owned":false}]}`.
+Cocktail Cabinet is designed as a **small private installation**, not a multi-tenant public SaaS platform. It uses hashed passwords and credentials, CSRF protection for browser mutations, scoped API access, secure cookie defaults, restricted media access and a persistent server-side secret.
 
-Only write-scoped tokens can change ownership. Even administrators can only change **their own** shelf through these endpoints. Unmentioned items are preserved, and ice cannot be marked owned. These operations never modify shared ingredients or recipes.
+Use TLS, strong passwords, restricted NAS administrator access and a proper backup strategy. The app does not provide a general email-based password-reset service or distributed authentication rate limiting; consider reverse-proxy rate limiting when exposing it externally. Avoid sharing setup keys, API tokens or OAuth callback URLs.
 
-MCP offers the equivalent `get_my_shelf`, `set_shelf_item_owned` and `update_my_shelf` tools. Existing ingredient matching remains intact. A per-user revision updates open PWA pages automatically (about five seconds) without refreshing other users' shelves or discarding unsaved form selections.
+---
+
+<p align="center">
+  <strong>Good drinks. A well-kept shelf. Your own collection.</strong>
+</p>
