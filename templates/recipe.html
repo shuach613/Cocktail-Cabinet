@@ -2,6 +2,28 @@
 {% extends 'base.html' %}{% block title %}{{ recipe.title }}{% endblock %}{% block content %}
 <a class="back-link" href="{{ url_for('index') }}">{{ icon('arrow-left') }} All cocktails</a>
 <div class="detail-hero"><div class="detail-copy"><span class="eyebrow">THE COCKTAIL CABINET / RECIPE</span><h1>{{ recipe.title }}</h1><p>{{ (recipe.notes|with_ingredient_types(recipe['items'])) if recipe.notes else 'A cocktail from your private collection.' }}</p><div class="detail-tags"><span>{{ recipe.technique }}</span><span>{{ recipe.glass or 'Glass of choice' }}</span><span>{{ recipe['items']|length }} ingredients</span></div></div><div class="detail-art visual-{{ recipe.technique|lower }}">{% set image_url = recipe_image_url(recipe.image_file) %}{% if image_url %}<img class="recipe-photo" src="{{ image_url }}" alt="Photo of {{ recipe.title }}">{% else %}<div class="detail-typographic">{{ recipe.title }}</div>{% endif %}</div></div>
-<div class="detail-columns"><section class="detail-ingredients"><div class="section-kicker">01 / WHAT YOU NEED</div><h2>Ingredients</h2><p class="subtle">Makes one drink · Measurements as listed.</p><div class="ingredient-list">{% for i in recipe['items'] %}<label class="ingredient-line"><input type="checkbox"><span class="ingredient-text">{{ i.display_name }}{% if i.optional %}<small>{{ 'Garnish / ice' if i.kind!='ingredient' else 'Optional' }}</small>{% endif %}</span><strong>{{ i.quantity or '—' }}</strong></label>{% endfor %}</div>{% if recipe.missing %}<div class="availability-note">Missing from your shelf: {{ recipe.missing|map(attribute='display_name')|join(', ') }}. <a href="{{ url_for('pantry') }}">Update shelf</a></div>{% endif %}</section>
+<div class="detail-columns">
+<section class="detail-ingredients">
+  <div class="section-kicker">01 / WHAT YOU NEED</div>
+  <h2>Ingredients</h2>
+  <p class="subtle">Makes one drink · Measurements as listed.</p>
+  {% if recipe.required_count %}
+  <p class="ingredient-shelf-summary"><strong>{{ recipe.match_count }} of {{ recipe.required_count }}</strong> essential ingredients available from your shelf</p>
+  {% endif %}
+  <div class="ingredient-list">
+    {% for i in recipe['items'] %}
+    <label class="ingredient-line{% if i.kind != 'ice' and i.matched %} is-on-shelf{% endif %}" data-ingredient-id="{{ i.ingredient_id }}">
+      {# The checkbox tracks preparation only; shelf ownership comes from i.matched. #}
+      <input type="checkbox" data-prep-item="{{ i.id }}" aria-label="Mark {{ i.display_name }} as prepared">
+      <span class="ingredient-text">{{ i.display_name }}{% if i.optional %}<small>{{ 'Garnish / ice' if i.kind!='ingredient' else 'Optional' }}</small>{% endif %}</span>
+      {% if i.kind != 'ice' and i.matched %}
+      <span class="ingredient-shelf-status" aria-label="Available from your shelf">{{ icon('check') }}<span>On your shelf</span></span>
+      {% endif %}
+      <strong>{{ i.quantity or '—' }}</strong>
+    </label>
+    {% endfor %}
+  </div>
+  {% if recipe.missing %}<div class="availability-note">Missing from your shelf: {{ recipe.missing|map(attribute='display_name')|join(', ') }}. <a href="{{ url_for('pantry') }}">Update shelf</a></div>{% endif %}
+</section>
 <section class="detail-method"><div class="section-kicker">02 / THE GOOD PART</div><h2>How to make it</h2><p class="subtle">Take your time. The little details make the drink.</p><ol class="steps">{% for step in recipe.steps %}<li><span class="step-num">{{ '%02d'|format(loop.index) }}</span><p>{{ step|with_ingredient_types(recipe['items']) }}</p></li>{% endfor %}</ol>{% if recipe.author %}<p class="subtle attribution">Added by {{ recipe.author }}</p>{% endif %}</section></div>
 {% endblock %}
