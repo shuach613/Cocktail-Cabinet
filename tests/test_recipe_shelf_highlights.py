@@ -104,7 +104,7 @@ def test_recipe_highlights_owned_generic_matches_and_preserves_manual_checklist(
         lines_before = [tuple(r) for r in con.execute("SELECT * FROM recipe_items ORDER BY id")]
 
     rows, html = recipe_rows(client, "Classic Negroni")
-    for ingredient in ("Gin", "Campari", "Carpano Antica Formula / Cocchi/Dos Deus"):
+    for ingredient in ("Tanqueray London Dry Gin", "Campari", "Carpano Antica Formula"):
         row = rows[ingredients[ingredient]]
         assert "is-on-shelf" in row["classes"]
         assert row["status"]
@@ -119,7 +119,7 @@ def test_recipe_highlights_owned_generic_matches_and_preserves_manual_checklist(
         assert lines_before == [tuple(r) for r in con.execute("SELECT * FROM recipe_items ORDER BY id")]
 
 
-def test_specific_brand_is_not_claimed_owned_by_a_generic_category(client):
+def test_exact_brand_and_generic_shelf_match_distinction(client):
     setup(client)
     with db.connect() as con:
         ids = {r["name"]: r["id"] for r in con.execute("SELECT id,name FROM categories")}
@@ -128,14 +128,15 @@ def test_specific_brand_is_not_claimed_owned_by_a_generic_category(client):
         with con:
             con.execute("INSERT INTO pantry(user_id,category_id) VALUES(?,?)", (uid, ids["Gin"]))
     rows, html = recipe_rows(client, "Gin & Tonic Seventh Sense")
-    assert "is-on-shelf" not in rows[ingredient["Seventh Sense Gin"]]["classes"]
-    assert "Missing from your shelf:" in html
+    assert "is-on-shelf" in rows[ingredient["Seventh Sense Gin"]]["classes"]
+    assert "Shelf match" in rows[ingredient["Seventh Sense Gin"]]["text"]
     with db.connect() as con:
         with con:
             con.execute("INSERT INTO pantry(user_id,ingredient_id) VALUES(?,?)",
                         (uid, int(ingredient["Seventh Sense Gin"])))
     rows, _ = recipe_rows(client, "Gin & Tonic Seventh Sense")
     assert rows[ingredient["Seventh Sense Gin"]]["status"]
+    assert "On your shelf" in rows[ingredient["Seventh Sense Gin"]]["text"]
 
 
 def test_no_shelf_highlights_for_empty_ownership_and_login_required(client):
