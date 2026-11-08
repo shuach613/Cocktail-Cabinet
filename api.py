@@ -506,7 +506,7 @@ def register_api(app):
     @bp.get('/openapi.json')
     @permitted('read')
     def openapi_spec():
-        return send_from_directory(Path(__file__).resolve().parent / 'static',
+        return send_from_directory(Path(__file__).resolve().parent / 'docs',
                                    'openapi.json', mimetype='application/json')
 
     app.register_blueprint(bp)
