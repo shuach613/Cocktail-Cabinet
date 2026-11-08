@@ -795,7 +795,7 @@
       "get": {
         "summary": "Get ingredient details and recipe/shelf dependencies",
         "operationId": "get_ingredient_details_and_recipe_shelf_dependencies",
-        "description": "Read-scoped token.",
+        "description": "Read-scoped token; administrator role required to view shared ownership aggregates.",
         "security": [
           {
             "personalBearer": []
@@ -963,15 +963,9 @@
                     "type": "string"
                   },
                   "parent_id": {
-                    "oneOf": [
-                      {
-                        "type": "integer",
-                        "minimum": 1
-                      },
-                      {
-                        "type": "null"
-                      }
-                    ]
+                    "type": "integer",
+                    "minimum": 1,
+                    "nullable": true
                   }
                 },
                 "required": []
@@ -1003,7 +997,7 @@
       "get": {
         "summary": "Inspect category children, ingredients and ownership dependencies",
         "operationId": "inspect_category_children_ingredients_and_ownership_dependencies",
-        "description": "Read-scoped token.",
+        "description": "Read-scoped token; administrator role required to view shared ownership aggregates.",
         "security": [
           {
             "personalBearer": []
@@ -1836,7 +1830,7 @@
       "patch": {
         "summary": "Change member status, role, username or email",
         "operationId": "change_member_status_role_username_or_email",
-        "description": "Cannot deactivate/demote self or the sole active admin. Revokes credentials when role or activity changes. Requires an administrator account. Requires write-scoped token.",
+        "description": "Cannot deactivate/demote self or the sole active admin. Revokes credentials when role or activity changes. Requires an administrator account. Requires write-scoped token. Promoting a member to admin explicitly requires confirm_admin=true.",
         "security": [
           {
             "personalBearer": []
@@ -1876,6 +1870,10 @@
                   },
                   "email": {
                     "type": "string"
+                  },
+                  "confirm_admin": {
+                    "type": "boolean",
+                    "description": "Required true for member-to-admin promotion"
                   }
                 },
                 "required": []
