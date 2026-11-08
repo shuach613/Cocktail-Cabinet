@@ -214,3 +214,60 @@ def test_mcp_schema_persists_through_container_restart(client):
     assert rpc(client,key,'tools/list').status_code==200
     with db.connect() as con:
         assert con.execute("SELECT name FROM sqlite_master WHERE name='mcp_oauth_clients'").fetchone()
+
+
+def test_oauth_logged_out_login_preserves_chatgpt_callback_and_issuer(client):
+    """Exercise the missing end-to-end login -> consent -> ChatGPT redirect."""
+    setup(client)
+    callback='https://chatgpt.com/connector_platform_oauth_redirect'
+    registration=client.post('/oauth/register',json={
+        'client_name':'ChatGPT', 'redirect_uris':[callback],
+        'token_endpoint_auth_method':'none'})
+    assert registration.status_code==201, registration.data
+    verifier='v'*50
+    challenge=base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).decode().rstrip('=')
+    args={'client_id':registration.json['client_id'],'redirect_uri':callback,
+          'response_type':'code','state':'keep-this-state',
+          'code_challenge_method':'S256','code_challenge':challenge,
+          'scope':'recipes:read recipes:write','resource':'http://localhost/mcp'}
+    meta=client.get('/.well-known/oauth-authorization-server').json
+    assert meta['authorization_response_iss_parameter_supported'] is True
+    client.post('/logout',data={'_csrf':csrf(client)})
+    # ChatGPT begins authorization without a pre-existing Cocktail Cabinet session.
+    first=client.get('/oauth/authorize',query_string=args)
+    assert first.status_code==302 and '/login?' in first.headers['Location']
+    login_page=client.get(first.headers['Location'])
+    assert login_page.status_code==200
+    assert b'Sign in to continue connecting Cocktail Cabinet to ChatGPT' in login_page.data
+    # Simulate a browser losing the form's next field: server remembers original
+    # OAuth request until after credentials are accepted.
+    sign_in=client.post('/login',data={'_csrf':csrf(client),
+                    'identity':'owner','password':'very strong password'})
+    assert sign_in.status_code==302
+    assert '/oauth/authorize?' in sign_in.headers['Location']
+    consent=client.get(sign_in.headers['Location'])
+    assert consent.status_code==200
+    assert b'Allow connection' in consent.data
+    result=client.post('/oauth/authorize',data={
+        '_csrf':csrf(client),**args,'decision':'allow'})
+    assert result.status_code==302
+    from urllib.parse import urlsplit,parse_qs
+    uri=urlsplit(result.headers['Location'])
+    assert (uri.scheme,uri.netloc,uri.path)==('https','chatgpt.com','/connector_platform_oauth_redirect')
+    params=parse_qs(uri.query)
+    assert params['state']==['keep-this-state']
+    assert params['iss']==['http://localhost']
+    redeemed=client.post('/oauth/token',data={'grant_type':'authorization_code',
+                'client_id':registration.json['client_id'],
+                'code':params['code'][0],'code_verifier':verifier,
+                'redirect_uri':callback,'resource':'http://localhost/mcp'})
+    assert redeemed.status_code==200,redeemed.data
+    assert tool(client,redeemed.json['access_token'],'get_account')['isError'] is False
+
+
+def test_logged_in_login_with_local_next_returns_to_authorization(client):
+    setup(client)
+    target='/oauth/authorize?client_id=sample'
+    response=client.get('/login',query_string={'next':target})
+    assert response.status_code==302
+    assert response.headers['Location']==target
