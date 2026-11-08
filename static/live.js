@@ -16,6 +16,10 @@
  let unsavedShelf=false;
  const shelf=document.getElementById('pantry-form');
  shelf?.addEventListener('change',()=>{unsavedShelf=true;});
+ // Recipe checkboxes are a temporary preparation checklist, not shelf ownership.
+ // Do not clear someone's checked-off ingredients during an inventory sync.
+ const activeRecipeChecklist=()=>path.startsWith('/recipes/')&&
+  !!document.querySelector('.ingredient-line input[data-prep-item]:checked');
  function showUpdateNotice(){
   if(document.getElementById('cabinet-live-notice'))return;
   const notice=document.createElement('div');
@@ -24,7 +28,7 @@
   notice.className='flash-stack';
   const link=document.createElement('button');
   link.className='flash';
-  link.textContent='The collection changed. Refresh to see the latest recipes.';
+  link.textContent=activeRecipeChecklist()?'Your shelf changed. Refresh when finished to see updated ingredients.':'The collection changed. Refresh to see the latest recipes.';
   link.style.cursor='pointer';
   link.addEventListener('click',()=>location.reload());
   notice.append(link);document.body.append(notice);
@@ -40,7 +44,7 @@
    if((typeof data.revision==='number'&&data.revision!==revision)||
       (typeof data.shelf_revision==='number'&&data.shelf_revision!==shelfRevision)){
     revision=data.revision;shelfRevision=data.shelf_revision;changed=true;
-    if(unsavedShelf){showUpdateNotice();return;}
+    if(unsavedShelf||activeRecipeChecklist()){showUpdateNotice();return;}
     location.reload();
    }
   }catch(_){/* offline or network hiccup; retry next interval */}

@@ -330,6 +330,7 @@ def recipe_view(recipe_id):
     if not r: abort(404)
     pc,pi=pantry_ids(con,g.user['id'])
     return render_template('recipe.html',recipe=recipe_card(con,r,pc,pi,ingredient_category_maps(con)),
+                           owned_products=pi,
                            can_edit=(g.user['role']=='admin' or r['created_by']==g.user['id']))
 
 def editor_context(con,recipe=None):
