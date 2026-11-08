@@ -557,6 +557,11 @@ def register_api(app):
             con.execute('''UPDATE api_tokens SET revoked_at=?
                    WHERE id=? AND user_id=? AND revoked_at IS NULL''',
                    (stamp(utcnow()), token_id, g.user['id']))
+            # Also invalidate the OAuth refresh token, so a disconnected client
+            # cannot silently mint a fresh access token after revocation.
+            con.execute('''UPDATE mcp_oauth_refresh SET revoked_at=?
+                   WHERE access_id=? AND user_id=? AND revoked_at IS NULL''',
+                   (stamp(utcnow()), token_id, g.user['id']))
         flash('API token revoked.', 'success')
         return redirect(url_for('api_access'))
 
