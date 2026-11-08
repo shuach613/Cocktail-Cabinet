@@ -14,6 +14,14 @@ def _id(con, name):
     return row["id"] if row else None
 
 
+def _ensure_category(con, name, parent):
+    if _id(con, name) is None:
+        parent_id = _id(con, parent)
+        if parent_id is None:
+            raise RuntimeError(f"Missing parent category {parent!r}")
+        con.execute("INSERT INTO categories(name,parent_id) VALUES(?,?)", (name, parent_id))
+
+
 def _merge_category(con, source, destination):
     """Replace a redundant class without orphaning ingredients or owned choices."""
     old_id = _id(con, source)
@@ -71,7 +79,8 @@ def apply_taxonomy_cleanup_v4(con):
         # Collapse overly narrow categories, while preserving their branded products.
         _merge_category(con, "Spicy ginger beer", "Ginger beer")
         _merge_category(con, "Artichoke amaro", "Amaro")
-        _merge_category(con, "Pimm’s-style cup liqueur", "Aperitifs & liqueurs")
+        _ensure_category(con, "Liqueurs", "Aperitifs & liqueurs")
+        _merge_category(con, "Pimm’s-style cup liqueur", "Liqueurs")
 
         # Sparkling wine / prosecco is one flexible generic ingredient.
         _merge_category(con, "Prosecco", "Sparkling wine")
