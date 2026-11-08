@@ -169,6 +169,8 @@ def mcp_tools():
          'filename':string('Original filename, e.g. photo.jpg')},('recipe_id','image_base64','filename'),write=True)
     add('remove_recipe_image','Remove the recipe photo without deleting the recipe.',
         {'recipe_id':integer('Recipe ID')},('recipe_id',),write=True,destructive=True)
+    from mcp_management import management_tool_definitions
+    out.extend(management_tool_definitions())
     return out
 
 
@@ -218,9 +220,17 @@ def _call_tool(app, name, args, bearer):
         'upload_recipe_image':('POST',f"/api/v1/recipes/{args.get('recipe_id')}/image"),
         'remove_recipe_image':('DELETE',f"/api/v1/recipes/{args.get('recipe_id')}/image"),
     }
+    from mcp_management import management_route
+    try:
+        extra = management_route(name, args)
+    except ValueError as exc:
+        return {'content':[{'type':'text','text':str(exc)}], 'isError':True}
+    if extra:
+        methods[name] = (extra[0], extra[1])
     if name not in methods:
         return {'content':[{'type':'text','text':'Unknown Cocktail Cabinet tool.'}],'isError':True}
-    route_args={k:v for k,v in args.items() if k!='recipe_id'}
+    omit={'recipe_id'} | (set(extra[2]) if extra else set())
+    route_args={k:v for k,v in args.items() if k not in omit}
     method,path=methods[name]
     if 'recipe_id' in args and (type(args['recipe_id']) is not int or args['recipe_id'] < 1):
         return {'content':[{'type':'text','text':'recipe_id must be a positive integer.'}],'isError':True}
