@@ -249,7 +249,7 @@ def register_management_routes(bp, permitted, admin_only):
             return {"id": token_id, "name": name, "scope": scope, "expires_at": expires,
                     "token": secret, "warning": "This secret will not be shown again."}
         response = execute(op)
-        return (response[0], 201) if not isinstance(response, tuple) else response
+        return (response, 201) if not isinstance(response, tuple) else response
 
     @bp.delete('/tokens/<int:token_id>')
     @permitted('write')
@@ -300,7 +300,7 @@ def register_management_routes(bp, permitted, admin_only):
             return {"id": user_id, "username": username, "email": email, "role": role,
                     "must_change_password": True}
         response = execute(op)
-        return (response[0], 201) if not isinstance(response, tuple) else response
+        return (response, 201) if not isinstance(response, tuple) else response
 
     @bp.patch('/users/<int:user_id>')
     @permitted('write')
