@@ -8,7 +8,10 @@
   <h2>Ingredients</h2>
   <p class="subtle">Makes one drink · Measurements as listed.</p>
   {% if recipe.required_count %}
-  <p class="ingredient-shelf-summary"><strong>{{ recipe.match_count }} of {{ recipe.required_count }}</strong> essential ingredients available from your shelf</p>
+  <p class="ingredient-shelf-summary">
+    <span><strong>{{ recipe.match_count }} of {{ recipe.required_count }}</strong> essential ingredients available from your shelf</span>
+    <span class="ingredient-shelf-meter" role="progressbar" aria-label="Essential ingredients available from your shelf" aria-valuemin="0" aria-valuenow="{{ recipe.match_count }}" aria-valuemax="{{ recipe.required_count }}"><span style="width:{{ ((recipe.match_count * 100) / recipe.required_count)|round|int }}%"></span></span>
+  </p>
   {% endif %}
   <div class="ingredient-list">
     {% for i in recipe['items'] %}
