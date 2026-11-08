@@ -149,9 +149,16 @@ def headers(resp):
     resp.headers['Referrer-Policy']='strict-origin-when-cross-origin'
     resp.headers['X-Frame-Options']='DENY'
     if request.is_secure: resp.headers['Strict-Transport-Security']='max-age=15552000'
+    # Chromium checks the full redirect chain after an OAuth consent form POST.
+    # The consent form is posted to this site, but approval sends a 302 to the
+    # validated ChatGPT callback. Permit that one destination only on the
+    # actual consent page. Every other page keeps same-origin form submissions.
+    oauth_consent = (request.endpoint == 'mcp_authorize' and
+                     request.method == 'GET' and resp.mimetype == 'text/html')
+    form_targets = "'self' https://chatgpt.com" if oauth_consent else "'self'"
     resp.headers['Content-Security-Policy']=("default-src 'self'; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; "
                                             "style-src 'self' https://fonts.googleapis.com; script-src 'self'; "
-                                            "connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'")
+                                            f"connect-src 'self'; form-action {form_targets}; frame-ancestors 'none'; base-uri 'self'")
     return resp
 
 @app.template_filter('with_ingredient_types')
