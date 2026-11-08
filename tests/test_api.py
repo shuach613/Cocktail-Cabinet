@@ -82,6 +82,7 @@ def test_session_cookie_cannot_authenticate_api(client):
     assert client.get('/api/v1/recipes').status_code == 401
     assert client.post('/api/v1/recipes', json=sample_recipe()).status_code == 401
     assert client.get('/api/v1/openapi.json').status_code == 401
+    assert client.get('/static/openapi.json').status_code == 404  # docs are not public static assets
     assert client.get('/api/v1/recipes/1/image').status_code == 401
     assert client.get('/live/revision').status_code == 200
 
