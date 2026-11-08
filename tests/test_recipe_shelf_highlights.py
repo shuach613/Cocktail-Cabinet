@@ -163,7 +163,7 @@ def test_premium_finishing_stylesheet_keeps_existing_palette_and_all_pages(clien
     for route in ('/', '/pantry', '/settings', '/recipes/2'):
         response = client.get(route)
         assert response.status_code == 200, (route, response.status_code)
-        assert b'finishing.css?v=2' in response.data
+        assert b'finishing.css?v=3' in response.data
     css_response = client.get('/static/finishing.css')
     assert css_response.status_code == 200
     css = css_response.get_data(as_text=True)
