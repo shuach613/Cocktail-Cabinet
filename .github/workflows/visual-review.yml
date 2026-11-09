@@ -1,0 +1,37 @@
+name: Responsive visual QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'templates/**'
+      - 'static/**'
+      - 'tools/visual_audit.py'
+      - '.github/workflows/visual-review.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install Flask tests and Chromium browser
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m pip install playwright==1.57.0
+          python -m playwright install --with-deps chromium
+      - name: Audit real desktop, tablet and mobile rendering in both themes
+        run: python tools/visual_audit.py
+      - name: Upload all visual review screenshots and QA report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cabinet-visual-review
+          path: artifacts/ui-review/
+          retention-days: 14
+          if-no-files-found: warn

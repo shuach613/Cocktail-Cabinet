@@ -9,6 +9,6 @@
  <a class="settings-link" href="{{ url_for('ingredients') }}"><span class="settings-icon">{{ icon('list-tree') }}</span><span><strong>Ingredients & categories</strong><small>Organize bottles, classification and the category tree</small></span><span class="settings-arrow">{{ icon('chevron-right') }}</span></a>
  <a class="settings-link" href="{{ url_for('admin') }}"><span class="settings-icon">{{ icon('users') }}</span><span><strong>Users & invitations</strong><small>Manage members and single-use invitations</small></span><span class="settings-arrow">{{ icon('chevron-right') }}</span></a>
  {% endif %}
- <div class="settings-link settings-appearance"><span class="settings-icon">{{ icon('palette') }}</span><span><strong>Appearance</strong><small>Switch between light and dark</small></span><button class="button secondary small" data-theme-toggle type="button"><span class="theme-icon-stack">{{ icon('moon','theme-moon') }}{{ icon('sun','theme-sun') }}</span> Switch theme</button></div>
+ <div class="settings-link settings-appearance" role="group" aria-label="Appearance preferences"><span class="settings-icon">{{ icon('palette') }}</span><span><strong>Appearance</strong><small>Switch between light and dark</small></span><button class="button secondary small" data-theme-toggle type="button"><span class="theme-icon-stack">{{ icon('moon','theme-moon') }}{{ icon('sun','theme-sun') }}</span> Switch theme</button></div>
 </div>
 {% endblock %}

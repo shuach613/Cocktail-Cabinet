@@ -60,7 +60,7 @@ def test_all_key_pages_render_with_consistent_theme_and_versioned_assets(client,
     response=client.get(route)
     assert response.status_code==200,(route,response.data[:200])
     html=response.get_data(as_text=True)
-    assert 'finishing.css?v=2' in html
+    assert 'finishing.css?v=3' in html
     assert 'app.js?v=2' in html
     assert 'theme-init.js' in html
     assert 'data-theme-toggle' in html
@@ -107,7 +107,7 @@ def test_visual_finish_covers_critical_breakpoints_and_keeps_theme_tokens():
     assert css.count("{")==css.count("}")
     for rule in (
         "@media(max-width:900px)", "@media(max-width:760px)",
-        "@media(max-width:590px)", "@media(max-width:410px)",
+        "@media(max-width:590px)", "@media(max-width:420px)",
         "@media(prefers-reduced-motion:reduce)",
         ".ingredient-main", ".ingredient-shelf-status",
         ".shelf-status-symbol .ui-icon", ".ingredient-line .ingredient-quantity",
@@ -127,7 +127,7 @@ def test_app_shell_refresh_and_keyboard_navigation_assets_are_available(client):
     assert "event.key==='ArrowLeft'" in js
     assert "button.tabIndex=isActive?0:-1" in js
     sw=(ROOT/"static"/"sw.js").read_text(encoding="utf-8")
-    assert "cabinet-assets-v6-polish2" in sw
-    assert "/static/finishing.css?v=2" in sw
+    assert "cabinet-assets-v7-atelier1" in sw
+    assert "/static/finishing.css?v=3" in sw
     assert "/static/app.js?v=2" in sw
     assert client.get("/static/finishing.css").status_code==200

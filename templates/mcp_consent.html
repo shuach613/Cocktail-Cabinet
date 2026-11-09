@@ -1,21 +1,23 @@
 {% extends 'base.html' %}
 {% block title %}Connect Cocktail Cabinet{% endblock %}
 {% block content %}
-<section class="auth-card" style="max-width:580px;margin:4rem auto;">
-  <div class="section-kicker">PRIVATE CONNECTION</div>
-  <h1>Connect Cocktail Cabinet</h1>
+<section class="oauth-consent" aria-labelledby="oauth-consent-title">
+  <span class="section-kicker">PRIVATE CONNECTION</span>
+  <h1 id="oauth-consent-title">Connect Cocktail Cabinet</h1>
   <p><strong>{{ client.client_name }}</strong> is requesting access to your cocktail collection as <strong>{{ viewer.username }}</strong>.</p>
-  <p>This grants access only under your existing account permissions.</p>
-  <p class="subtle">To finish connecting, click <strong>Allow connection</strong>. You'll then return to ChatGPT automatically.</p>
-  <ul>
-    <li>Read cocktail recipes, ingredients and photographs</li>
-    {% if 'recipes:write' in scopes %}<li>Add, edit and remove recipes/photos that your account may manage</li>{% endif %}
-  </ul>
-  <p class="subtle">You can revoke access under Settings → API access. Nothing is shared until you approve.</p>
+  <p>Any access is limited to your existing account permissions. Nothing is shared until you approve.</p>
+  <div class="oauth-scope-summary">
+    <h2>What this connection can do</h2>
+    <ul class="oauth-scopes">
+      <li>Read cocktail recipes, ingredients and photographs</li>
+      {% if 'recipes:write' in scopes %}<li>Add, edit and remove recipes or photos your account may manage</li>{% endif %}
+    </ul>
+  </div>
+  <p class="subtle">You can revoke this connection under Settings → API access. After you choose Allow, you'll return to the application that requested access.</p>
   <form method="post">
     <input type="hidden" name="_csrf" value="{{ csrf_token }}">
     {% for key,value in query.items() %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endfor %}
-    <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+    <div class="oauth-actions">
       <button class="button" type="submit" name="decision" value="allow">Allow connection</button>
       <button class="button secondary" type="submit" name="decision" value="deny">Cancel</button>
     </div>

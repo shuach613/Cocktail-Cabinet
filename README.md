@@ -211,6 +211,18 @@ See [the complete OpenAPI reference](docs/openapi.json) and
 [MCP connector guide](docs/MCP_CONNECTOR.md) for precise schemas and safety
 rules. Refresh the installed connector's tools after deploying an updated image.
 
+## Visual system and responsive review
+
+The UI follows the existing **Bordeaux-and-Champagne** palette and **Lato**
+typography, with one coordinated design language for light/dark modes and
+desktop/mobile layouts. The [visual system guide](docs/VISUAL_SYSTEM.md)
+documents interface structure, colour/spacing rules, and review criteria.
+
+A separate [responsive visual QA workflow](.github/workflows/visual-review.yml)
+captures ten representative screens at five viewport widths in both themes
+using Chromium and a temporary local database. Screenshots and the browser
+report are downloadable as GitHub Actions artifacts on design pull requests.
+
 ## Development
 
 The app deliberately uses a small stack: **Python 3.12, Flask, Werkzeug, SQLite, Gunicorn, Pillow, Jinja templates, CSS and minimal JavaScript**. It has no separate frontend build process or external database requirement.

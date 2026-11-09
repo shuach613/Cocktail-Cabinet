@@ -77,7 +77,7 @@ def test_app_icon_and_favicon_always_use_champagne_palette():
     manifest = json.loads((STATIC / 'manifest.webmanifest').read_text())
     assert manifest['display'] == 'standalone'
     assert all('?v=5' in icon['src'] for icon in manifest['icons'])
-    assert 'cabinet-assets-v6-polish2' in (STATIC / 'sw.js').read_text()
+    assert 'cabinet-assets-v7-atelier1' in (STATIC / 'sw.js').read_text()
 
 
 def test_existing_templates_still_parse_and_shelf_stays_quiet():
